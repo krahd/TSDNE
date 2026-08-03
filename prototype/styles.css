@@ -1,0 +1,82 @@
+:root {
+  color-scheme: dark;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  background: #000;
+  color: #fff;
+}
+
+* { box-sizing: border-box; }
+html, body { width: 100%; height: 100%; margin: 0; overflow: hidden; background: #000; }
+button, textarea { font: inherit; }
+#stage { display: block; width: 100vw; height: 100vh; }
+
+.controls {
+  position: fixed;
+  left: 50%;
+  bottom: max(1rem, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  display: flex;
+  gap: .55rem;
+  opacity: .32;
+  transition: opacity .2s ease;
+}
+.controls:hover, .controls:focus-within { opacity: 1; }
+
+button {
+  border: 1px solid rgb(255 255 255 / .38);
+  border-radius: 999px;
+  padding: .62rem .9rem;
+  color: #fff;
+  background: rgb(0 0 0 / .48);
+  backdrop-filter: blur(10px);
+  cursor: pointer;
+}
+button:hover, button:focus-visible { background: rgb(255 255 255 / .16); outline: none; }
+
+.status {
+  position: fixed;
+  top: 1rem;
+  left: 1rem;
+  max-width: min(32rem, calc(100vw - 2rem));
+  font-size: .75rem;
+  opacity: .55;
+  pointer-events: none;
+}
+
+#panel {
+  width: min(58rem, calc(100vw - 2rem));
+  max-height: calc(100vh - 2rem);
+  border: 1px solid rgb(255 255 255 / .2);
+  border-radius: 1rem;
+  padding: 0;
+  color: #fff;
+  background: rgb(12 12 12 / .96);
+}
+#panel::backdrop { background: rgb(0 0 0 / .62); backdrop-filter: blur(4px); }
+.panel-shell { padding: 1rem; }
+.panel-shell header { display: flex; justify-content: space-between; align-items: center; gap: 1rem; }
+h1 { font-size: 1rem; font-weight: 500; margin: 0; }
+.close { font-size: 1.25rem; padding: .3rem .62rem; }
+textarea {
+  width: 100%;
+  min-height: 48vh;
+  resize: vertical;
+  border: 1px solid rgb(255 255 255 / .2);
+  border-radius: .65rem;
+  padding: .8rem;
+  color: #e8e8e8;
+  background: #050505;
+  tab-size: 2;
+}
+.actions { display: flex; flex-wrap: wrap; gap: .5rem; margin: .75rem 0; }
+.meta { color: #b8b8b8; font-size: .78rem; line-height: 1.5; }
+code { color: #fff; }
+
+@media (max-width: 640px) {
+  .controls { width: calc(100vw - 1rem); justify-content: center; }
+  button { padding: .55rem .72rem; font-size: .78rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .controls { transition: none; }
+}
