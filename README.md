@@ -27,7 +27,7 @@ The first public version should use a **typed procedural shader synthesiser**, n
 4. Reject broken, blank, static, excessively expensive, or obviously weak candidates.
 5. Compare compact visual and structural signatures against local history.
 6. Present the selected shader full-screen.
-7. Export the exact source and a tested host template when the visitor chooses **use this shader**.
+7. Export the exact source and tested host templates when the visitor chooses **use this shader**.
 
 A small browser model may later propose or mutate the constrained intermediate representation. It should not be required for the artwork to function.
 
@@ -42,7 +42,7 @@ python3 -m http.server 8080
 
 Then open `http://localhost:8080`.
 
-The prototype is an architectural baseline, not the final aesthetic system. Its generator contains several curated shader families, local structural non-repetition, compile validation, coarse luminance and motion checks, and a self-contained HTML export.
+The prototype is an architectural baseline, not the final aesthetic system. Its generator contains several curated shader families, local structural non-repetition, compile validation, coarse luminance and motion checks, and a raw shader-bundle export. Verified self-contained WebGL, Three.js, ShaderToy, and ISF exports remain part of the next implementation phase.
 
 ## Zero-cost constraint
 
