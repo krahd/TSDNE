@@ -16,6 +16,9 @@
 - Hybrid procedural-generation and WebLLM design documented.
 - Non-proprietary encounter model documented.
 - Journal-first paper argument and outline documented.
+- First-encounter timing and loading policy documented.
+- Full staged implementation roadmap created.
+- GitHub Pages, custom-domain, and hosting-portability strategy documented.
 - Canonical `academic-writing` records updated to point to this repository.
 
 ## Frozen artistic decisions
@@ -30,6 +33,8 @@
 8. A hash or encounter identifier records computational correspondence; it does not confer property, exclusivity, or scarcity.
 9. The work explores personal relation without ownership and individualisation without surveillance.
 10. The public interface foregrounds the encounter rather than AI branding or technical spectacle.
+11. The first shader appears immediately; the visitor does not wait at a mandatory model-loading screen.
+12. WebLLM becomes available in the background and may influence later or sustained encounters.
 
 ## Frozen technical direction
 
@@ -63,6 +68,37 @@ Use a **hybrid typed procedural and local WebLLM architecture**.
 - **Research/exhibition:** optional interface exposing proposals, rejections, failures, and disagreements; not part of the ordinary public experience.
 
 See [`HYBRID-WEBLLM.md`](HYBRID-WEBLLM.md).
+
+## First-encounter timing
+
+These are development targets to measure, not current empirical claims:
+
+- first procedural shader under 750 ms on a recent laptop;
+- interface responsive under one second;
+- cached WebLLM readiness under five seconds on a recent laptop;
+- first cold-load hybrid candidate under thirty seconds on good broadband;
+- one short mutation proposal under three seconds after readiness;
+- no request for **another** waits indefinitely for the model.
+
+Current smallest-model hypothesis:
+
+- SmolLM2 360M is the lower-bound experiment;
+- Qwen2.5 0.5B is the likely smallest-useful model;
+- approximately 1B is a fallback only if smaller models do not produce meaningful structural mutations.
+
+## Visitors who leave before WebLLM is ready
+
+This remains an interaction question, not a reason to block the first shader.
+
+Prototype and compare:
+
+1. model influence only on later encounters;
+2. one slow, validated in-place mutation when the model becomes ready;
+3. a restrained readiness invitation that preserves visitor agency.
+
+A mandatory progress screen is rejected as the default. Progress may appear in **about**, diagnostics, or a research build.
+
+See [`IMPLEMENTATION-ROADMAP.md`](IMPLEMENTATION-ROADMAP.md).
 
 ## Uniqueness position
 
@@ -102,6 +138,34 @@ The export should contain:
 
 The encounter record identifies a relation and an artefact. It does not identify the visitor or create ownership.
 
+## Hosting and domains
+
+### Initial host
+
+GitHub Pages is the recommended first host because TSDNE is a static public artwork requiring no server, database, account, payment, or sensitive transaction.
+
+The deployment remains portable to the existing Laurenzo hosting service.
+
+### Repository visibility
+
+Because `krahd/TSDNE` is private, publishing directly from it requires a GitHub plan that supports Pages for private repositories. Otherwise use either:
+
+- a separate public deployment repository containing only built site artefacts; or
+- the existing Laurenzo static host.
+
+The published site is public even when the source repository is private.
+
+### Domains
+
+- preferred canonical domain, if available: `thisshaderdoesnotexist.com`;
+- possible shorthand redirect: `tsdne.com`;
+- do not iframe or wrap the GitHub Pages URL;
+- point the canonical domain directly through DNS;
+- redirect any second unrelated domain externally;
+- keep model weights on an external model host rather than GitHub Pages.
+
+Domain availability has not been verified. See [`DEPLOYMENT.md`](DEPLOYMENT.md).
+
 ## First paper
 
 **Priority:** journal before conference.
@@ -140,21 +204,26 @@ See [`PAPER-1.md`](PAPER-1.md).
 2. Replace baseline string templates with a typed intermediate representation.
 3. Define the TSDNE mutation schema and action vocabulary.
 4. Implement the first constrained WebLLM mutation experiment behind progressive enhancement.
-5. Benchmark one or more approximately 0.5B–1B instruction models for structured mutation proposals.
-6. Implement offscreen candidate generation in a Web Worker where supported.
-7. Add temporal descriptors and perceptual signatures stored in IndexedDB.
-8. Add deterministic raw GLSL, self-contained WebGL, Three.js, ShaderToy, and ISF exports.
-9. Implement the non-proprietary encounter record and free-use statement.
-10. Establish accessibility and photosensitive-seizure safety rules.
-11. Conduct a small internal aesthetic curation round.
-12. Maintain production notes for the first journal article.
-13. Purchase and configure the project domain only after the name and deployment path are final.
+5. Benchmark SmolLM2 360M, Qwen2.5 0.5B, and one approximately 1B comparison model.
+6. Test the three non-blocking model-readiness strategies.
+7. Implement offscreen candidate generation in a Web Worker where supported.
+8. Add temporal descriptors and perceptual signatures stored in IndexedDB.
+9. Add deterministic raw GLSL, self-contained WebGL, Three.js, ShaderToy, and ISF exports.
+10. Implement the non-proprietary encounter record and free-use statement.
+11. Establish accessibility and photosensitive-seizure safety rules.
+12. Conduct a small internal aesthetic curation round.
+13. Configure an initial GitHub Pages alpha or equivalent static deployment.
+14. Maintain production notes for the first journal article.
+15. Purchase and configure the project domain after availability and canonical-domain choice are confirmed.
 
 ## Development gates
 
 - **20 August 2026:** typed graph specification, mutation language, and first visual-family library.
-- **15 September 2026:** complete full-screen encounter with quality filtering, procedural fallback, initial hybrid mutation, and export.
-- **25 September 2026:** assess the artwork's public readiness and whether any art call is useful; conference submission is secondary to the journal-first plan.
+- **31 August 2026:** complete procedural encounter and background candidate pipeline.
+- **7 September 2026:** smallest-useful WebLLM benchmark decision.
+- **10 September 2026:** initial hybrid integration and model-readiness strategy prototypes.
+- **15 September 2026:** public-alpha candidate with quality filtering, procedural fallback, initial hybrid mutation, exports, and deployment.
+- **25 September 2026:** assess public readiness and whether any art call is useful; conference submission remains secondary to the journal-first plan.
 - **After credible hybrid prototype:** draft a 1,500–2,000-word argument memorandum for the first paper.
 - **After stable artwork:** verify journal scopes and select the first submission venue.
 - **21 January 2027:** possible CHI Interactive Demo only if the interaction and system evidence are mature and it does not delay the journal article.
@@ -163,9 +232,12 @@ See [`PAPER-1.md`](PAPER-1.md).
 
 - visual families and typed ontology not yet defined;
 - browser model not yet selected or benchmarked;
-- model-download and device-access policy not yet designed;
+- model-download and device-access policy not implemented;
 - perceptual-signature method remains preliminary;
+- in-place mutation versus readiness-invitation strategy unresolved;
 - export licence and free-use wording not finalised;
 - cross-browser visual validation incomplete;
+- GitHub Pages entitlement for the private repository not confirmed;
+- canonical domain availability not checked;
 - no public domain purchased or deployed;
 - paper source ledger not yet begun.
