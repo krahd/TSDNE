@@ -30,7 +30,8 @@ The central theoretical problem is the gap between an interface that performs lo
 - optimised multi-frame readback without per-frame canvas reallocation;
 - WebGL resource rebuilding after context restoration;
 - bounded, clearable IndexedDB encounter traces with limited localStorage fallback;
-- persisted parent, model, and mutation provenance;
+- persisted model and mutation provenance in local traces;
+- parent lineage, model, and mutation provenance in encounter exports;
 - optional local WebLLM proposals, off by default;
 - rejection of ineffective model proposals without hidden substitution;
 - optional family changes and bounded trait changes;
@@ -60,7 +61,8 @@ Following [`docs/CRITICAL-AUDIT-2026-08-04.md`](docs/CRITICAL-AUDIT-2026-08-04.m
 
 - removes the authored fallback previously attributed to WebLLM;
 - rejects materially empty proposals;
-- records explicit proposer, model, parent, family, intention, and changed traits;
+- records explicit proposer, model, family, intention, and changed traits;
+- preserves parent lineage in exported encounters;
 - permits a bounded family change;
 - includes random and authored baselines;
 - replaces the sparse “flash ratio” claim with a separate dense temporal heuristic;
@@ -68,7 +70,7 @@ Following [`docs/CRITICAL-AUDIT-2026-08-04.md`](docs/CRITICAL-AUDIT-2026-08-04.m
 - discloses the pinned external runtime host and model downloads;
 - selects among several valid candidates;
 - describes the representation as a bounded family program;
-- preserves provenance in local traces and exports;
+- preserves model and mutation provenance in local traces and fuller lineage in exports;
 - aligns output notices with the limited CC0 waiver;
 - improves temporal-sampling performance and context restoration.
 
