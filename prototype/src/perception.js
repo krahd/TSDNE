@@ -37,7 +37,16 @@ export function frameDescriptor(pixels, size) {
   };
 }
 
-function meanAbsoluteFrameDifference(a,b){let total=0,max=0,flash=0,count=a.length/4;for(let p=0;p<a.length;p+=4){const d=Math.abs(luminance(a[p],a[p+1],a[p+2])-luminance(b[p],b[p+1],b[p+2]));total+=d;max=Math.max(max,d);if(d>120)flash++;}return{mean:total/count,max,flashRatio:flash/count};}
+function meanAbsoluteFrameDifference(a,b){
+  let total=0,max=0,largeChange=0,count=a.length/4;
+  for(let p=0;p<a.length;p+=4){
+    const d=Math.abs(luminance(a[p],a[p+1],a[p+2])-luminance(b[p],b[p+1],b[p+2]));
+    total+=d;
+    max=Math.max(max,d);
+    if(d>120)largeChange++;
+  }
+  return{mean:total/count,max,largeChangeRatio:largeChange/count};
+}
 
 export function sequenceDescriptor(frames,size){
   const frameDescriptors=frames.map(frame=>frameDescriptor(frame,size));
@@ -45,11 +54,80 @@ export function sequenceDescriptor(frames,size){
   for(let i=1;i<frames.length;i++)transitions.push(meanAbsoluteFrameDifference(frames[i-1],frames[i]));
   const avg=(key)=>frameDescriptors.reduce((sum,f)=>sum+f[key],0)/frameDescriptors.length;
   return {
-    version:"tsdne-perception-v1", size, frames:frameDescriptors,
+    version:"tsdne-perception-v2", size, frames:frameDescriptors,
     mean:avg("mean"), variance:avg("variance"), edge:avg("edge"), saturation:avg("saturation"),
     temporal:transitions.length?transitions.reduce((s,t)=>s+t.mean,0)/transitions.length:0,
     maxTemporal:transitions.length?Math.max(...transitions.map(t=>t.max)):0,
-    flashRatio:transitions.length?Math.max(...transitions.map(t=>t.flashRatio)):0,
+    largeChangeRatio:transitions.length?Math.max(...transitions.map(t=>t.largeChangeRatio)):0,
+  };
+}
+
+/**
+ * Screen-level high-frequency luminance-change heuristic.
+ *
+ * This is not a clinical photosensitive-epilepsy test and not a WCAG
+ * certification. It samples consecutive rendered frames, estimates the
+ * proportion of the screen undergoing a large luminance transition, and
+ * rejects sequences with three or more substantial transitions in a rolling
+ * one-second window.
+ */
+export function flashScreening(
+  frames,
+  size,
+  {
+    fps = 60,
+    luminanceDelta = 100,
+    changedAreaThreshold = 0.1,
+    maxTransitionsPerSecond = 3,
+  } = {},
+) {
+  if (!Array.isArray(frames) || frames.length < 2) {
+    return {
+      version: "tsdne-flash-screen-v1",
+      pass: false,
+      reason: "insufficient-frames",
+      fps,
+      maxTransitionsInWindow: 0,
+      maxChangedArea: 0,
+    };
+  }
+  const count = size * size;
+  const events = [];
+  let maxChangedArea = 0;
+  for (let i = 1; i < frames.length; i += 1) {
+    const previous = frames[i - 1];
+    const current = frames[i];
+    let changed = 0;
+    for (let p = 0; p < current.length; p += 4) {
+      const before = luminance(previous[p], previous[p+1], previous[p+2]);
+      const after = luminance(current[p], current[p+1], current[p+2]);
+      if (Math.abs(after - before) >= luminanceDelta) changed += 1;
+    }
+    const changedArea = changed / count;
+    maxChangedArea = Math.max(maxChangedArea, changedArea);
+    events.push(changedArea >= changedAreaThreshold ? 1 : 0);
+  }
+
+  const windowSize = Math.max(1, Math.round(fps));
+  let rolling = 0;
+  let maxTransitionsInWindow = 0;
+  for (let i = 0; i < events.length; i += 1) {
+    rolling += events[i];
+    if (i >= windowSize) rolling -= events[i - windowSize];
+    maxTransitionsInWindow = Math.max(maxTransitionsInWindow, rolling);
+  }
+
+  return {
+    version: "tsdne-flash-screen-v1",
+    pass: maxTransitionsInWindow < maxTransitionsPerSecond,
+    reason: maxTransitionsInWindow < maxTransitionsPerSecond ? null : "repeated-large-luminance-transitions",
+    fps,
+    frames: frames.length,
+    durationSeconds: (frames.length - 1) / fps,
+    maxTransitionsInWindow,
+    maxChangedArea,
+    luminanceDelta,
+    changedAreaThreshold,
   };
 }
 
@@ -72,18 +150,18 @@ export function structuralDistance(a,b){
   if(!a||!b)return 1;let sum=0,n=Math.min(a.length,b.length);for(let i=0;i<n;i++){const d=a[i]-b[i];sum+=d*d;}return clamp01(Math.sqrt(sum/Math.max(1,n))*1.8);
 }
 
-export function qualityAssessment(descriptor,meta,{reducedMotion=false}={}){
+export function qualityAssessment(descriptor,meta,{reducedMotion=false,flashScreen=null}={}){
   const reasons=[];
   if(descriptor.mean<12)reasons.push("too-dark");
   if(descriptor.mean>244)reasons.push("too-bright");
   if(descriptor.variance<(meta?.varianceMin??90))reasons.push("too-flat");
   if(!reducedMotion&&descriptor.temporal<(meta?.motionMin??.7))reasons.push("too-static");
-  if(descriptor.flashRatio>.08||descriptor.maxTemporal>225)reasons.push("flash-risk");
   if(descriptor.saturation>.72)reasons.push("over-saturated");
-  return {pass:reasons.length===0,reasons};
+  if(flashScreen&&!flashScreen.pass)reasons.push("high-frequency-luminance-change");
+  return {pass:reasons.length===0,reasons,flashScreen};
 }
 
 export function nearestDistance(candidate,records){let nearest=1,nearestId=null;for(const record of records){const visual=descriptorDistance(candidate.perception,record.perception);const structural=structuralDistance(candidate.structuralVector,record.structuralVector);const combined=visual*.72+structural*.28;if(combined<nearest){nearest=combined;nearestId=record.id;}}return{distance:nearest,id:nearestId};}
 export function isTooSimilar(candidate,records,{threshold=.105}={}){const nearest=nearestDistance(candidate,records);return{tooSimilar:nearest.distance<threshold,...nearest};}
 
-export function compactPerception(d){return{version:d.version,size:d.size,mean:+d.mean.toFixed(3),variance:+d.variance.toFixed(3),edge:+d.edge.toFixed(3),saturation:+d.saturation.toFixed(4),temporal:+d.temporal.toFixed(3),maxTemporal:+d.maxTemporal.toFixed(3),flashRatio:+d.flashRatio.toFixed(4),frames:d.frames.map(f=>({mean:+f.mean.toFixed(3),variance:+f.variance.toFixed(3),edge:+f.edge.toFixed(3),saturation:+f.saturation.toFixed(4),luminanceHistogram:f.luminanceHistogram.map(v=>+v.toFixed(5)),colorHistogram:{r:f.colorHistogram.r.map(v=>+v.toFixed(5)),g:f.colorHistogram.g.map(v=>+v.toFixed(5)),b:f.colorHistogram.b.map(v=>+v.toFixed(5))},hash:f.hash}))};}
+export function compactPerception(d){return{version:d.version,size:d.size,mean:+d.mean.toFixed(3),variance:+d.variance.toFixed(3),edge:+d.edge.toFixed(3),saturation:+d.saturation.toFixed(4),temporal:+d.temporal.toFixed(3),maxTemporal:+d.maxTemporal.toFixed(3),largeChangeRatio:+d.largeChangeRatio.toFixed(4),frames:d.frames.map(f=>({mean:+f.mean.toFixed(3),variance:+f.variance.toFixed(3),edge:+f.edge.toFixed(3),saturation:+f.saturation.toFixed(4),luminanceHistogram:f.luminanceHistogram.map(v=>+v.toFixed(5)),colorHistogram:{r:f.colorHistogram.r.map(v=>+v.toFixed(5)),g:f.colorHistogram.g.map(v=>+v.toFixed(5)),b:f.colorHistogram.b.map(v=>+v.toFixed(5))},hash:f.hash}))};}
