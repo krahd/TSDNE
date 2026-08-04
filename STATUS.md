@@ -28,23 +28,25 @@ Frozen formulations:
 - A bounded local anti-repetition memory stores only non-reconstructive perceptual traces.
 - Shader visual complexity is pursued through authored procedural grammar, local computational search, perceptual evaluation, and curation.
 
-## Implementation target
+## Implemented revised release candidate
 
-The complete revised version must provide:
+The current `main` branch provides:
 
 - immediate self-contained procedural generation;
-- visually articulated candidates across multiple families;
-- local quality and flash screening;
-- a candidate tournament balancing novelty and visual complexity;
-- strong separation across the first four encounters;
+- twelve authored visual families;
+- deterministic complexity enrichment;
+- local WebGL2 compilation and rendering;
+- temporal, luminance, variance, motion, saturation, and flashing checks;
+- a maximin candidate tournament balancing perceptual novelty, structural novelty, family separation, and visual complexity;
+- stricter separation across the first four encounters;
 - persistent local anti-repetition across reloads;
-- no stored seed, source, graph, frame, screenshot, or identity in the anti-repetition memory;
+- no stored seed, source, graph, parameters, frame, screenshot, source hash, account, identity, or inferred preference in the anti-repetition memory;
 - internal SHA-256 source and graph provenance;
 - technical export manifests explicitly marked as non-certificates;
 - free and non-exclusive shader circulation;
-- static deployment without third-party runtime dependencies;
-- complete accessibility and privacy documentation;
-- tests for all critical distinctions.
+- static deployment without runtime package or model dependencies;
+- accessibility, privacy, licensing, deployment, and paper documentation;
+- automated tests for generation, synthesis, provenance, exports, perception, and non-reconstructive history.
 
 ## Preserved work
 
@@ -60,29 +62,40 @@ The archived branch preserves:
 
 This material may inform another artwork or a technical paper. It no longer determines TSDNE’s public interaction.
 
-## Remaining validation gates
+## Verification completed
 
-After repository implementation:
+- The prior implementation was preserved before revision at commit `84617a3f39a4e3a9b9d768f568551a36dff91746`.
+- The revised package was reconstructed from a checksum-locked archive with SHA-256 `c86f901bf9229c6776e017d6f78ba245a6d5eadef5082bb2588a55e735ca9886`.
+- The materialisation workflow completed successfully before committing the revision.
+- `npm install --ignore-scripts` completed successfully.
+- Every JavaScript source file passed `node --check`.
+- The complete automated test suite passed before the revised tree was pushed.
+- Model runtime files, mutation controls, staged payloads, and temporary materialisation workflows are absent from `main`.
+- The canonical paper and portfolio records in `krahd/academic-writing` have been aligned with the revised artwork.
+
+## Remaining empirical and release gates
+
+These require real browsers, hardware, aesthetic judgement, or account administration rather than additional repository implementation:
 
 1. run the artwork on the M1 Max MacBook Pro;
 2. verify first-display latency;
 3. inspect at least 250 generated outputs;
 4. curate family probabilities and weak parameter regions;
 5. test three consecutive reloads and ten consecutive **another** actions;
-6. verify perceptual distance across early encounters;
-7. test Chrome, Safari, Firefox fallback behaviour, Android, and iOS;
-8. verify every export format;
+6. measure perceptual distance across early encounters;
+7. test Chrome, Safari, Firefox procedural behaviour, Android, and iOS;
+8. verify every export format in its intended host;
 9. conduct reduced-motion and photosensitive-seizure review;
 10. enable Pages and test static deployment;
 11. purchase and attach the canonical domain;
-12. document the completed artwork with video and still images.
+12. document the completed artwork with video and still images;
+13. draft the 1,500–2,000-word journal argument memorandum.
 
 ## Public-release rule
 
-The repository must remain private until:
+The repository remains private until:
 
-- the revised code is merged to `main`;
-- automated checks pass;
+- an ordinary independent CI run passes on the completed tree;
 - a normal GPU-browser session passes;
 - the visual curation pass is complete;
-- the README and paper framing contain no contradictory model, ownership, certificate, scarcity, or collectible language.
+- the README and paper framing remain free of contradictory model, ownership, certificate, scarcity, or collectible language.
