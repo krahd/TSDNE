@@ -12,6 +12,8 @@ This repository is the implementation and research home of TSDNE.
 - **Canonical specification:** [`PROJECT.md`](PROJECT.md)
 - **Architecture:** [`ARCHITECTURE.md`](ARCHITECTURE.md)
 - **Hybrid WebLLM design and frozen decisions:** [`HYBRID-WEBLLM.md`](HYBRID-WEBLLM.md)
+- **Implementation roadmap:** [`IMPLEMENTATION-ROADMAP.md`](IMPLEMENTATION-ROADMAP.md)
+- **Deployment and domain strategy:** [`DEPLOYMENT.md`](DEPLOYMENT.md)
 - **Ten implementation alternatives:** [`IMPLEMENTATION-ALTERNATIVES.md`](IMPLEMENTATION-ALTERNATIVES.md)
 - **Research programme:** [`RESEARCH-PLAN.md`](RESEARCH-PLAN.md)
 - **First journal paper:** [`PAPER-1.md`](PAPER-1.md)
@@ -36,6 +38,20 @@ The preferred capable-device version combines a **typed procedural shader synthe
 
 The procedural mode remains a complete artwork on unsupported or lower-power devices. The model is consequential but does not receive personal data and does not decide validity, quality, uniqueness, or ownership.
 
+## First-encounter timing
+
+The first visible shader must not wait for WebLLM.
+
+Engineering targets are:
+
+- first procedural shader under 750 ms on a recent laptop;
+- responsive interface under one second;
+- cached model readiness under five seconds on a recent laptop;
+- first cold-load hybrid candidate under thirty seconds on good broadband;
+- no invocation of **another** should wait indefinitely for model inference.
+
+Because some visitors may leave before WebLLM becomes ready, the roadmap includes three non-blocking design experiments: model influence only on later encounters; one validated in-place mutation after model readiness; and an unobtrusive readiness invitation. A mandatory loading screen is rejected as the default.
+
 ## Personal without personalisation
 
 TSDNE gives each visitor a particular computational encounter without collecting identity, preference, location, behavioural history, or cross-site data. The shader becomes personal through attention, relinquishment, selection, and use, not through prior profiling.
@@ -47,6 +63,14 @@ The exported encounter record identifies the shader's source, seed, graph, and g
 Cryptographic seeds make exact computational collisions negligibly probable, but different seeds can produce identical or quasi-identical visuals. TSDNE therefore samples dynamic output and reduces obvious recent structural and perceptual repetition locally.
 
 It does not claim absolute global visual uniqueness. The project treats computational identity, perceptual identity, and encounter identity as related but distinct.
+
+## Hosting and domains
+
+The site is intended for static HTTPS hosting. GitHub Pages is the recommended first deployment because the artwork requires no server, database, account, or paid inference. The application must remain portable to the existing Laurenzo hosting infrastructure.
+
+If available, `thisshaderdoesnotexist.com` is the preferred canonical domain. `tsdne.com` may be purchased as a shorthand and redirected to the canonical site. The second domain should redirect rather than iframe or wrap the Pages site.
+
+Model weights should be delivered from an appropriate external model host and cached in the visitor's browser rather than stored in the GitHub Pages repository.
 
 ## First publication
 
