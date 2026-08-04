@@ -91,14 +91,16 @@ function randomTraits(rng) {
 export function createGraph(seed = randomSeed(), family = null) {
   const rng = xoshiro128ss(seed);
   return {
-    schema: "tsdne-graph-v2",
-    generator: "tsdne-alpha-2",
+    schema: "tsdne-program-v3",
+    generator: "tsdne-alpha-3",
     family: family || FAMILY_NAMES[Math.floor(rng() * FAMILY_NAMES.length)],
     seed: [...seed],
     traits: randomTraits(rng),
     palette: randomPalette(rng),
   };
 }
+
+export const createProgram = createGraph;
 
 function paletteCode(graph) {
   const contrast = range(graph.traits.contrast, 0.62, 1.18);
@@ -177,28 +179,103 @@ export function candidateFromGraph(graph, metadata = {}) {
   };
 }
 export function generateCandidate(seed = randomSeed(), family = null) { return candidateFromGraph(createGraph(seed, family), { seed, origin: "procedural" }); }
-export function describeCandidate(candidate) { return { family: candidate.family, traits: canonicalGraph(candidate.graph).traits, instruction: "Propose meaningful but restrained deltas. Preserve continuity, and do not equate complexity with quality." }; }
+export function describeCandidate(candidate) {
+  return {
+    representation: "bounded-family-program-v3",
+    family: candidate.family,
+    availableFamilies: FAMILY_NAMES,
+    traits: canonicalGraph(candidate.graph).traits,
+    instruction: "Propose meaningful but restrained deltas. A family change is allowed when it serves the stated intention. Preserve continuity when possible, and do not equate complexity with quality.",
+  };
+}
 
 export function normaliseMutation(input) {
   const source = input && typeof input === "object" ? input : {};
-  const changes = source.changes && typeof source.changes === "object" ? source.changes : source;
-  const result = {};
+  const changesSource = source.changes && typeof source.changes === "object" ? source.changes : {};
+  const changes = {};
   for (const key of MUTATION_KEYS) {
-    const value = Number(changes[key]); result[key] = Number.isFinite(value) ? clamp(value, -1, 1) : 0;
+    const value = Number(changesSource[key]);
+    changes[key] = Number.isFinite(value) ? clamp(value, -1, 1) : 0;
   }
-  if (Object.values(result).every(v => Math.abs(v) < .06)) { result.palette = .28; result.turbulence = -.18; result.drift = .16; }
-  return result;
+  const requestedFamily = typeof source.targetFamily === "string" ? source.targetFamily : "";
+  const targetFamily = FAMILY_NAMES.includes(requestedFamily) ? requestedFamily : null;
+  const activeChanges = MUTATION_KEYS.filter((key) => Math.abs(changes[key]) >= 0.06);
+  const intention = typeof source.intention === "string" ? source.intention.trim().slice(0, 160) : "";
+  return {
+    changes,
+    targetFamily,
+    intention,
+    activeChanges,
+    effective: activeChanges.length >= 2 || Boolean(targetFamily),
+  };
+}
+
+export function mutationMagnitude(mutationInput) {
+  const mutation = mutationInput?.changes ? mutationInput : normaliseMutation(mutationInput);
+  const values = Object.values(mutation.changes || {});
+  return values.length ? Math.sqrt(values.reduce((sum, value) => sum + value * value, 0) / values.length) : 0;
+}
+
+export function randomBaselineMutation(candidate, seed = randomSeed()) {
+  const rng = xoshiro128ss(seed);
+  const changes = Object.fromEntries(MUTATION_KEYS.map((key) => [key, 0]));
+  const count = 2 + Math.floor(rng() * 4);
+  const available = [...MUTATION_KEYS];
+  for (let i = 0; i < count; i += 1) {
+    const index = Math.floor(rng() * available.length);
+    const [key] = available.splice(index, 1);
+    const sign = rng() < 0.5 ? -1 : 1;
+    changes[key] = sign * (0.2 + rng() * 0.8);
+  }
+  const targetFamily = rng() < 0.18
+    ? FAMILY_NAMES.filter((family) => family !== candidate.family)[Math.floor(rng() * (FAMILY_NAMES.length - 1))]
+    : "";
+  return {
+    changes,
+    targetFamily,
+    intention: "Matched random baseline for comparison with a model proposal.",
+    baseline: "random",
+  };
+}
+
+export function authoredBaselineMutation(candidate) {
+  const t = candidate.graph.traits;
+  const changes = Object.fromEntries(MUTATION_KEYS.map((key) => [key, 0]));
+  changes.complexity = t.complexity > 0.58 ? -0.45 : 0.32;
+  changes.symmetry = t.symmetry > 0.62 ? -0.38 : 0.28;
+  changes.tempo = t.tempo > 0.55 ? -0.3 : 0.22;
+  changes.softness = t.softness > 0.5 ? -0.2 : 0.25;
+  return {
+    changes,
+    targetFamily: "",
+    intention: "Authored continuity baseline balancing simplification, rhythm, and asymmetry.",
+    baseline: "authored",
+  };
 }
 
 export function mutateCandidate(candidate, mutationInput, metadata = {}) {
   const mutation = normaliseMutation(mutationInput);
+  if (!mutation.effective) throw new Error("Mutation proposal contained fewer than two material changes and no family change.");
   const graph = structuredClone(candidate.graph);
   const step = metadata.step ?? .22;
-  for (const key of MUTATION_KEYS) graph.traits[key] = clamp(graph.traits[key] + mutation[key] * step);
-  const paletteShift = mutation.palette * .16;
+  if (mutation.targetFamily && mutation.targetFamily !== graph.family) graph.family = mutation.targetFamily;
+  for (const key of MUTATION_KEYS) graph.traits[key] = clamp(graph.traits[key] + mutation.changes[key] * step);
+  const paletteShift = mutation.changes.palette * .16;
   graph.palette.d = graph.palette.d.map((value,index) => value + paletteShift * (index + 1));
-  const seed = randomSeed(); graph.seed = [...seed];
-  return candidateFromGraph(graph, { seed, origin: metadata.origin || "webllm", parentId: candidate.id, model: metadata.model || null, mutation });
+  const seed = randomSeed();
+  graph.seed = [...seed];
+  const provenance = {
+    ...mutation,
+    proposer: metadata.proposer || metadata.origin || "unknown",
+    baseline: mutationInput?.baseline || null,
+  };
+  return candidateFromGraph(graph, {
+    seed,
+    origin: metadata.origin || "model-proposal",
+    parentId: candidate.id,
+    model: metadata.model || null,
+    mutation: provenance,
+  });
 }
 
 export function familyMeta(family) { return FAMILY_META[family] || { cost: 10, motionMin: 1, varianceMin: 100 }; }
