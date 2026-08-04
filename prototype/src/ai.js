@@ -22,7 +22,7 @@ export const MODEL_CATALOG = [
   },
 ];
 
-const WEBLLM_URL = "https://esm.run/@mlc-ai/web-llm@0.2.84";
+const WEBLLM_URL = "https://esm.run/@mlc-ai/web-llm@0.2.83";
 
 let selectedId = "Qwen2.5-0.5B-Instruct-q4f16_1-MLC";
 let engine = null;
