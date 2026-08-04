@@ -6,13 +6,15 @@ authors:
   - family-names: Laurenzo
     given-names: Tomas
 repository-code: "https://github.com/krahd/TSDNE"
-version: "0.1.0-alpha.1"
+version: "0.1.0-alpha.2"
 date-released: 2026-08-04
 license: GPL-3.0-or-later
-abstract: "A browser artwork about exploration, ephemerality, freely circulating shaders, personal relation without ownership, and local bespoke AI without profiling."
+abstract: "An alpha browser artwork structured around one generated shader, interface withdrawal without retrieval, and non-exclusive transfer of executable source. The baseline work uses authored WebGL2 families, local validation, bounded encounter traces, and an optional opt-in local-model proposal mechanism."
 keywords:
   - generative art
+  - browser art
   - shaders
   - WebGL
-  - WebLLM
-  - computational art
+  - executable art
+  - ephemerality
+  - free software
