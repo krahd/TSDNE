@@ -22,7 +22,8 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          cat .release-payload/chunk-* > /tmp/tsdne-release.b64
+          cat .release-payload/part-* > /tmp/tsdne-release.b64
+          test "$(sha256sum /tmp/tsdne-release.b64 | cut -d' ' -f1)" = "e6d6f56f00764bb577ade50dc3579099f44a4a53328b3f300153a7165519e901"
           base64 --decode /tmp/tsdne-release.b64 > /tmp/tsdne-release.tar.gz
           tar -xzf /tmp/tsdne-release.tar.gz -C .
           rm -rf .release-payload
