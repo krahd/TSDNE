@@ -1,160 +1,169 @@
 # This Shader Does Not Exist
 
-*This Shader Does Not Exist* (**TSDNE**) is an open-source browser artwork structured around a simple decision: remain with one generated shader, relinquish it for another without the possibility of return through the interface, or take its executable source elsewhere.
+*This Shader Does Not Exist* (TSDNE) is a browser artwork about serendipity, computational abundance, relinquishment, executable persistence, and non-proprietary relation.
 
-The central gesture is:
+One generated shader appears at a time. The visitor may remain with it, relinquish it for another unknown possibility, or take its freely reusable code elsewhere. There is no catalogue, comparison grid, prompt, recommendation system, account, ownership registry, or public archive.
 
-> **one object, no return, take the source**
+> **TSDNE retains provenance but abolishes title.**
+>
+> **The shader can be identified, copied, and reconstructed, but not claimed.**
 
-The work is not presented as a technical first. Browser-native shader generation, local inference, shader export, evolutionary variation, and “This X Does Not Exist” interfaces all have substantial precedents. TSDNE instead asks what happens when computational abundance is organised through withdrawal, non-retrieval, and non-exclusive transfer.
+## The encounter
 
-The title is deliberately false. Unlike the synthetic-image genre it cites, the shader exists as a running, inspectable, and transferable process.
+TSDNE does not ask the visitor to design a shader or navigate an optimisation space. Its interaction is deliberately narrow:
+
+1. a shader appears;
+2. the visitor may remain with it;
+3. **another** relinquishes it through the interface;
+4. **take the code** permits its executable form to continue elsewhere.
+
+The work produces a singular encounter without claiming a scarce or unique object. A shader may be computationally reproducible and still be unavailable after it is relinquished through the interface. This is interface-produced loss over a reproducible substrate, not simulated destruction.
+
+## Personal without personalisation
+
+The artwork creates individual difference without identifying or modelling the visitor. It does not collect personal information, infer taste, maintain an account, build a recommendation profile, or optimise towards predicted engagement.
+
+The encounter may become personal because of attention, decision, attachment, regret, or continuation. It is not personalised because the system has classified the visitor.
+
+## Generativity without a language model
+
+The public artwork uses authored procedural systems, WebGL2, deterministic seeds, perceptual analysis, and local novelty-and-quality search. It does not use an LLM or external inference service.
+
+This is a deliberate artistic and infrastructural decision. The title enters the cultural field of generative-AI “does not exist” projects while refusing the assumption that contemporary generativity must depend on a foundation model, scraped training corpus, remote model host, or high-memory device.
+
+Shader richness is treated as an artistic and engineering requirement. Candidate programs are generated from several authored visual grammars, rendered locally, screened for technical and perceptual quality, and selected for difference from recent encounters.
+
+## Local anti-repetition memory
+
+A shallow generator would undermine the work: three similar results can make computational abundance appear fraudulent. TSDNE therefore keeps a bounded local memory of perceptual difference.
+
+The memory stores only:
+
+- a local random key;
+- time of display;
+- broad visual family;
+- compact, non-reconstructive colour, luminance, spatial, and temporal descriptors.
+
+It does **not** store:
+
+- shader source;
+- seed;
+- graph or parameters;
+- image or video frames;
+- account or identity;
+- inferred preference;
+- a route back to a relinquished shader.
+
+The system remembers enough not to repeat, but not enough to restore. The memory never leaves the browser and can be cleared from **about**.
+
+## Provenance without title
+
+The software internally computes deterministic seeds and cryptographic hashes. These support technical integrity, debugging, reconstruction of deliberately exported code, and verification that a source file corresponds to a graph.
+
+They are not presented as certificates. TSDNE provides:
+
+- no minting;
+- no public registry;
+- no serial-number display;
+- no edition;
+- no authenticity theatre;
+- no global uniqueness claim;
+- no ownership or transfer record;
+- no artificial scarcity.
+
+When the visitor takes the code, a plain technical manifest accompanies it. The manifest explicitly describes itself as **not a certificate** and confers no title.
 
 ## Status
 
-**Alpha implementation.** The source, automated tests, documentation, and deployment workflow are present. Systematic visual curation, representative-device testing, accessibility review, export validation, local-model benchmarking, public deployment, and encounter studies remain incomplete.
+The current target is the complete revised public-release candidate described in [`docs/UPDATED-VERSION-GOAL.md`](docs/UPDATED-VERSION-GOAL.md).
 
-No paper should describe visitor attachment, regret, stopping behaviour, or the superiority of model-generated mutations as established findings before those claims are studied.
+The former WebLLM, model-mutation, and awakening implementation is preserved at the branch:
 
-## Encounter
+`archive/webllm-release-candidate-2026-08-04`
 
-- **another** withdraws the current shader from the interface and generates a new encounter;
-- **use this shader** exports the exact source, program record, seed, lineage, and integration formats;
-- **pause** controls motion;
-- **about** exposes storage, network, accessibility, model, licensing, and performance conditions.
-
-The interface has no catalogue, retrieval history, ranking, public gallery, marketplace, token, or ownership certificate.
-
-“Gone” means **unavailable through TSDNE’s interface**, not erased from every computational substrate. A deterministic program may remain reproducible, and a visitor may preserve an encounter by exporting it.
-
-## Implemented system
-
-The current alpha uses a **bounded family program**, not a general typed shader AST.
-
-1. A cryptographically strong 128-bit seed selects one of twelve authored GLSL families and a bounded trait vector.
-2. Four technically valid candidates are sought locally.
-3. Sparse temporal descriptors assess luminance, variance, colour, motion, and recent similarity.
-4. A separate dense temporal screen samples consecutive frames to detect repeated large-area luminance changes.
-5. Selection favours distance from recent local encounters and underrepresented families.
-6. The chosen program is compiled and rendered with WebGL2.
-
-The internal `graph` API name is retained for compatibility with existing exports, but the current representation is a family identifier, scalar traits, and a palette. Structural AST synthesis remains a later research direction.
-
-## Optional local model
-
-Local AI is **off by default**. Enabling it opts into:
-
-- a pinned WebLLM runtime fetched from `esm.run`;
-- external model-file downloads;
-- WebGPU execution on the visitor’s device.
-
-The model may propose at least two material trait changes or a change of shader family. The deterministic system validates the proposal and may reject it. Empty or ineffective proposals are not silently repaired or attributed to the model.
-
-Random and authored comparison baselines are implemented. TSDNE does not claim that local-model proposals are more interesting, more personal, or aesthetically better without comparative evidence.
-
-## Local trace and non-repetition
-
-A bounded, clearable local encounter trace stores identifiers, family information, structural vectors, and compact rendered descriptors in IndexedDB, with a limited fallback in local storage. It records what this browser was shown so that immediate repetition can be reduced.
-
-This is a behavioural trace in the minimal descriptive sense. The project’s defensible guarantee is narrower: it is not uploaded, shared across sites, attached to an identity, or interpreted as preference or taste.
-
-The interface remembers computationally while refusing visitor retrieval. This relation should be read alongside established work on digital memory, storage, regeneration, and materiality rather than claimed as a novel theoretical discovery.
-
-## Visual safety and accessibility
-
-Implemented provisions include:
-
-- pause/play;
-- system and manual reduced-motion modes;
-- reduced-intensity mode;
-- keyboard access, visible focus, semantic controls, and live announcements;
-- procedural operation without WebGPU or a model download;
-- dense screen-level detection of repeated large-area luminance transitions.
-
-The automated screen is a conservative heuristic. It is not clinical seizure-safety testing, a Harding test, or WCAG certification. External evaluation remains required.
-
-See [`ACCESSIBILITY.md`](ACCESSIBILITY.md).
-
-## Privacy and external requests
-
-TSDNE uses no account, advertising, analytics, cross-site identifier, server-side generation, central prompt archive, or preference model.
-
-The static host receives ordinary page requests. When local AI is enabled, the pinned inference runtime and model files are requested from external hosts. Local execution does not by itself establish offline operation, ethical model provenance, equal access, lower energy consumption, or complete privacy.
-
-See [`PRIVACY.md`](PRIVACY.md) and [`SECURITY.md`](SECURITY.md).
-
-## Circulation and licensing
-
-The authored application and generator are licensed under **GNU GPL 3.0 or later**. This is the project’s substantive free-software commitment.
-
-Generated shader files carry a **CC0 waiver to the extent that waivable rights exist**. This clarifies intended circulation; it is not presented as the sacrifice of a property right that necessarily existed. Encounter records establish correspondence among source, seed, program, and lineage, but confer no ownership, exclusivity, scarcity, or control over later use.
-
-See [`GENERATED-SHADERS-LICENSE.md`](GENERATED-SHADERS-LICENSE.md).
-
-## Exports
-
-Each accepted encounter can produce:
-
-- encounter JSON;
-- GLSL ES 3.00;
-- a self-contained WebGL page;
-- a Three.js adapter;
-- a ShaderToy adaptation;
-- an ISF adaptation.
-
-These exports still require manual execution testing in their target hosts before release.
-
-## Run locally
+## Running locally
 
 ```bash
 cd prototype
 python3 -m http.server 8080
 ```
 
-Open `http://localhost:8080` in a WebGL2-capable browser. Optional local inference additionally requires WebGPU and a secure context.
+Open `http://localhost:8080` in a browser with WebGL2.
 
-## Verify
+To verify the source:
 
 ```bash
-npm install
-npm run check
-npm test
+npm install --ignore-scripts
+npm run verify
 ```
 
-Automated tests cover deterministic generation, explicit mutation provenance, rejection of ineffective proposals, random and authored baselines, descriptor comparison, dense luminance-change screening, and export structure. Automated tests do not establish visual quality.
+The project has no runtime package dependency and can be served as static files.
 
-## Research position
+## Interaction
 
-The strongest current argument concerns the mismatch between an interface that performs loss and a substrate that remains reproducible:
+- **another** — relinquish the present shader and encounter another;
+- **take the code** — download or copy executable source and adapters;
+- **pause** — pause or resume motion;
+- **about** — read the work’s position, privacy architecture, and accessibility settings.
 
-- withdrawal is real at the level of interface access;
-- deletion is not claimed;
-- appropriation allows persistence outside the work;
-- computational abundance does not automatically produce experiential indifference;
-- whether visitors experience attachment, regret, or responsibility remains an empirical question.
+Keyboard controls:
 
-“Personal without personalisation” is retained as a question, not a demonstrated result. The work can become personally meaningful without having been fitted to a person, but this property alone does not distinguish TSDNE from ordinary aesthetic experience.
+- `N`: another;
+- `U`: take the code;
+- `Space`: pause or play;
+- `A`: about.
 
-The provisional first-paper direction is:
+## Architecture
 
-> **One Object, No Return: Withdrawal, Executable Transfer, and Performed Loss in a Generative Browser Artwork**
+The browser performs all generation and evaluation locally:
 
-The model component is secondary unless an ablation study demonstrates a meaningful difference from random and authored mutation.
+1. the authored procedural grammar generates candidate shader programs;
+2. WebGL2 compiles and renders them;
+3. fixed temporal samples produce compact perceptual descriptors;
+4. technical, flash, motion, luminance, and variance checks reject unsuitable candidates;
+5. a maximin novelty tournament favours candidates distant from recent local traces;
+6. early encounters apply stricter family and perceptual separation;
+7. only the selected shader is shown;
+8. its reconstructive information remains in active memory unless the visitor takes the code;
+9. only a non-reconstructive perceptual trace enters local anti-repetition memory.
 
-## Documentation
+See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
-- [`docs/PROJECT.md`](docs/PROJECT.md) — artistic specification and claim boundaries;
-- [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md) — implemented architecture and later structural-synthesis path;
-- [`docs/HYBRID-WEBLLM.md`](docs/HYBRID-WEBLLM.md) — optional model role and comparison protocol;
-- [`docs/GENEALOGY.md`](docs/GENEALOGY.md) — related artistic and technical lineages;
-- [`docs/GENEALOGY-VERIFICATION.md`](docs/GENEALOGY-VERIFICATION.md) — source-status and claim register;
-- [`docs/CRITICAL-AUDIT-2026-08-04.md`](docs/CRITICAL-AUDIT-2026-08-04.md) — preserved machine-assisted critical reading;
-- [`docs/AUDIT-RESPONSE-2026-08-04.md`](docs/AUDIT-RESPONSE-2026-08-04.md) — disposition of its findings against the current code;
-- [`docs/AI-USE-STATEMENT.md`](docs/AI-USE-STATEMENT.md) — disclosure and human-accountability protocol;
-- [`docs/PAPER-1.md`](docs/PAPER-1.md) — revised publication plan;
-- [`docs/REFERENCES.md`](docs/REFERENCES.md) — source index;
-- [`STATUS.md`](STATUS.md) — current state and remaining gates.
+## Privacy
 
-## Author
+TSDNE has:
 
-Tomas Laurenzo — artist, academic, musician, and computer scientist.
+- no analytics;
+- no cookies;
+- no account;
+- no advertising;
+- no fingerprinting;
+- no behavioural profile;
+- no remote inference;
+- no server-side generation;
+- no third-party model request.
+
+See [`PRIVACY.md`](PRIVACY.md).
+
+## Free circulation
+
+The authored application and generator are licensed under GPL-3.0-or-later. Generated shader output is offered under a CC0 waiver to the extent that waivable rights exist.
+
+The gesture is not “you own this.” It is “this executable form may continue elsewhere.”
+
+See [`GENERATED-SHADERS-LICENSE.md`](GENERATED-SHADERS-LICENSE.md).
+
+## Research and writing
+
+The first paper is practice-led and HCI-adjacent. Its central claim is not a new shader-generation algorithm. It examines how computational systems may stage personally meaningful difference while refusing behavioural personalisation, proprietary title, certification, accumulation, and manufactured scarcity.
+
+See:
+
+- [`docs/PROJECT.md`](docs/PROJECT.md)
+- [`docs/PAPER-1.md`](docs/PAPER-1.md)
+- [`docs/GENEALOGY.md`](docs/GENEALOGY.md)
+- [`docs/RESEARCH-PLAN.md`](docs/RESEARCH-PLAN.md)
+
+## Authorship
+
+Concept, artistic direction, procedural grammar, software, and writing: Tomas Laurenzo.

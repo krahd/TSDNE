@@ -1,108 +1,74 @@
-# Privacy and data flows
+# Privacy
 
-## Baseline procedural mode
+## Summary
 
-TSDNE does not require an account and does not add:
+*This Shader Does Not Exist* is designed so that privacy does not depend on trusting an operator’s promises.
 
-- analytics;
-- advertising;
-- cross-site identifiers;
-- a public encounter database;
-- server-side shader generation;
-- a preference or recommendation model;
-- remote prompt collection.
+The artwork performs generation, rendering, validation, novelty selection, and hashing locally in the browser. It has no account, analytics, advertising, remote inference, behavioural profile, or server-side generation.
 
-The static host still receives ordinary requests for the page and its assets. Depending on the host, those requests may expose standard network metadata such as IP address, user agent, request time, and referrer. TSDNE’s source does not control the host’s infrastructure logs.
+## Network activity
 
-## Local encounter trace
+After the static site files are loaded, the artwork requires no network service to generate or evaluate shaders.
 
-The browser stores a bounded record of recent encounters to reduce immediate structural and perceptual repetition. Records may contain:
+It does not download a language model or contact a model host.
 
-- encounter identifier;
-- date;
-- family;
-- origin;
-- source/program signature;
-- structural vector;
-- compact rendered descriptor;
-- model and mutation provenance where applicable.
+The hosting provider may retain ordinary web-server request logs. Those logs are outside the artwork’s application logic and must be documented separately by the chosen host.
 
-IndexedDB is preferred, with a limited localStorage fallback.
+## Local settings
 
-This is a behavioural trace in the descriptive sense that it records what this browser was shown. The project’s safeguards are:
+The browser may store:
 
-- the trace remains local to the browser;
-- it is not uploaded by TSDNE;
-- it is not linked to an account or declared identity;
-- it is not shared across sites;
-- it is not interpreted as taste, preference, attachment, or intent;
-- it is bounded;
-- it can be cleared from **about**.
+- reduced-motion preference;
+- reduced-intensity preference;
+- pause state where applicable;
+- bounded anti-repetition traces.
 
-Clearing browser storage may also remove it. Private-browsing behaviour varies by browser.
+## Anti-repetition memory
 
-## Optional local-model mode
+The anti-repetition database stores only:
 
-Local AI is off by default. Enabling it initiates additional data flows:
+- a random local key;
+- display time;
+- broad shader family;
+- compact perceptual descriptors.
 
-1. the pinned `@mlc-ai/web-llm` runtime is fetched from `esm.run`;
-2. model artefacts are fetched from external model hosts configured by WebLLM;
-3. those hosts receive ordinary request metadata;
-4. browser and runtime caches may retain downloaded files;
-5. inference then executes on the visitor’s device through WebGPU.
+It does not store:
 
-The compact shader-program description is supplied to the model locally. TSDNE does not send it to a remote inference API. This does not mean that enabling local AI is network-free or anonymous.
+- shader source;
+- graph;
+- seed;
+- hash;
+- image or video;
+- personal identity;
+- location;
+- interaction history labelled as preference;
+- dwell time;
+- like or dislike;
+- account or cross-device identifier.
 
-The current runtime version and host are exposed in the interface. Before durable release, the project should consider vendoring the runtime and self-hosting model files where licensing permits.
+The traces cannot reconstruct a relinquished shader. They are used only to avoid obvious perceptual recurrence.
 
-## Local performance records
+The memory is bounded, remains on the device, and can be cleared from the **about** panel.
 
-TSDNE may store local measurements such as:
+## No personalisation
 
-- candidate-generation time;
-- model-load time;
-- accepted or rejected proposal counts;
-- model identifier;
-- approximate download information;
-- validation metadata.
+TSDNE does not interpret:
 
-These records remain local and can be cleared from **about**. They must not be interpreted as a visitor profile.
+- **another** as rejection;
+- remaining as approval;
+- taking code as stable preference;
+- repeated visits as identity.
 
-## What TSDNE does not infer
+Future outputs are repelled from previously displayed visual regions without attempting to move towards an inferred taste.
 
-The source does not treat:
+## Internal provenance
 
-- dwell time as preference;
-- replacement as dislike;
-- export as ownership;
-- model opt-in as endorsement;
-- repeated use as identity;
-- local trace as consent to research.
+The active shader has deterministic seeds and SHA-256 graph and source hashes. These values are held in runtime memory and may be included in a technical manifest when the visitor deliberately takes the code.
 
-Any later encounter study requires a separate protocol, appropriate consent, and institutional review where applicable.
+They are not written to the anti-repetition database and are not transmitted to a registry.
 
-## Limits
+## Clearing data
 
-Local execution does not by itself establish:
+The **clear local anti-repetition memory** control deletes the IndexedDB store and localStorage fallback used by the artwork.
 
-- complete privacy;
-- offline operation;
-- ethical model provenance;
-- freedom from upstream logging;
-- secure or immutable dependencies;
-- equal access across devices;
-- lower energy use.
-
-The deployed host, browser, WebLLM runtime, model host, device, operating system, network, and extensions remain part of the data environment.
-
-## Visitor controls
-
-Through **about**, visitors can:
-
-- leave local AI disabled;
-- choose a model before loading;
-- clear the local encounter trace;
-- clear local performance records;
-- enable reduced motion or reduced intensity.
-
-A future release should add a machine-readable external-request inventory and verify it against browser network logs.
+Browser site-data controls may also remove all local TSDNE data.

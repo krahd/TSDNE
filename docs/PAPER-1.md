@@ -1,276 +1,172 @@
 # Paper 1 plan
 
-## Status
-
-**Preparatory research plan, not a submission draft.**  
-The paper should not be written as a completed practice-based study until the artwork has been rendered, visually curated, deployed or exhibited, and documented through actual encounters.
-
 ## Provisional title
 
-> **One Object, No Return: Withdrawal, Executable Transfer, and Performed Loss in a Generative Browser Artwork**
+**Personal without Personalisation: Encounter, Relinquishment, and Provenance without Title in *This Shader Does Not Exist***
 
 Alternative:
 
-> **The Shader Exists: Interface Withdrawal and Executable Persistence in *This Shader Does Not Exist***
+**This Shader Does Not Exist: Singular Encounter without Scarcity, Profiling, or Property**
 
-The previous title, “Personal without Personalisation,” is retained only as a possible subsection or empirical question. It equivocates between personally meaningful experience and system-level individualisation and therefore cannot carry the paper without evidence.
+## Publication strategy
+
+The first publication is a substantial practice-led journal article. It is not a technical shader-generation paper and does not depend on a novelty claim about procedural graphics.
+
+The article’s contribution is the articulation and material enactment of a computational relation that refuses several assumptions of platform culture:
+
+- individual difference requires behavioural extraction;
+- personal significance requires exclusive possession;
+- computational identity should become certification;
+- provenance should become title;
+- generative abundance should become a catalogue;
+- ephemerality requires destruction;
+- contemporary generativity requires a foundation model.
 
 ## Central argument
 
-TSDNE does not create scarce computational objects. It organises abundant and reproducible programs through a structure of temporary availability:
+TSDNE demonstrates that a computational system may produce a singular and personally meaningful encounter without profiling the visitor, predicting preference, issuing ownership, manufacturing scarcity, or restricting circulation.
 
-1. one shader is present;
-2. the next is unknown;
-3. replacement prevents interface retrieval;
-4. export allows the source to persist elsewhere;
-5. copying confers no exclusivity;
-6. the substrate may retain or regenerate what the interface withdraws.
+The work does not claim that the generated shader is globally unique. Its singularity belongs to the encounter rather than to an exclusive object.
 
-The paper’s central problem is the discrepancy between **performed loss** and **computational persistence**.
+## Core formulations
 
-The work should not claim that the shader disappears universally. It stages disappearance at the level of interface access while making source persistence and reproducibility explicit.
+> TSDNE retains provenance but abolishes title.
 
-## Contribution boundary
+> The shader can be identified, copied, and reconstructed, but not claimed.
 
-### Defensible before an encounter study
+> The system remembers enough not to repeat, but not enough to restore.
 
-- description of a realised interaction structure;
-- analysis of interface non-retrieval versus deterministic reproducibility;
-- executable transfer without exclusive ownership;
-- material account of the local trace used to reduce recurrence;
-- documented refusal of archive, ranking, tokenisation, profiling, and mandatory cloud inference;
-- provenance model distinguishing procedural, model, random, and authored agency;
-- practice-led analysis situated within relevant art and media lineages.
+> The procedural system produces difference. The visitor produces relation.
 
-### Requires empirical evidence
+## Research questions
 
-- attachment;
-- regret;
-- altered attention;
-- stopping behaviour;
-- personal meaning specific to this structure;
-- visitor understanding of source transfer;
-- whether disclosure of reproducibility changes experienced loss;
-- whether model proposals are perceived differently from baselines.
+1. How can an interface stage a meaningful encounter with computational abundance without offering a catalogue or recommendation process?
+2. What does relinquishment mean when the underlying object is computationally reproducible?
+3. Can provenance remain a technical capacity without becoming title, certification, or collectible value?
+4. Can individualised experience be produced without extracting information from the visitor?
+5. Can local memory preserve difference without constructing a behavioural history or recoverable archive?
+6. What political and aesthetic work is performed by refusing a foundation model within the contemporary “does not exist” genre?
+7. How does executable transfer complicate the distinction between viewer, user, and programmer?
 
-### Requires separate technical research
+## Key distinctions
 
-- general dynamic-shader similarity;
-- claims about perceptual coverage of the generator;
-- model-versus-random aesthetic advantage;
-- typed structural synthesis;
-- energy or environmental comparison;
-- clinical or standards-level visual-safety claims.
+### Personal / personalised
 
-## Theoretical spine
+Personal significance emerges from an event, duration, and decision. Personalisation emerges from a system’s representation of a person. TSDNE permits the first while refusing the second.
 
-### Wendy Hui Kyong Chun
+### Singular encounter / unique object
 
-“The Enduring Ephemeral, or the Future Is a Memory” is mandatory. TSDNE’s use of storage to manage recurrence must be read against Chun’s analysis of digital memory, endurance, and regeneration. “The system remembers so that the encounter can forget” is a project figure, not an original theoretical result.
+The work stages one unrepeatable relation in time without guaranteeing that no similar program or image can recur.
 
-### Matthew G. Kirschenbaum
+### Provenance / title
 
-*Mechanisms* supplies the distinction between formal and forensic materiality. Interface non-retrieval belongs to formal operation; retained storage, reproducible seeds, caches, files, browser state, and hardware traces belong to forensic materiality.
+A seed, graph, program, and hash may identify a computational object. Title converts identification into a social and legal claim. TSDNE retains the former and refuses the latter.
 
-### Felix Gonzalez-Torres
+### Reproducibility / collectibility
 
-The candy works and paper stacks are central precedents for:
+The ability to reconstruct an object does not require the production of a scarce collectible.
 
-- taking part of a work;
-- circulation beyond the exhibition;
-- depletion and replenishment;
-- endless supply experienced through a changing presentation;
-- separation between the status of the work and the status of what a visitor carries away.
+### Relinquishment / destruction
 
-The comparison must preserve major differences: TSDNE does not stage bodily weight, illness, mourning, or material depletion in the same terms and must not appropriate those meanings.
+The interface withdraws access without pretending that deterministic computation has ceased to permit reproduction.
 
-### Tino Sehgal
+### Memory of difference / behavioural history
 
-Sehgal’s constructed situations establish a major lineage for refusal of material documentation, encounter-dependent existence, and institutional transmission without conventional records. TSDNE differs because its substrate necessarily produces code, storage, and reproducible traces.
+The local anti-repetition system stores lossy perceptual traces and never interprets them as preference.
 
-### Further fields
+### Generative computation / foundation-model AI
 
-Use selectively rather than as an encyclopaedic display:
-
-- Walter Benjamin on reproducibility and aura;
-- Marcel Mauss and Lewis Hyde on gift and circulation;
-- John Cheney-Lippold on algorithmic identity;
-- Nick Seaver on recommender systems and taste;
-- Nicolas Bourriaud together with Claire Bishop’s critique of relational aesthetics;
-- Christopher Kelty on recursive publics and free software;
-- scholarship on interface memory, deletion, archives, and digital preservation.
-
-Every cited work must be read by the author in its cited form before submission.
-
-## Art-historical claim
-
-The nearest precedents are not shader generators. The paper should position TSDNE’s interaction through works that organise:
-
-- taking;
-- replenishment;
-- disappearance;
-- non-documentation;
-- encounter;
-- circulation;
-- institutional and technical persistence.
-
-The shader genealogy remains necessary but secondary. It establishes that the generator, export system, local model, and browser implementation are not firsts.
-
-## Technical description
-
-The paper must describe the implementation accurately:
-
-- twelve authored GLSL families;
-- bounded scalar traits and palette record;
-- family change as the current largest structural operation;
-- four-candidate selection after local gates;
-- sparse descriptors for broad appearance and motion;
-- dense luminance-change screening as a non-certified heuristic;
-- bounded local encounter traces;
-- optional, opt-in WebLLM proposals;
-- random and authored comparison baselines;
-- executable export formats.
-
-Do not call the current program a typed AST.
-
-## AI position
-
-AI should not appear in the title unless a controlled comparison establishes a relevant result.
-
-Three publishable outcomes exist:
-
-1. **Positive difference:** model proposals differ meaningfully from matched baselines.
-2. **Negative result:** the small local model provides no useful advantage over simpler mechanisms.
-3. **Artistic removal:** the public artwork is stronger without the model, and the removal becomes part of the account of technical refusal.
-
-The paper should not be organised to guarantee outcome 1.
+Procedural systems generate without a learned corpus. TSDNE uses this distinction to enter and contest the cultural space of contemporary generative AI.
 
 ## Proposed structure
 
-### 1. Encounter
+### 1. Introduction
 
-Describe the work without beginning from implementation:
+Introduce the saturation of generative output and the platform assumption that individualised experience requires extraction. Present TSDNE’s question and central contribution.
 
-- one shader;
-- remain, replace, or take;
-- no preview and no return;
-- executable transfer.
+### 2. The artwork
 
-### 2. What kind of loss?
+Describe the interface: appearance, remaining, relinquishment, and continuation. Explain why the interaction is intentionally narrow.
 
-Distinguish:
+### 3. Abundance without a catalogue
 
-- interface withdrawal;
-- deletion;
-- non-documentation;
-- reproducibility;
-- export;
-- local trace.
+Discuss the difference between computational possibility and browsable inventory. Explain why showing one object at a time changes the experience of abundance.
 
-### 3. Art-historical relations
+### 4. Serendipity and relinquishment
 
-Concentrate on Gonzalez-Torres, Sehgal, and other works organised through taking, replenishment, disappearance, and encounter.
+Analyse **another** as a wager rather than a filter or optimisation command. Address curiosity, regret, attachment, and uncertainty.
 
-### 4. Digital memory and materiality
+### 5. Personal without personalisation
 
-Use Chun and Kirschenbaum to analyse why the substrate cannot be reduced to the interface’s performance of absence.
+Situate the work against recommendation systems, behavioural profiling, engagement optimisation, and extractive individualisation.
 
-### 5. Technical realisation
+### 6. Provenance without title
 
-Give a bounded and reproducible account of generation, validation, local trace, export, and optional inference.
+Examine cryptographic and computational identity while refusing certificate aesthetics, registries, uniqueness claims, and ownership. Develop the two frozen formulations.
 
-### 6. Refusals and their limits
+### 7. Interface loss over reproducible substrates
 
-Discuss:
+Discuss the tension between irreversibility in interaction and reproducibility in computation. Avoid false claims of destruction.
 
-- no archive;
-- no profile;
-- no token or ownership certificate;
-- no mandatory model;
-- free-software circulation;
-- external runtime and model dependencies;
-- hardware inequality;
-- paratext versus perceivable politics.
+### 8. The anti-archive
 
-### 7. Encounters or study
+Describe local perceptual memory: remembering enough to avoid repetition while preserving no route back. Distinguish it from archives, profiles, and deduplication alone.
 
-Only after deployment or exhibition. Present observational or empirical material without inflating it into universal claims.
+### 9. Refusing the model
 
-### 8. Discussion
+Explain the decision not to use an LLM. Connect the title to the contemporary AI imaginary while arguing that generativity exceeds foundation models. Address training corpora, labour, copyright, device inequality, dependency, and preservation without turning the article into a universal anti-AI claim.
 
-Address the unresolved contradiction:
+### 10. Executable circulation and the user–programmer continuum
 
-> Can a reproducible computational process be experienced as lost without manufacturing proprietary scarcity or concealing its recoverability?
+Discuss code transfer as a movement from spectatorship towards appropriation and potential programming. Clarify that circulation does not confer exclusive rights.
 
-### 9. Conclusion
+### 11. Material limits and contradictions
 
-Return to the interaction structure, not to component novelty.
+Acknowledge browser infrastructure, energy, hardware, hosting, authored selection, and the impossibility of complete non-extraction. Discuss the limits of anti-copyright gestures within existing law.
 
-## Evidence required before drafting the results sections
+### 12. Conclusion
 
-### Visual evidence
+Return to the proposition that personal relation does not require behavioural personalisation or property.
 
-- at least 200 rendered encounters;
-- representative screenshots and videos;
-- family-level contact sheets;
-- notes on repetition and failed families;
-- measured generation latency;
-- final curation decisions.
+## Evidence required
 
-### Interaction evidence
+Before submission, the article must be grounded in:
 
-At minimum:
+- a stable public artwork;
+- documentation of the exact interaction;
+- evidence that first encounters are perceptually diverse;
+- records of local anti-repetition behaviour;
+- privacy and storage inspection;
+- export examples;
+- browser and hardware compatibility results;
+- production notes explaining the removal of the LLM;
+- critical reflection on failures and revisions;
+- screenshots and video documentation;
+- optional consented interviews or observational study, only if they materially support the phenomenological claims.
 
-- deployed or exhibited encounters;
-- field notes or ethically collected visitor accounts;
-- documentation of replacement and export use;
-- clear distinction between observation and inference.
+## Claims to avoid
 
-For formal claims about affect or behaviour:
+- first browser shader artwork;
+- first generative artwork without profiling;
+- guaranteed visual uniqueness;
+- destruction of relinquished shaders;
+- total absence of extraction or material cost;
+- universal solution to AI ethics;
+- invention of anti-repetition or novelty search;
+- invention of provenance without ownership;
+- implication that hashes are politically neutral;
+- implication that CC0 resolves every possible third-party right.
 
-- a defined protocol;
-- appropriate institutional review where required;
-- explicit measures;
-- no use of dwell time as a proxy for preference without validation.
+## Contribution statement
 
-### Model evidence
+The article contributes a practice-based account of an interaction architecture in which computational abundance is encountered without a catalogue, difference is produced without profiling, provenance is retained without title, and executable objects circulate without exclusive possession.
 
-- matched parent candidates;
-- model, random, authored, and no-mutation conditions;
-- normalised mutation opportunity;
-- blind evaluation;
-- acceptance and rejection rates;
-- visual and perceptual comparisons;
-- preservation of negative results.
+## Candidate journals
 
-## Venue sequence
+Current venue scope must be verified before submission. Likely candidates remain:
 
-The venue order should follow the maturity of the practice rather than a predetermined journal hierarchy.
-
-1. Complete visual and technical validation.
-2. Deploy to staging, then publicly.
-3. Seek an exhibition, art track, or practice-led presentation where encounter can be observed.
-4. Consider an EvoMUSART paper only if the model ablation produces a substantive result.
-5. Write the practice-based journal paper after the work has a documented public or exhibition life.
-
-Possible later venues must be rechecked at the time of submission. No deadline, ranking, or fit claim in this planning document should be treated as current without a new search.
-
-## Prose and authorship
-
-The submitted article must be rewritten in Tomas Laurenzo’s own voice. Repository prose is machine-assisted working material.
-
-Before submission:
-
-- remove formulaic parallel lists where they do not aid reasoning;
-- reduce defensive “must not claim” language in the article itself while preserving its discipline;
-- state uncertainty directly;
-- avoid false completion language;
-- disclose AI assistance according to venue policy;
-- verify author order and collaborator contributions directly;
-- read every cited source in full or remove it.
-
-## Current decision
-
-Do not draft the paper as if the artwork has already demonstrated attachment, personal meaning, or AI contribution.
-
-Complete the artwork, look at it, deploy it, document encounters, and let the paper’s conclusions follow from what happened.
+1. *Digital Creativity*;
+2. *Leonardo*;
+3. *Journal of Science and Technology of the Arts*;
+4. *Convergence* or a comparable media journal if the personalisation argument becomes dominant;
+5. *AI & Society* only if the refusal of foundation-model generativity is sufficiently distinct from the user’s other AI-and-memory work.

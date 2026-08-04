@@ -1,77 +1,45 @@
-# Licensing and generated outputs
+# Generated shader circulation
 
-## Authored system
+## Position
 
-The TSDNE application, generator, validation code, export code, and other authored source in this repository are licensed under **GNU GPL 3.0 or later**, except where a file states otherwise.
+Generated shaders are intended to circulate freely and non-exclusively.
 
-This is the project’s substantive free-software commitment. It governs source in which copyright can attach to the authored implementation and permits study, modification, and redistribution under the GPL’s terms.
+> TSDNE retains provenance but abolishes title.
 
-## Generated shader outputs
+> The shader can be identified, copied, and reconstructed, but not claimed.
 
-To the extent that Tomas Laurenzo or the TSDNE project holds waivable copyright or related rights in a shader output generated and exported by *This Shader Does Not Exist*, those rights are waived under the **Creative Commons CC0 1.0 Universal Public Domain Dedication**.
+## CC0 waiver
 
-This wording is deliberately limited:
+To the extent that the TSDNE project holds copyright or other waivable rights in a generated shader output, those rights are waived under Creative Commons CC0 1.0 Universal.
 
-- it does not assert that copyright necessarily attaches to every generated output;
-- it does not assert that TSDNE owns every element appearing in an output;
-- it does not convert technical generation into legal authorship;
-- it does not settle questions that vary by jurisdiction;
-- it does not waive rights held by third parties.
+This means the project does not require permission, payment, exclusivity, or attribution for reuse of generated output.
 
-The CC0 statement clarifies the intended freedom of circulation. It should not be described as a sacrifice of an exclusive property right that necessarily existed.
+## Limits
 
-## Permitted circulation
+This statement:
 
-Subject to rights not controlled by TSDNE, generated shader outputs may be:
+- does not assert that copyright necessarily attaches to every generated output;
+- cannot waive rights held by third parties;
+- does not grant rights in trademarks or privacy/publicity interests;
+- does not change the GPL-3.0-or-later licence of the authored TSDNE application and generator;
+- does not establish that an exported technical manifest is a certificate of authenticity or ownership.
 
-- copied;
-- modified;
-- studied;
-- shared;
-- performed;
-- incorporated into other works;
-- used commercially;
-- redistributed without exclusivity.
+## No title or scarcity
 
-Attribution is appreciated as a matter of scholarly and artistic traceability but is not required by CC0.
+Downloading or copying a shader does not confer:
 
-## Encounter records
+- ownership of an exclusive object;
+- title against other users;
+- an edition number;
+- a scarcity claim;
+- a guarantee of uniqueness;
+- control over copies or derivatives;
+- authenticity status in a public registry.
 
-An encounter record may identify correspondence among:
+The same code may be copied, modified, and circulated by anyone.
 
-- seed;
-- family program;
-- generated source;
-- parent encounter;
-- mutation provenance;
-- model identifier;
-- rendered descriptor;
-- generator version.
+## Suggested optional acknowledgement
 
-The record does not create:
+Attribution is not required for generated output under the intended waiver. A voluntary acknowledgement may read:
 
-- ownership;
-- scarcity;
-- exclusivity;
-- authenticity rights against other copies;
-- a licence to control later use;
-- a claim that the visitor authored the output;
-- a token or certificate of title.
-
-## Third-party materials
-
-This dedication does not apply to:
-
-- WebLLM or other libraries;
-- model weights;
-- model tokenisers or configuration files;
-- third-party shaders or source incorporated later;
-- fonts, trademarks, names, or logos;
-- browser, operating-system, or hosting components;
-- materials governed by separate licences.
-
-Before release, the dependency and model inventory must record the licence and provenance of each distributed or remotely loaded component.
-
-## No legal warranty
-
-This document states the project’s intended licensing position and is not legal advice. Jurisdiction-specific questions, upstream rights, and venue requirements may require professional review.
+> Generated through *This Shader Does Not Exist*, a work by Tomas Laurenzo.

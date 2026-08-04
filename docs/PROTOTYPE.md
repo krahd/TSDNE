@@ -1,165 +1,98 @@
-# Alpha implementation record
+# Revised prototype specification
 
-**Date:** 4 August 2026  
-**Version:** `0.1.0-alpha.1` with post-audit source revisions  
-**Status:** source implemented; integrated browser and aesthetic validation incomplete
+## Status
 
-## What this record establishes
+The target is a complete procedural release candidate. The WebLLM predecessor is preserved on `archive/webllm-release-candidate-2026-08-04`.
 
-The repository contains a runnable static browser implementation with:
+## Required first encounter
 
-- authored procedural shader generation;
-- deterministic seeding;
-- local rendering and validation;
-- bounded local non-repetition;
-- optional local-model proposals;
-- explicit mutation provenance;
-- executable exports;
-- accessibility controls;
-- automated tests and CI configuration.
+1. The browser begins local candidate generation.
+2. A small candidate pool is compiled and sampled.
+3. Invalid, unsafe, flat, excessively repetitive, or technically costly candidates are rejected.
+4. The most suitable candidate is displayed.
+5. No model, loading bar, prompt, or deferred awakening exists.
+6. The first displayed shader is the complete artwork, not a fallback.
 
-This record does **not** establish:
+## Required subsequent encounter
 
-- visual quality;
-- sufficient perceptual variety;
-- acceptable latency on representative hardware;
-- public-release readiness;
-- browser or mobile compatibility;
-- photosensitive-content safety certification;
-- meaningful visitor attachment or regret;
-- superiority of model proposals;
-- correct execution of all export targets.
+1. A larger candidate pool is prefetched in the background.
+2. Selecting **another** relinquishes the present shader through the interface.
+3. The prefetched shader appears without revealing a search interface.
+4. The displayed shader contributes only a non-reconstructive trace to local anti-repetition memory.
+5. The system does not infer whether the previous shader was liked.
 
-## Current representation
+## First-impression protection
 
-The alpha uses a bounded family program:
+For the first four encounters:
 
-- twelve authored families;
-- twelve scalar traits;
-- a palette record;
-- a seed;
-- a generator version.
+- consecutive macro-families should differ;
+- perceptual novelty receives the highest selection weight;
+- repeated palette, motion, density, and symmetry regimes should be strongly discouraged;
+- the system should generate a larger variety than a single random draw would provide.
 
-The source retains the term `graph`, but no general typed AST or arbitrary graph topology exists.
+The purpose is not personalisation. It is to make the work’s claimed abundance perceptually credible.
 
-## Candidate validation
+## Interface
 
-A candidate passes through:
+Normal encounter controls:
 
-1. cost estimation;
-2. GLSL compilation;
-3. sparse rendered descriptors;
-4. family-specific luminance, variance, motion, and saturation thresholds;
-5. a separate dense screen for repeated large-area luminance transitions;
-6. recent structural and perceptual comparison.
+- **another**;
+- **take the code**;
+- **pause**;
+- **about**.
 
-The runtime seeks four valid candidates and selects using recent distance and family coverage.
+The interface must not display:
 
-The dense screen is a heuristic, not clinical or standards certification.
+- family names;
+- seed;
+- hash;
+- serial number;
+- rarity;
+- novelty score;
+- quality score;
+- model status;
+- generation lineage;
+- certificate language.
 
-## Optional local model
+Errors may be shown unobtrusively.
 
-- disabled by default;
-- requires explicit opt-in;
-- fetches a pinned WebLLM runtime from `esm.run`;
-- downloads model artefacts from external hosts;
-- may propose trait changes or a family change;
-- cannot bypass validation;
-- receives attribution only when its proposal is used;
-- cannot be claimed to outperform random or authored baselines before study.
+## Export
 
-The previous hidden fallback that converted an empty model response into an authored mutation has been removed.
+Taking the code provides six formats and a plain technical manifest. The manifest is reconstructive because the visitor deliberately chooses continuation.
 
-## Automated verification performed during remediation
+The manifest must state that it is not a certificate and creates no title.
 
-A local reconstruction of the revised modules passed:
+## Local storage
 
-- JavaScript syntax checks for `generator.js`, `ai.js`, `perception.js`, and `main.js`;
-- twelve generator and perception tests;
-- deterministic generation across all families;
-- rejection of empty mutation proposals;
-- bounded mutation and lineage preservation;
-- explicit model-proposal provenance;
-- random and authored baseline generation;
-- rejection of a synthetic repeated full-frame flashing sequence;
-- acceptance of a stable synthetic sequence.
+Permitted:
 
-Repository CI must confirm the integrated tree. The absence of installed npm dependencies does not cover the optional remotely imported WebLLM runtime and must not be presented as a supply-chain audit.
+- accessibility preferences;
+- bounded perceptual traces;
+- local random trace keys;
+- display timestamps;
+- broad family labels.
 
-## Required visual review
+Prohibited:
 
-Before changing status from alpha:
+- source;
+- graph;
+- seed;
+- shader hash;
+- screenshots;
+- video;
+- interaction labels such as like/dislike;
+- dwell-based preference interpretation;
+- cross-device identifiers.
 
-1. Render at least 200 encounters on a GPU-equipped browser.
-2. Produce a contact sheet grouped by family.
-3. Record which families become recognisable through repetition.
-4. Identify weak motifs, dead areas, excessive similarity, and undesirable motion.
-5. Remove or revise inadequate families.
-6. Measure first-encounter and **another** latency after four-candidate selection and dense screening.
-7. Review the work at desktop, laptop, tablet, and phone scales.
+## Completion tests
 
-Visual quality remains a constitutive requirement and cannot be inferred from passing code.
-
-## Required browser and accessibility review
-
-- Chrome, Edge, Firefox, and Safari;
-- macOS and Windows;
-- representative Android and iOS devices;
-- keyboard-only operation;
-- VoiceOver and at least one additional screen reader;
-- reduced-motion and reduced-intensity modes;
-- context loss and recovery;
-- WebGL2 failure;
-- WebGPU absence;
-- interrupted or failed model download;
-- data-saver behaviour;
-- external photosensitive-content assessment.
-
-## Required export review
-
-Execute each output in its target environment:
-
-- raw GLSL in the documented WebGL2 contract;
-- standalone HTML in a clean browser context;
-- Three.js adapter in a minimal project;
-- ShaderToy adaptation;
-- ISF adaptation;
-- encounter JSON round-trip.
-
-A generated file’s structural resemblance to a target format is not proof that it runs correctly.
-
-## Required model study
-
-Use matched parent candidates to compare:
-
-- model proposal;
-- random baseline;
-- authored baseline;
-- no mutation.
-
-Report validation rates and blinded judgements. Preserve a null or negative result.
-
-## Status transition criteria
-
-### Alpha → beta
-
-- 200-encounter visual review completed;
-- unacceptable families revised or removed;
-- integrated tests and CI pass;
-- primary desktop browsers tested;
-- generation latency acceptable;
-- all exports execute;
-- privacy and external-request inventory confirmed;
-- no critical accessibility or security defect known.
-
-### Beta → release candidate
-
-- public or staged deployment tested;
-- representative mobile review completed;
-- assistive-technology review completed;
-- external photosensitive-content review completed;
-- dependency and model-licence review completed;
-- final content, source, and documentation agree;
-- release checklist complete.
-
-The project should not call itself a release candidate before these gates are met.
+- first shader visible within an acceptable measured interval on target hardware;
+- no external request beyond static project assets;
+- no obvious repeat across three reloads;
+- no repeated family across the first three **another** actions unless every alternative fails validation;
+- source hashes absent from the normal DOM;
+- IndexedDB records cannot reconstruct an output;
+- exported code reconstructs the selected output;
+- deleting local anti-repetition memory does not affect any account or remote state;
+- reduced-motion and reduced-intensity settings work;
+- all automated tests pass.

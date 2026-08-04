@@ -1,96 +1,67 @@
 # Contributing
 
-TSDNE is an authored open-source artwork in alpha. Contributions are welcome when they preserve the central structure documented in [`docs/PROJECT.md`](docs/PROJECT.md):
+TSDNE is an artwork with a deliberately narrow interaction. Contributions are welcome when they strengthen that interaction rather than turn the project into a general shader editor or generative platform.
 
-> **one object, no return, take the source**
+## Appropriate contributions
 
-Technical sophistication is not sufficient by itself. A change should state its consequence for the encounter, visual field, access, circulation, or claim boundary.
+- WebGL2 correctness and compatibility;
+- visually substantial authored shader families;
+- performance improvements that preserve output;
+- perceptual anti-repetition methods that do not model visitors;
+- accessibility and photosensitive-seizure safety;
+- static-site preservation;
+- export correctness;
+- privacy verification;
+- documentation corrections;
+- tests and reproducible bug reports.
 
-## High-priority contributions
+## Out of scope for `main`
 
-- reproducible browser and device compatibility reports;
-- family-grouped visual review and contact sheets;
-- accessibility and photosensitive-content review;
-- validated export adapters;
-- generation and rendering performance measurements;
-- security and external-request analysis;
-- dependency and model-licence corrections;
-- tests for rendering, storage, model, network, and fallback failures;
-- corrections to references and attribution;
-- visual families or primitives that demonstrably expand the aesthetic field;
-- model, random, and authored mutation comparisons.
+- prompt interfaces;
+- LLM or diffusion-model runtime dependencies;
+- preference learning;
+- like/dislike controls;
+- recommender logic;
+- user-directed evolutionary lineages;
+- accounts, social feeds, collections, leaderboards, or galleries;
+- certificates, minting, ownership registries, rarity scores, or NFT integration;
+- claims of guaranteed uniqueness;
+- analytics or fingerprinting.
 
-## Evidence expected
+Experimental work in those areas should use a separate branch or project. The former WebLLM implementation is preserved at `archive/webllm-release-candidate-2026-08-04`.
 
-Depending on the contribution, include:
+## Visual-family contributions
 
-- browser, OS, device, and GPU;
-- exact commit;
-- reproduction steps;
-- screenshots or video;
-- console or network logs without personal data;
-- before/after latency;
-- automated tests;
-- accessibility consequence;
-- artistic consequence;
-- limitations and unresolved risks.
+A proposed family should:
 
-## Not in scope for the ordinary artwork
+1. be materially distinguishable from existing families;
+2. contain meaningful internal variation;
+3. support quiet as well as dense parameter regions;
+4. compile under WebGL2;
+5. remain within the project’s frame budget;
+6. pass flash, luminance, variance, and motion screening;
+7. avoid copied shader source unless licensing and attribution are explicit;
+8. include deterministic tests.
 
-- accounts;
-- advertising;
-- analytics;
-- cross-site tracking;
-- public ownership registries;
-- marketplaces, NFTs, or scarcity certificates;
-- hidden preference models;
-- paid inference dependencies;
-- unrestricted remote prompt collection;
-- mandatory model loading;
-- population grids or galleries replacing the one-object encounter;
-- absolute visual-uniqueness claims;
-- visitor-affect claims inferred from dwell time alone;
-- authored fallbacks attributed to a model.
+## Pull requests
 
-Research or diagnostic modes may test some otherwise excluded interfaces when they are clearly separated from the public artwork and use appropriate consent.
+Include:
 
-## Representation boundary
+- purpose and conceptual fit;
+- screenshots or short recordings where relevant;
+- browser and device tested;
+- performance observations;
+- accessibility implications;
+- tests added or updated;
+- confirmation that no personal data or external runtime dependency was introduced.
 
-The current alpha uses authored families and bounded traits. Do not describe it as a typed AST or submit changes that rely on nonexistent graph topology.
-
-A future typed grammar should be proposed as a distinct research change with:
-
-- schema;
-- compiler;
-- validity rules;
-- tests;
-- export implications;
-- visual comparison with the current system;
-- justification for the artwork.
-
-## Local-model contributions
-
-Model changes must preserve:
-
-- opt-in operation;
-- procedural completeness;
-- explicit runtime and model requests;
-- proposal provenance;
-- deterministic validation;
-- rejection of ineffective proposals;
-- matched simpler baselines;
-- no claim of model superiority without evidence.
-
-## Verification
-
-Run:
+## Development
 
 ```bash
+npm install --ignore-scripts
 npm run verify
+cd prototype
+python3 -m http.server 8080
 ```
 
-Passing tests do not establish visual quality, accessibility, security, or target-host export compatibility. State which manual checks were performed.
-
-## Documentation and AI assistance
-
-Follow [`docs/AI-USE-STATEMENT.md`](docs/AI-USE-STATEMENT.md). Machine-produced code, prose, citations, and audits remain subject to human responsibility. Do not alter author order, collaborator status, quotations, or licensing representations without direct verification.
+Open `http://localhost:8080`.

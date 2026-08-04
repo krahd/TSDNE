@@ -1,20 +1,20 @@
 cff-version: 1.2.0
-message: "Please cite the artwork or software using this metadata."
+message: "Please cite the artwork and software using this metadata."
 title: "This Shader Does Not Exist"
 type: software
+version: "0.2.0-alpha.1"
 authors:
   - family-names: Laurenzo
     given-names: Tomas
+    orcid: "https://orcid.org/0000-0002-9021-8792"
 repository-code: "https://github.com/krahd/TSDNE"
-version: "0.1.0-alpha.2"
-date-released: 2026-08-04
+abstract: "A self-contained procedural browser artwork about serendipity, relinquishment, non-extractive individualisation, provenance without title, and free circulation."
 license: GPL-3.0-or-later
-abstract: "An alpha browser artwork structured around one generated shader, interface withdrawal without retrieval, and non-exclusive transfer of executable source. The baseline work uses authored WebGL2 families, local validation, bounded encounter traces, and an optional opt-in local-model proposal mechanism."
+date-released: 2026-08-04
 keywords:
   - generative art
-  - browser art
   - shaders
-  - WebGL
-  - executable art
-  - ephemerality
-  - free software
+  - critical media
+  - personalisation
+  - provenance
+  - free culture

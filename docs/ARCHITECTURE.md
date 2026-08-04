@@ -1,294 +1,199 @@
-# Architecture
+# Revised architecture
 
-## 1. Status
+## Principle
 
-This document distinguishes:
+Every software component must support the encounter rather than turning TSDNE into an interactive shader-design environment.
 
-- **implemented alpha architecture**;
-- **validated limitations**;
-- **later research architecture**.
+The architecture is fully local and static-hostable. It has no inference API, model host, account system, database server, analytics service, or external runtime dependency.
 
-The current source does not implement a general typed AST, arbitrary topology, graph rewiring, or unrestricted shader synthesis. Earlier documents described those elements prospectively and were incorrectly read as implementation records.
+## Pipeline
 
-## 2. Implemented representation
+```text
+cryptographic seed
+      ↓
+authored procedural graph
+      ↓
+complexity enrichment
+      ↓
+GLSL source
+      ↓
+WebGL2 compile and temporal rendering
+      ↓
+quality and safety screening
+      ↓
+perceptual descriptor
+      ↓
+novelty-and-complexity tournament
+      ↓
+one displayed shader
+      ├── active reconstructive state in memory
+      └── non-reconstructive local perceptual trace
+```
 
-Each candidate contains a serialisable object with:
+## Authored procedural grammar
 
-- schema and generator version;
-- one of twelve authored shader families;
-- a 128-bit seed;
-- twelve bounded scalar traits;
-- a cosine-palette record.
+The generator contains several macro-families. Each family maps a deterministic trait vector and palette to a complete fragment shader.
 
-The source retains the historical names `createGraph`, `compileGraph`, and `graph` for API and export compatibility. The more accurate description is **bounded family program**.
+The generator is not claimed as a technically unprecedented shader system. Its responsibilities are:
 
-Changing family selects a different authored GLSL template. Changing traits alters scale, tempo, density, turbulence, contrast, palette phase, complexity, rotation, symmetry, softness, drift, and depth within the selected family.
+- produce materially different dynamic visual structures;
+- expose sufficient internal variation for perceptual separation;
+- remain comprehensible and maintainable;
+- compile reliably on WebGL2;
+- support deterministic reconstruction;
+- permit code export;
+- remain independent from remote services.
 
-## 3. Implemented pipeline
+A complexity-enrichment layer biases candidates towards articulated structures while preserving silence, darkness, asymmetry, and sparse regions. Complexity is not defined as maximal motion, maximal density, or maximal GPU cost.
 
-### 3.1 Seed
+## Candidate pool
 
-`crypto.getRandomValues()` produces four unsigned 32-bit words. The seed identifies the candidate and initialises deterministic `xoshiro128**` sampling.
+The system creates a small pool of locally generated candidates. Each candidate is compiled and rendered at fixed temporal samples.
 
-The birthday-bound probability of an exact 128-bit collision is negligible at realistic scale. This says nothing about perceptual similarity.
+Initial display uses a smaller pool to preserve acceptable startup time. Later encounters are prefetched from a larger pool in the background.
 
-### 3.2 Candidate generation
+The visitor never sees the pool. It is not a catalogue.
 
-A candidate is constructed by:
+## Quality screening
 
-1. selecting a family;
-2. sampling bounded traits;
-3. sampling a palette;
-4. emitting GLSL ES 3.00 from the family template;
-5. calculating a structural vector and source signature.
+Candidates may be rejected for:
 
-### 3.3 Cost gate
+- shader compilation failure;
+- excessive estimated computational cost;
+- near-black or near-white output;
+- insufficient variance;
+- negligible temporal development, unless reduced motion is active;
+- excessive saturation;
+- repeated large-area luminance changes;
+- runtime or context failure.
 
-Each family has an authored cost estimate. Candidate complexity adds a bounded cost contribution. Candidates above the current threshold are rejected before rendering.
+These checks establish admissibility, not beauty.
 
-This is a coarse estimate, not instruction counting or measured GPU time.
+## Perceptual descriptors
 
-### 3.4 Sparse rendered descriptor
+The browser samples several low-resolution frames and calculates compact descriptors including:
 
-Three fixed temporal samples at `0.73`, `2.11`, and `4.47` seconds are rendered at `64 × 64` pixels. They supply:
+- mean luminance;
+- luminance variance;
+- coarse luminance histogram;
+- coarse RGB histograms;
+- edge magnitude;
+- saturation ratio;
+- temporal frame difference;
+- coarse spatial perceptual hash.
 
-- luminance mean and variance;
-- edge energy;
-- colour histograms;
-- saturation;
-- average temporal difference;
-- maximum pointwise temporal difference;
-- spatial difference hashes.
+The descriptors are lossy and deliberately non-reconstructive.
 
-These samples describe broad appearance and motion. They are not used as a high-frequency flashing test.
+## Novelty selection
 
-### 3.5 Dense luminance-change screen
+For each valid candidate, the system estimates:
 
-Candidates that pass the broad descriptor are sampled separately at 60 samples per second for 1.25 seconds at `24 × 24` pixels.
+- minimum perceptual distance from recent local traces;
+- visual complexity and articulation;
+- recent macro-family separation.
 
-The screen estimates the proportion of pixels undergoing a large luminance transition between consecutive frames. It rejects a sequence when three or more substantial large-area transitions occur in a rolling one-second window.
+A maximin-style tournament favours candidates that are distant from the closest prior encounter while still satisfying quality and complexity constraints.
 
-Limitations:
+The first four encounters weight novelty and family separation especially strongly. This addresses the critical first-impression failure in which repeated similar outputs make the project appear shallow.
 
-- it is screen-level and low-resolution;
-- it is a conservative heuristic rather than a clinical test;
-- it does not implement the complete Harding Flash and Pattern Analyser;
-- it does not establish WCAG certification;
-- it requires external validation before release.
+The algorithm is related to novelty search and quality-diversity methods, but it is used here as invisible sequence-level quality control rather than as an interactive exploration interface.
 
-### 3.6 Recent-similarity gate
+## Anti-repetition memory
 
-Accepted candidates are compared with a bounded local encounter trace using:
+IndexedDB stores only:
 
-- rendered descriptor distance;
-- histogram distance;
-- spatial-hash distance;
-- family and trait vector distance.
+```text
+local random key
+display time
+broad family label
+compact perceptual descriptor
+```
 
-A candidate is rejected only when the combined measure falls below a local threshold. The threshold is empirical and requires visual calibration.
+It never stores:
 
-### 3.7 Candidate selection
+```text
+seed
+source hash
+source program
+graph
+parameter vector
+rendered frame
+screenshot
+video
+visitor identity
+preference label
+```
 
-The alpha seeks up to four valid candidates within a maximum of 72 attempts. It selects among valid candidates using:
+The database is bounded and old traces are deleted. A localStorage fallback uses the same reduced schema.
 
-- distance from recent encounters;
-- a small penalty for families heavily represented in local history.
+A version upgrade deletes the predecessor’s reconstructive encounter records.
 
-This is not a universal beauty score, Pareto optimiser, or learned taste model. It is a modest anti-repetition and coverage mechanism.
+## Active state and loss
 
-### 3.8 Encounter trace
+The current shader necessarily exists in active program memory and in the WebGL context. When **another** is selected, the interface releases the relation to that shader and replaces it.
 
-The browser stores a bounded record containing:
+The system does not claim global erasure. It simply provides no interface route back and does not add reconstructive data to local history.
 
-- encounter identifier and date;
-- family and origin;
-- source/program signature;
-- structural vector;
-- compact rendered descriptor;
-- model and mutation provenance where applicable.
+This distinction is essential:
 
-IndexedDB is preferred; localStorage is a limited fallback. The trace is local, clearable, and not interpreted as preference.
+- interface loss is real as an interaction condition;
+- deterministic reproducibility remains technically possible;
+- the work does not manufacture scarcity by pretending otherwise.
 
-### 3.9 Rendering
+## Internal provenance
 
-The chosen GLSL ES 3.00 fragment shader runs in WebGL2 with a fixed uniform contract:
+For the active shader, the browser calculates:
 
-- `u_resolution`;
-- `u_time`;
-- `u_motion`;
-- `u_intensity`.
+- SHA-256 of canonical graph data;
+- SHA-256 of GLSL source;
+- generator version;
+- deterministic seed.
 
-The first alpha uses single-pass rendering and authored helper functions.
+These values remain absent from the normal visual encounter. Their ordinary roles are integrity checking and export support.
 
-### 3.10 Export
+No registry exists and no certificate is issued.
 
-The same accepted source and program record feed:
+## Export
 
-- raw GLSL;
-- encounter JSON;
-- standalone WebGL HTML;
-- Three.js adaptation;
-- ShaderToy adaptation;
-- ISF adaptation.
+When the visitor deliberately takes the code, TSDNE exports:
 
-Generated adapters remain claims until executed in their target hosts.
+- technical manifest JSON;
+- raw GLSL fragment shader;
+- self-contained WebGL2 page;
+- Three.js adapter;
+- ShaderToy adapter;
+- ISF adapter.
 
-## 4. Optional local-model path
+The manifest contains enough technical information to reconstruct the program. It records no owner and states:
 
-### 4.1 Consent and loading
+- `documentType: technical-manifest-not-certificate`;
+- no title is conferred;
+- no ownership or exclusivity is conferred;
+- no scarcity or uniqueness is claimed.
 
-Local AI is off by default. A visitor who enables it opts into:
+## Privacy
 
-- a pinned `@mlc-ai/web-llm` runtime fetched from `esm.run`;
-- external model-file downloads;
-- WebGPU inference;
-- local caching controlled by browser and runtime behaviour.
+Privacy follows from the architecture:
 
-### 4.2 Proposal vocabulary
+- no network request is required after static assets load;
+- no model is downloaded;
+- no interaction event is transmitted;
+- no identity is created;
+- no preference is inferred;
+- no cross-session behavioural model is constructed;
+- the local anti-repetition memory can be cleared.
 
-The current model schema permits:
+## Preservation
 
-- bounded changes to twelve traits;
-- an optional change to one of the twelve families;
-- a short stated intention.
+The artwork consists of standard HTML, CSS, JavaScript, WebGL2, and authored source. Preservation requires no remote model repository, API key, checkpoint format, inference runtime, or vendor service.
 
-It does not permit:
+A release should archive:
 
-- arbitrary node insertion;
-- graph rewiring;
-- unrestricted GLSL;
-- new family definition;
-- arbitrary topology;
-- direct acceptance of its own proposal.
-
-### 4.3 Validation and provenance
-
-A proposal must contain:
-
-- at least two material trait changes; or
-- a valid family change.
-
-Empty proposals are rejected. The system does not insert an authored fallback and label it as a model action.
-
-An accepted mutation records:
-
-- proposer type;
-- model identifier;
-- source and target family;
-- active traits;
-- normalised changes;
-- intention;
-- parent encounter;
-- runtime version.
-
-The candidate then passes the same cost, rendering, descriptor, dense luminance, and recent-similarity gates as a procedural candidate.
-
-### 4.4 Comparative baselines
-
-The source implements:
-
-- a matched random mutation baseline;
-- an authored continuity baseline.
-
-They support a future comparison among:
-
-- model proposal;
-- random proposal;
-- authored heuristic;
-- unmutated procedural generation.
-
-No model advantage is assumed before that study.
-
-## 5. External dependencies and trust boundary
-
-The baseline procedural work is static and has no installed runtime package dependency.
-
-When local AI is enabled, it relies on remotely served code and model artefacts. Exact version pinning reduces accidental drift but does not provide Subresource Integrity for dynamic module imports and does not eliminate supply-chain risk.
-
-Before durable release, evaluate:
-
-1. vendoring the WebLLM runtime;
-2. building a local bundle;
-3. publishing hashes and an asset manifest;
-4. self-hosting model artefacts where licensing permits;
-5. maintaining an explicit external-request inventory.
-
-`npm audit` does not inspect remotely imported runtime code and must not be cited as evidence that this path has no dependency risk.
-
-## 6. Cross-device originality
-
-A static client can provide:
-
-- highly reliable computational identifiers;
-- deterministic regeneration from source materials;
-- local session and browser non-repetition;
-- statistical diversity across a large sampled space.
-
-It cannot provide:
-
-- a global allocation history;
-- proof that no other device generated the same seed;
-- proof that no perceptually similar image exists;
-- a universal scarcity claim.
-
-Accurate formulation:
-
-> TSDNE generates computationally identified candidates and reduces recent structural and perceptual repetition within a bounded local context. It does not guarantee global visual uniqueness.
-
-## 7. Performance risks introduced by remediation
-
-The revised alpha performs more validation than the audited snapshot:
-
-- it seeks four valid candidates rather than the first valid candidate;
-- it performs dense temporal screening after broad validation.
-
-These changes may increase first-encounter and replacement latency. Real-device measurement is mandatory. If latency damages the encounter, the design must be revised rather than hidden.
-
-Possible responses include:
-
-- smaller candidate batches;
-- background precomputation;
-- family-specific dense-screen exemptions justified by static analysis;
-- worker-based validation;
-- progressive validation with conservative family limits.
-
-## 8. Later structural-synthesis research
-
-A later version may implement a typed program grammar with nodes for:
-
-- coordinate domains and transformations;
-- fields and pattern generators;
-- signed-distance primitives;
-- warps;
-- masks;
-- temporal operators;
-- palettes;
-- compositors;
-- post-processing.
-
-Such nodes would declare:
-
-- input and output types;
-- admissible connections;
-- numerical constraints;
-- cost estimates;
-- export compatibility;
-- semantic roles.
-
-Only after this representation exists may documentation claim operations such as insertion, removal, replacement, rewiring, duplication, or typed recombination.
-
-This path is optional. The artwork’s withdrawal structure does not depend on implementing it.
-
-## 9. Validation gates
-
-Before public release:
-
-- run the complete test suite on the integrated repository;
-- render at least 200 encounters;
-- measure candidate-generation latency;
-- test dense-screen false positives and false negatives with synthetic sequences and real families;
-- inspect every family visually;
-- execute every export target;
-- test WebGL2 and optional WebGPU failure paths;
-- test external-request disclosures against actual network logs;
-- perform browser, mobile, accessibility, and security review.
+- source tree;
+- generator version;
+- test suite;
+- build-free static site;
+- browser compatibility record;
+- sample exports;
+- video documentation;
+- written conceptual specification.

@@ -1,227 +1,125 @@
-# Implementation roadmap
+# Implementation roadmap: revised TSDNE
 
-**Status date:** 4 August 2026  
-**Current phase:** `0.1.0-alpha.2`  
-**Principle:** visual, experiential, and empirical evidence gates later technical expansion
+## Milestone 0 — preserve the predecessor
 
-## 1. Current baseline
+- [x] Create `archive/webllm-release-candidate-2026-08-04` from the complete model-oriented release candidate.
+- [x] Preserve WebLLM, mutation, awakening, and intention-fidelity work without keeping it in the public artwork.
 
-Implemented:
+## Milestone 1 — conceptual realignment
 
-- one shader at a time;
-- **another** without interface retrieval;
-- **use this shader** with executable exports;
-- twelve authored WebGL2 families;
-- bounded family-and-trait programs;
-- seeded deterministic source generation;
-- local validity, quality, similarity, and luminance-change screening;
-- four-candidate local selection;
-- bounded local encounter traces;
-- optional opt-in local-model proposals;
-- explicit provenance and comparison baselines;
-- static deployment workflow.
+- [x] Freeze the encounter as the primary material.
+- [x] Remove language-model dependence from the target architecture.
+- [x] Freeze the two formulations:
+  - TSDNE retains provenance but abolishes title.
+  - The shader can be identified, copied, and reconstructed, but not claimed.
+- [x] Define anti-repetition memory as non-reconstructive and non-adaptive.
+- [x] Reject certificate, NFT, rarity, ownership, and guaranteed-uniqueness rhetoric.
 
-Not implemented:
+## Milestone 2 — procedural release candidate
 
-- general typed AST;
-- arbitrary structural mutation or recombination;
-- evidence that the model improves the work;
-- validated visual breadth;
-- complete browser, mobile, export, security, or accessibility coverage;
-- public encounter evidence.
+- [x] Remove the WebLLM worker and client from the public runtime.
+- [x] Remove model state, loading, mutation, and awakening from the interface.
+- [x] Add deterministic complexity enrichment to the authored procedural grammar.
+- [x] Add local candidate-pool generation.
+- [x] Add perceptual novelty and visual-complexity scoring.
+- [x] Add early-encounter family separation.
+- [x] Add background prefetch without a loading ritual.
+- [x] Preserve procedural fallback as the only and complete artwork.
 
-## 2. Gate A: visual reality
+## Milestone 3 — anti-repetition memory
 
-This gate precedes further architecture work.
+- [x] Replace reconstructive encounter history with perceptual traces.
+- [x] Delete predecessor object stores during database upgrade.
+- [x] Store no seed, source, graph, rendered image, or preference.
+- [x] Bound and rotate the local trace history.
+- [x] Add an interface control to clear the memory.
+- [x] Test trace sanitisation.
 
-### Tasks
+## Milestone 4 — provenance without title
 
-- render at least 200 encounters on a real GPU;
-- create contact sheets grouped by family;
-- record first-paint and replacement latency;
-- identify recurrent motifs and visually weak families;
-- test reduced-motion and reduced-intensity outputs;
-- remove, rewrite, or expand inadequate families;
-- determine whether four-candidate selection improves the visible sequence.
+- [x] Calculate SHA-256 source and graph hashes internally.
+- [x] Keep hashes absent from the normal encounter.
+- [x] Replace encounter certificates with technical manifests.
+- [x] Make export filenames generic rather than serialised.
+- [x] State explicitly that the manifest is not a certificate.
+- [x] State that no title, ownership, scarcity, authenticity, or uniqueness is created.
+- [x] Preserve reconstructability only when the visitor deliberately takes the code.
 
-### Evidence
+## Milestone 5 — complete writing revision
 
-- contact sheets;
-- representative video;
-- family-level notes;
-- latency measurements;
-- retained and rejected examples;
-- explicit curation decisions.
+- [x] Rewrite README.
+- [x] Rewrite project definition.
+- [x] Rewrite architecture.
+- [x] Rewrite prototype specification.
+- [x] Rewrite first-paper plan.
+- [x] Rewrite AI-use statement as a deliberate model refusal.
+- [x] Rewrite research plan.
+- [x] Rewrite status and release checklist.
+- [x] Replace the genealogy with the revised conceptual lineage.
+- [x] Update academic-writing workspace.
+- [x] Remove obsolete WebLLM documents from `main` while retaining them on the archive branch.
 
-### Exit criterion
+## Milestone 6 — automated verification
 
-The visual field is credible for sustained use, and the generator’s limitations are documented rather than hidden behind seed-space cardinality.
+- [x] Remove AI modules from syntax checks.
+- [x] Add synthesis selection tests.
+- [x] Add provenance tests.
+- [x] Add anti-repetition trace tests.
+- [x] Update export tests.
+- [x] Retain deterministic generator and perception tests.
+- [ ] Confirm CI passes on GitHub after commit.
 
-## 3. Gate B: runtime integrity
+## Milestone 7 — visual curation
 
-### Tasks
+This milestone cannot be completed by static analysis alone.
 
-- run integrated `npm run verify` in CI and locally;
-- test WebGL2 compilation and context recovery;
-- verify dense-screen performance and false positives;
-- test IndexedDB and localStorage fallback;
-- inspect actual network requests;
-- decide whether to vendor WebLLM;
-- review model and dependency licences;
-- execute every export target;
-- test failure paths for WebGPU, model download, timeout, cache, and memory.
+- [ ] Generate and inspect at least 250 outputs.
+- [ ] Identify weak regions within every family.
+- [ ] Record family failure rates.
+- [ ] Tune family probability and quality thresholds.
+- [ ] Confirm that the first four encounters are strongly distinct.
+- [ ] Confirm that three consecutive reloads do not appear repetitive.
+- [ ] Decide whether further authored families are needed.
+- [ ] Test non-LLM engines only where they materially improve the encounter.
 
-### Exit criterion
+Candidate future engines:
 
-Documentation, source, network behaviour, and advertised exports agree.
+- reaction–diffusion systems;
+- continuous and neural cellular automata;
+- particle and flow-field systems;
+- compositional pattern-producing networks;
+- small locally authored neural dynamical systems;
+- reservoir or coupled-oscillator systems;
+- grammar evolution and MAP-Elites-style offline curation.
 
-## 4. Gate C: accessibility and visual safety
+No engine should be added merely to claim AI. It must improve visual articulation while remaining local, inspectable, preservable, and non-extractive.
 
-### Tasks
+## Milestone 8 — hardware and browser validation
 
-- external photosensitive-content analysis;
-- keyboard-only review;
-- VoiceOver and one additional screen reader;
-- reduced-motion review across major browsers;
-- mobile touch-target and orientation review;
-- test common display refresh rates, zoom, and full-screen modes;
-- add pre-exposure guidance that does not require prolonged viewing.
+- [ ] macOS Chrome/Edge WebGL2.
+- [ ] macOS Safari.
+- [ ] Firefox.
+- [ ] Windows Chrome/Edge.
+- [ ] Android Chrome.
+- [ ] iOS Safari.
+- [ ] context loss and restoration.
+- [ ] low-memory and low-power devices.
+- [ ] keyboard-only operation.
+- [ ] reduced-motion and reduced-intensity operation.
+- [ ] photosensitive-seizure review.
+- [ ] all export targets.
 
-### Exit criterion
+## Milestone 9 — public deployment
 
-No known critical accessibility defect remains, and all limitations are exposed accurately.
+- [ ] Keep repository private through visual and hardware validation.
+- [ ] Enable GitHub Actions and confirm CI.
+- [ ] Enable GitHub Pages or deploy to the Laurenzo host.
+- [ ] Verify static caching and MIME types.
+- [ ] Purchase the canonical domain.
+- [ ] Configure DNS and HTTPS.
+- [ ] Redirect the short domain if purchased.
+- [ ] Record the public release commit and archive a source snapshot.
 
-## 5. Gate D: staged deployment
+## Definition of complete
 
-### Tasks
-
-- deploy privately or to staging;
-- verify static hosting and HTTPS;
-- confirm privacy and external-request disclosures against network logs;
-- run desktop and mobile smoke tests;
-- verify storage-clearing controls;
-- test a clean first visit and cached return visit;
-- document deployment environment and preservation requirements.
-
-### Exit criterion
-
-The work can be used outside the development environment without contradicting its documentation.
-
-## 6. Gate E: encounter evidence
-
-### Minimum practice documentation
-
-- field notes from public or exhibition use;
-- examples of replacement and export decisions;
-- visitor statements collected with appropriate consent;
-- documentation of misunderstandings and failures;
-- distinction between observation and interpretation.
-
-### Formal study, if pursued
-
-Possible conditions:
-
-- retrieval versus no retrieval;
-- export versus no export;
-- recoverability disclosure versus minimal disclosure;
-- model, random, authored, and no-mutation proposals.
-
-A formal study requires an explicit protocol and institutional review where applicable. Public artwork telemetry is not a substitute.
-
-## 7. Model decision gate
-
-The optional model should be retained only after a matched comparison.
-
-### Conditions
-
-- same parent candidates;
-- comparable mutation magnitude;
-- equal validation;
-- blinded evaluation;
-- separate measures of continuity, difference, interest, and preference;
-- technical acceptance and latency;
-- device and energy costs.
-
-### Possible decisions
-
-1. retain because a material difference is demonstrated;
-2. retain as a disclosed experiment or negative result;
-3. remove from the public artwork;
-4. reserve for research/exhibition mode.
-
-No outcome is predetermined.
-
-## 8. Structural-synthesis option
-
-A typed program grammar remains a separate research project, not the next automatic milestone.
-
-Proceed only if visual review shows that authored families and bounded traits cannot sustain the desired field and if structural synthesis serves the encounter rather than technical ambition.
-
-Possible components:
-
-- typed coordinate, field, mask, warp, temporal, palette, and compositor nodes;
-- valid connection rules;
-- deterministic canonicalisation;
-- cost and compatibility metadata;
-- typed insertion, removal, replacement, and rewiring;
-- graph-to-GLSL compilation;
-- export support;
-- structural mutation baselines;
-- visual comparison with the alpha generator.
-
-Exit criterion:
-
-- measurable expansion of perceptual and compositional breadth;
-- acceptable latency and device coverage;
-- source and documentation alignment;
-- no dependence on unrestricted model-written GLSL.
-
-## 9. Public alpha criteria
-
-Before public alpha:
-
-- Gate A visual review complete;
-- integrated tests and CI pass;
-- primary desktop browsers tested;
-- all export targets executed;
-- external-request inventory confirmed;
-- safety and accessibility limitations visible;
-- local AI remains optional and off by default;
-- privacy and storage controls work;
-- no release-candidate language.
-
-## 10. Beta criteria
-
-Before beta:
-
-- representative mobile testing;
-- assistive-technology review;
-- external photosensitive-content review;
-- curated family set stable;
-- measured generation latency acceptable;
-- dependency and model-licence review complete;
-- staged deployment stable;
-- preservation package started.
-
-## 11. Release-candidate criteria
-
-Before release candidate:
-
-- beta defects resolved;
-- public or exhibition encounter documented;
-- source and all public documentation reconciled;
-- final title and model decision made;
-- release checklist complete;
-- versioned representative captures preserved;
-- publication claims limited to available evidence.
-
-## 12. Publication sequence
-
-1. complete visual and runtime gates;
-2. deploy or exhibit;
-3. document encounters;
-4. run model ablation only if model claims remain relevant;
-5. write the practice-based paper from realised evidence;
-6. pursue separate technical papers only where a method and result exist.
-
-The roadmap is evidence-gated rather than date-driven. Ambitious deadlines may be added operationally, but completion labels must follow completed validation.
+The revised version is complete when the public artwork can be encountered once and be fully itself: no deferred model, hidden advanced mode, profile accumulation, certificate, or collectible layer remains to be discovered.

@@ -1,209 +1,159 @@
-# Project specification
+# This Shader Does Not Exist
 
-## 1. Proposition
+## Project definition
 
-*This Shader Does Not Exist* is a browser artwork that presents one full-screen animated shader at a time. A visitor may:
+*This Shader Does Not Exist* (TSDNE) is a browser artwork about computational abundance experienced through a deliberately restricted encounter.
 
-- remain with it;
-- choose **another**, withdrawing the current shader from the interface without seeing what will replace it;
-- choose **use this shader**, taking its executable source into another context.
+The system presents one generated shader at a time. The visitor may remain with it, relinquish it for another unknown possibility, or take its executable source so that it may continue elsewhere. The visitor cannot browse a catalogue, compare a grid, restore a relinquished result, prompt the system, adjust aesthetic parameters, or train a preference model.
 
-The core structure is:
+The shader generator is the material apparatus. The encounter is the work.
 
-> **one object, no return, take the source**
+## Central proposition
 
-The work does not claim that relinquishment deletes the shader universally. It removes retrieval through TSDNE. The seed, program, or source may remain reproducible, and an exported shader may circulate indefinitely.
+Contemporary computational culture often treats individualisation as inseparable from extraction. Platforms produce different experiences by observing, classifying, predicting, and monetising people. TSDNE asks whether computational difference may instead become personally meaningful through an event and a decision.
 
-The artwork therefore stages a discrepancy between:
+The work therefore distinguishes:
 
-- experiential withdrawal;
-- computational reproducibility;
-- non-exclusive appropriation.
+- personal from personalised;
+- individualised from profiled;
+- singular encounter from unique commodity;
+- provenance from title;
+- reproducibility from collectibility;
+- ephemerality from destruction;
+- circulation from acquisition;
+- memory of difference from behavioural history.
 
-## 2. Title
+The central research question is:
 
-The title cites the “This X Does Not Exist” genre while contradicting it. The shader does exist as executable code and a running process. The title should be understood as a provocation about what is treated as existing when generative systems are encountered only as surfaces.
+> Can a computational object become personal without being owned, individualised without profiling, identifiable without title, and singular without being scarce?
 
-Renaming remains possible after public and exhibition testing.
+## Interaction
 
-## 3. Core encounter
+### Appearance
 
-- The page opens directly into a shader.
-- The main interface remains minimal.
-- No next shader is previewed.
-- No previous shader can be recovered through the interface.
-- No catalogue, public gallery, ranking, marketplace, token, or ownership certificate is provided.
-- The current shader can be exported while it is present.
-- Technical and political conditions remain inspectable through **about**.
+A shader appears without a request. It was not selected from a catalogue and was not predicted from information about the visitor.
 
-## 4. What is implemented
+### Remaining
 
-The alpha implementation contains:
+The visitor may simply watch. Nothing demands a click, prompt, or productive action. Duration and attention remain available without being interpreted as engagement metrics.
 
-- twelve authored shader families;
-- a cryptographically seeded family-and-trait program;
-- deterministic GLSL generation;
-- local compilation and rendering;
-- local candidate rejection and selection;
-- bounded local encounter traces for recent non-repetition;
-- an optional local-model proposal mechanism;
-- executable exports.
+### Relinquishment
 
-The current representation is not a general typed AST. Family selection changes the GLSL structure; within-family variation is parametric. A richer typed program grammar remains future work.
+**another** withdraws the current shader from the interface and replaces it with an unknown alternative. The action is not stored as dislike, taste, or direction. The system does not move towards what it believes the visitor wants.
 
-## 5. Aesthetic requirements
+Relinquishment is irreversible only at the interface level. The software does not claim that a reproducible computational substrate has metaphysically destroyed an object.
 
-Visual quality is constitutive, but it has not been established by documentation or tests alone.
+### Continuation
 
-The current visual field includes:
+**take the code** exports executable source and adapters. This does not confer title or exclusive possession. The shader may be copied, changed, studied, included in other work, or redistributed.
 
-- folded and turbulent fields;
-- fluid and layered noise;
-- interference and moiré structures;
-- cellular systems;
-- radial and polar transformations;
-- crystalline, woven, tidal, magnetic, and botanical abstractions.
+The work’s gift is not scarcity. It is permission and material continuity.
 
-Before release, the work requires human review of at least 200 rendered encounters. The review must determine:
+## Provenance without title
 
-- whether family templates become recognisable too quickly;
-- whether within-family variation is substantial;
-- whether the selection procedure improves or merely delays repetition;
-- whether motion, colour, rhythm, depth, and composition are convincing;
-- which families should be removed, rewritten, or expanded.
+TSDNE internally computes deterministic seeds, graph representations, source code, and cryptographic hashes. These values make a generated program technically identifiable and permit deliberate reconstruction when its code is taken.
 
-Cardinality is not aesthetic variety. A large seed space does not establish a large perceptual space.
+The system refuses to transform that identity into a proprietary object.
 
-## 6. Withdrawal and persistence
+> TSDNE retains provenance but abolishes title.
 
-### Interface withdrawal
+> The shader can be identified, copied, and reconstructed, but not claimed.
 
-Once **another** is chosen, the previous encounter is no longer retrievable through TSDNE.
+The public encounter therefore contains no certificate, serial number, registry entry, rarity score, ownership record, edition, authenticity claim, or guarantee of global uniqueness.
 
-### Computational persistence
+A technical manifest is exported only when the visitor takes the code. It is explicitly labelled as a non-certificate and records no owner.
 
-A deterministic program may be regenerated from retained materials. The browser also stores a bounded trace to reduce recent repetition. The work must not call this universal disappearance or deletion.
+## The title
 
-### Appropriation
+The phrase “does not exist” is culturally associated with synthetic images and foundation-model generation. TSDNE enters that field while refusing its dominant technical apparatus.
 
-**Use this shader** lets the current program continue outside TSDNE. This is not a transfer of exclusive title. Copying does not deprive other people of the same code.
+The shader “does not exist” does not mean:
 
-The interaction combines withdrawal from one interface with persistence through circulation.
+- that no similar visual form has ever appeared;
+- that the program is globally unique;
+- that it cannot recur;
+- that a visitor owns its first instantiation;
+- that relinquishment destroys all possible reconstruction.
 
-## 7. Local memory
+It means that the shader was not waiting as an inventory item. It becomes available as an executed event within the encounter.
 
-The local trace records what the browser was shown in order to reduce immediate recurrence. It is:
+The work thereby claims a place in contemporary generative culture without accepting that generativity is synonymous with a language or diffusion model.
 
-- bounded;
-- clearable;
-- local to the browser;
-- not uploaded;
-- not attached to an account;
-- not interpreted as taste or preference.
+## Why no LLM
 
-It is nevertheless a behavioural trace in the descriptive sense that it records a sequence of encounters. The project should state the narrower safeguards rather than deny the category.
+The public work does not use a language model.
 
-“The system remembers so that the encounter can forget” is an interpretive figure, not a claim of theoretical priority. It must be situated through scholarship on digital memory, regeneration, storage, and materiality.
+This decision is artistic, infrastructural, ethical, and preservational:
 
-## 8. Optional local model
+- the interaction does not require model collaboration;
+- model loading would create a deferred “real” version of the artwork;
+- a model would introduce corpus, labour, licensing, hosting, memory, and device-access questions that compete with the work’s central proposition;
+- model mutation would shift the work towards interactive shader exploration;
+- a self-contained procedural system makes privacy and preservation architectural facts;
+- refusing a foundation model is a sharper intervention into the contemporary “does not exist” genre than using one apologetically.
 
-The model is not the artwork’s protagonist and is not required for the baseline encounter.
+The complete WebLLM predecessor remains preserved on a separate branch for other research.
 
-Current role:
+## Visual complexity
 
-- off by default;
-- enabled through explicit visitor choice;
-- proposes bounded trait changes or a family change;
-- receives a compact program description, not personal information;
-- may fail or be rejected;
-- receives explicit attribution only when its proposal is actually used.
+Removing the LLM does not justify visually shallow output. The shader space must appear credible as abundance.
 
-The repository includes random and authored baselines. Until a comparative study is completed, the project must not claim that model proposals are aesthetically superior, more personal, or more consequential than those baselines.
+Complexity is produced through:
 
-Three outcomes remain open:
+- several authored shader families;
+- layered mathematical fields;
+- recursive and iterative transformations;
+- procedural palettes;
+- deterministic high-dimensional traits;
+- local rendering and perceptual measurement;
+- technical and safety constraints;
+- novelty-and-quality search over candidate pools;
+- sustained human curation.
 
-1. the model provides a measurable and interpretable difference;
-2. the model does not outperform simpler mechanisms, and this negative result becomes research;
-3. the model is removed from the public artwork.
+The search is internal. It does not expose a design interface and does not model the visitor.
 
-## 9. Political commitments
+Future visual engines may include reaction–diffusion, cellular automata, particle fields, compositional pattern-producing networks, reservoir systems, or small authored neural systems. Any such engine must remain local, inspectable, preservable, non-extractive, and subordinate to the encounter.
 
-The work refuses:
+## Local anti-repetition memory
 
-- accounts;
-- advertising;
-- analytics;
-- cross-site tracking;
-- a public collection registry;
+Obvious recurrence would make the claim of abundance unconvincing. TSDNE therefore stores a bounded local memory of displayed perceptual regions.
+
+The memory records compact visual and temporal descriptors. It excludes the information required to reconstruct a relinquished shader.
+
+This produces an anti-archive:
+
+> The system remembers enough not to repeat, but not enough to restore.
+
+The mechanism is not personalisation. It never interprets the visitor’s action. Every displayed shader enters the same repulsion field whether it was loved, disliked, ignored, or relinquished out of curiosity.
+
+## Refusals
+
+TSDNE refuses:
+
+- prompting;
+- browsing;
+- comparison grids;
+- preference prediction;
+- behavioural profiling;
+- recommendation;
+- cumulative optimisation towards taste;
+- model training;
+- ownership;
+- title;
+- certification;
 - artificial scarcity;
-- exclusive ownership certificates;
-- server-side generation as a requirement;
-- mandatory model download;
-- unrestricted prompt capture;
-- inference that visitor dwell time equals preference.
+- public provenance markets;
+- global uniqueness claims;
+- exclusive circulation;
+- compulsory preservation.
 
-These refusals must not remain solely in an artist statement. The **about** interface exposes storage, external requests, model status, attribution, licensing, and safety limitations.
+The accumulation of refusals is not a reduced feature list. It is the work’s interaction design and political form.
 
-The project does not infer that local execution is automatically private, ethical, decolonial, ecologically preferable, or equally accessible.
+## Intended outcomes
 
-## 10. Licensing and circulation
-
-The authored generator and application are GPL-3.0-or-later. This is the substantive commitment to inspectable, modifiable, and redistributable software.
-
-Generated outputs carry a CC0 waiver to the extent waivable rights exist. This clarifies intended circulation. It is not represented as renunciation of a property right that necessarily existed in every generated instance.
-
-Encounter records establish correspondence among program, seed, source, lineage, and rendered descriptors. They do not establish ownership.
-
-## 11. Research questions
-
-### Questions answerable through the realised system
-
-- How can interface non-retrieval coexist with deterministic reproducibility?
-- What technical information is required to transfer an executable visual process truthfully?
-- How can recent repetition be reduced without a central registry?
-- How should model, authored, random, and deterministic agency be recorded?
-
-### Questions requiring empirical study
-
-- Does irreversible replacement change attention or stopping behaviour?
-- Do visitors report attachment, regret, responsibility, or indifference?
-- Does executable transfer alter how the encounter is understood?
-- Do model proposals differ perceptually or aesthetically from matched baselines?
-- Does disclosing reproducibility weaken, intensify, or complicate experienced loss?
-
-### Questions requiring separate technical work
-
-- When should two dynamic shaders be considered perceptually similar?
-- How much structural variety can a bounded browser grammar sustain?
-- Can a typed program representation support meaningful structural mutation without unrestricted code generation?
-
-## 12. Outputs
-
-### Core output
-
-- the public browser artwork.
-
-### Possible later outputs
-
-- gallery or projected installations;
-- a documented exhibition mode exposing rejected and competing proposals;
-- a practice-based paper on withdrawal and executable transfer;
-- an empirical HCI study, only after an appropriate protocol and review;
-- a technical study of dynamic-shader similarity;
-- an ablation study of local-model, random, and authored mutation.
-
-A public atlas of exported shaders is not part of the core project. It would restore the archive and registry that the encounter currently refuses. Such an archive could exist only as a separate, explicitly contradictory work.
-
-## 13. Constraints
-
-- no paid inference or API dependency;
-- no required server computation;
-- static deployment remains possible;
-- lower-power devices receive a complete procedural version;
-- optional local AI is off by default;
-- external runtime and model requests are disclosed;
-- exported code must be tested in its claimed host;
-- visual-safety screening must be described as heuristic until externally evaluated;
-- no visitor-affect claim is presented as a result without evidence;
-- no component-level priority claim;
-- no hidden substitution of authored behaviour for model agency.
+- a stable browser artwork;
+- a public source repository;
+- exhibition documentation;
+- a practice-led journal article;
+- a reusable account of local anti-repetition without profiling;
+- a critical articulation of provenance without title and personal relation without property.
