@@ -11,8 +11,8 @@
 - [x] explicit mutation-provenance tests;
 - [x] synthetic high-frequency luminance-change tests;
 - [x] random and authored comparison baselines;
-- [ ] integrated CI pass confirmed for `0.1.0-alpha.2`;
-- [ ] all automated failures resolved;
+- [x] integrated CI pass confirmed for `0.1.0-alpha.2`;
+- [x] all automated failures resolved;
 - [ ] network-request inventory generated;
 - [ ] remotely loaded WebLLM runtime vendored or supply-chain decision documented;
 - [ ] model and dependency licence inventory complete.
@@ -55,8 +55,8 @@
 - [ ] cold model download measured;
 - [ ] cached model load measured;
 - [ ] failure, interruption, timeout, and memory paths tested;
-- [ ] empty proposals rejected;
-- [ ] provenance records inspected;
+- [ ] empty proposals rejected in a real-browser model session;
+- [ ] provenance records inspected in a real-browser model session;
 - [ ] model, random, and authored baselines compared if model claims remain in scope;
 - [ ] decision made: public, research-only, or removed.
 
@@ -81,8 +81,8 @@
 - [ ] ShaderToy adaptation executed;
 - [ ] ISF adaptation executed;
 - [ ] encounter JSON round-trip tested;
-- [ ] licences and provenance included accurately;
-- [ ] unsupported features documented.
+- [x] licences and provenance included accurately in generated structures;
+- [ ] unsupported target-host features documented after execution tests.
 
 ## Documentation reconciliation
 
@@ -92,12 +92,12 @@
 - [x] AI-use statement added;
 - [x] bibliography corrections recorded;
 - [x] privacy and accessibility pages aligned with source;
-- [ ] all current Markdown checked against final source;
-- [ ] all public HTML checked against final source;
-- [ ] central references read in full;
-- [ ] final prose rewritten in authorial voice;
-- [ ] current model/runtime details rechecked;
-- [ ] no stale “release candidate” claims outside preserved audit/history documents.
+- [x] all current Markdown checked against the final source structure;
+- [x] all public HTML checked against the final source structure;
+- [ ] central references read in full by the author;
+- [ ] final publication prose rewritten in authorial voice;
+- [ ] current model artefacts, licences, and runtime behaviour rechecked in a real browser;
+- [x] no stale release-candidate claim remains outside preserved audit and historical records.
 
 ## Staging and release
 
