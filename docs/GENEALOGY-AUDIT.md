@@ -116,7 +116,7 @@ They may indicate attention, confusion, performance delay, practical interest, a
 
 ### 3.10 Scarcity and ownership
 
-TSDNE creates **interface scarcity**, not low computational supply. Source export grants a copy and, depending on the final licence, permissions to use and modify it. It does not create:
+TSDNE creates **interface scarcity**, not low computational supply. Source export grants a copy and permissions under the stated terms. It does not create:
 
 - exclusive ownership;
 - unique legal title;
@@ -126,9 +126,21 @@ TSDNE creates **interface scarcity**, not low computational supply. Source expor
 
 The encounter record documents correspondence among source, seed, graph, version, and moment. It must not be framed as a scarcity certificate.
 
-### 3.11 Open-source and free-software language
+### 3.11 Licence status and scope
 
-The repository currently states an intended maximally permissive or public-domain direction. Until a licence is adopted, the project must not state that repository code is already freely licensed. Generated shaders, application code, bundled dependencies, model artefacts, and example material may require different licence notices.
+The release candidate now adopts explicit terms:
+
+- the application is licensed under **GNU GPL 3.0 or later**;
+- generated shader outputs are dedicated, to the extent possible under law, under **CC0 1.0**;
+- encounter records expressly reject ownership, exclusivity, and artificial scarcity.
+
+This resolves the earlier absence of a licence, but it does not remove the need for a release audit. The project must still verify:
+
+- compatibility and notice requirements for bundled dependencies;
+- licences and acceptable-use conditions for downloaded model artefacts;
+- whether example or third-party material is included in exports;
+- the jurisdictional limits of CC0 and rights that cannot be waived;
+- that documentation never implies CC0 controls upstream model or training-data rights.
 
 ### 3.12 Security and resource bounds
 
@@ -203,7 +215,7 @@ The following must be rechecked at manuscript freeze because their status or met
 - current WebLLM release, model catalogue, and browser requirements;
 - current licences of WebLLM models and bundled dependencies;
 - current ShaderToy, Art Blocks, and platform policies;
-- final TSDNE software and generated-output licences;
+- dependency and model-licence compatibility with the release terms;
 - current browser support for WebGPU, OffscreenCanvas, and relevant storage APIs.
 
 ### Excluded or de-emphasised categories
@@ -232,12 +244,12 @@ Exclusion does not indicate low quality or irrelevance to other research. It pre
 | “Every shader is unique” | Unprovable | Computationally identified; recent repetition reduced locally and statistically |
 | “Private because it runs locally” | Too broad | Project-controlled inference and generation occur locally; network, cache, browser, and upstream-model conditions are disclosed |
 | “Personalised without surveillance” | Internally contradictory | Personal without behavioural personalisation |
-| “The visitor owns the shader” | Legally and conceptually misleading | The visitor receives reusable source under the stated licence, without exclusivity |
+| “The visitor owns the shader” | Legally and conceptually misleading | The visitor receives reusable source under CC0-oriented generated-output terms, without exclusivity |
 | “The shader disappears forever” | False if exported, cached, recorded, or reproducible | The encounter becomes unavailable through TSDNE after relinquishment |
 | “The model creates the shader” | Incorrect division of agency | The model proposes bounded mutations; authored procedural and validation systems determine executable visibility |
 | “User behaviour evolves aesthetic quality” | Unsupported without study | Behaviour may be studied separately; the public work does not equate action with preference |
 | “No server” | Too absolute | Static hosting and external asset delivery remain; no required server-side generation or project database |
-| “Open source” before licence adoption | Premature | Intended licence direction is documented; rights begin only when explicit licences are attached |
+| “Open source” settles every rights question | False | GPL/CC0 terms govern the project’s own release claims; dependency, model, and upstream rights remain separately auditable |
 | “Environmentally preferable” | Unsupported | Local execution shifts computation and can be measured; no general carbon advantage is claimed |
 | “No similar work exists” | Impossible to establish | No verified work located in this bounded review combines the complete configuration |
 
@@ -255,7 +267,7 @@ The genealogy and audit imply the following non-negotiable implementation requir
 8. Preserve family diversity rather than optimise one scalar aesthetic score.
 9. Make source export deterministic from the same graph used to render.
 10. Separate encounter metadata from any claim of ownership.
-11. Adopt explicit licences before public release.
+11. Maintain explicit application and generated-output terms, dependency notices, and model-licence records.
 12. Enumerate model and network dependencies in the privacy statement.
 13. Build accessibility checks into candidate validation.
 14. Archive a reproducible preservation package.
@@ -269,4 +281,4 @@ The most defensible account of TSDNE is:
 
 ## 8. Audit status
 
-**Pass, with qualifications.** The genealogy is sufficiently grounded for project documentation and design decisions. Before scholarly submission, every mutable technical source and preprint must be rechecked, the final licences must exist, and claims about visitor interpretation must be supported either by practice-based analysis or a consented study.
+**Pass, with qualifications.** The genealogy is sufficiently grounded for project documentation and design decisions. Before scholarly submission, every mutable technical source and preprint must be rechecked, dependency/model licence compatibility must be verified, and claims about visitor interpretation must be supported either by practice-based analysis or a consented study.
