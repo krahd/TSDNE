@@ -23,7 +23,7 @@ test("encounter record is reconstructable without conferring property", () => {
   assert.equal(record.licensing.ownershipConferred, false);
   assert.equal(record.licensing.exclusivityConferred, false);
   assert.match(record.notice, /waivable rights/i);
-  assert.doesNotMatch(record.notice, /copyright necessarily attaches/i);
+  assert.match(record.notice, /does not .*assert that copyright necessarily attaches/i);
 });
 
 test("generated-output notice distinguishes output waiver from generator licence", () => {
