@@ -1,11 +1,11 @@
 # Contributing
 
-TSDNE is an authored open-source artwork. Contributions are welcome when they preserve the artistic constraints documented in `PROJECT.md`, `HYBRID-WEBLLM.md`, and `STATUS.md`.
+TSDNE is an authored open-source artwork. Contributions are welcome when they preserve the artistic constraints documented in [`docs/PROJECT.md`](docs/PROJECT.md), [`docs/HYBRID-WEBLLM.md`](docs/HYBRID-WEBLLM.md), and [`STATUS.md`](STATUS.md).
 
 ## Useful contributions
 
 - browser and device compatibility reports;
-- accessibility and photosensitive-content audits;
+- accessibility and photosensitive-content reviews;
 - verified export adapters;
 - performance measurements;
 - corrections to documentation and references;
