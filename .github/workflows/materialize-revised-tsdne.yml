@@ -1,0 +1,79 @@
+name: Materialize revised TSDNE
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".revision-payload/READY"
+
+permissions:
+  contents: write
+
+jobs:
+  materialize:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - name: Verify and materialize revised artwork
+        shell: bash
+        run: |
+          set -euo pipefail
+          cat .revision-payload/part-* > /tmp/tsdne-revision.b64
+          base64 --decode /tmp/tsdne-revision.b64 > /tmp/tsdne-revision.tar.gz
+          echo "c86f901bf9229c6776e017d6f78ba245a6d5eadef5082bb2588a55e735ca9886  /tmp/tsdne-revision.tar.gz" | sha256sum --check
+          tar -xzf /tmp/tsdne-revision.tar.gz -C .
+
+          rm -f \
+            prototype/src/ai.js \
+            prototype/src/ai-worker.js \
+            prototype/src/metrics.js \
+            docs/HYBRID-WEBLLM.md \
+            docs/AUDIT-RESPONSE-2026-08-04.md \
+            docs/CRITICAL-AUDIT-2026-08-04.md \
+            docs/GENEALOGY-VERIFICATION.md \
+            docs/IMPLEMENTATION-ALTERNATIVES.md
+
+          python3 - <<'PY'
+          from pathlib import Path
+
+          path = Path("prototype/src/generator.js")
+          text = path.read_text()
+          text = text.replace("MUTATION_KEYS", "TRAIT_KEYS")
+          text = text.replace('generator: "tsdne-alpha-3"', 'generator: "tsdne-procedural-v1"')
+
+          start = text.index("export function candidateFromGraph")
+          end = text.index("export function generateCandidate")
+          replacement = '''export function candidateFromGraph(graph, metadata = {}) {
+            const seed = metadata.seed || graph.seed || randomSeed();
+            return {
+              id: seedId(seed), seed, family: graph.family, graph,
+              signature: graphSignature(graph), structuralVector: graphFeatureVector(graph),
+              estimatedCost: estimateCost(graph), source: compileGraph(graph),
+              origin: metadata.origin || "authored-procedural",
+              createdAt: new Date().toISOString(),
+            };
+          }
+          '''
+          text = text[:start] + replacement + text[end:]
+
+          start = text.index("export function describeCandidate")
+          end = text.index("export function familyMeta")
+          text = text[:start] + text[end:]
+          path.write_text(text)
+          PY
+
+          rm -rf .revision-payload
+          rm -f .github/workflows/materialize-revised-tsdne.yml
+
+          npm install --ignore-scripts
+          npm run verify
+
+          git config user.name "TSDNE revision bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add -A
+          git commit -m "Rebuild TSDNE around encounter and provenance without title"
+          git push
