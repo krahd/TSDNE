@@ -32,6 +32,16 @@ The implementation includes:
 - automated syntax and unit tests;
 - GitHub Pages and CI workflows.
 
+## Related-work review completed
+
+A comprehensive genealogy and adversarial verification pass have been committed:
+
+- [`docs/GENEALOGY.md`](docs/GENEALOGY.md) maps direct precedents and wider lineages across algorithmic art, browser/net art, HCI, shader systems, evolutionary computation, AI-generated shaders, browser-local inference, political economy, accessibility, security, and preservation;
+- [`docs/GENEALOGY-AUDIT.md`](docs/GENEALOGY-AUDIT.md) records the verification method, corrections, exclusions, claim controls, and implementation consequences;
+- [`REFERENCES.md`](REFERENCES.md) is now a structured verified source index rather than a preliminary technical list.
+
+The review found no verified work combining the complete TSDNE configuration, but this is explicitly treated as a bounded configuration finding rather than a priority claim. The project must not claim invention of generative art, browser art, shader sharing, interactive evolution, LLM-generated shaders, browser-local inference, or the “This X Does Not Exist” interface genre.
+
 ## Implemented visual families
 
 1. folded flow;
@@ -148,7 +158,7 @@ The first paper remains journal-first and practice-led:
 
 > **Personal without Personalisation: Ephemerality, Relation, and Bespoke AI in *This Shader Does Not Exist***
 
-The implemented release candidate now supplies the material basis for production notes, screenshots, encounter observations, measured local-AI timings, and the first argument memorandum.
+The implemented release candidate now supplies the material basis for production notes, screenshots, encounter observations, measured local-AI timings, and the first argument memorandum. The genealogy establishes the paper’s required related-work field and its claim boundary: the contribution is the realised synthesis, not novelty of any individual technical or artistic component.
 
 ## Immediate next actions
 
@@ -159,4 +169,4 @@ The implemented release candidate now supplies the material basis for production
 5. Complete accessibility and photosensitive-content review.
 6. Decide repository-publication route and execute the account-level release checklist.
 7. Purchase and configure the canonical domain.
-8. Begin the journal article's production diary and source ledger.
+8. Begin the journal article's production diary and argument memorandum using the verified genealogy and claim controls.
