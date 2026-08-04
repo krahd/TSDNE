@@ -2,18 +2,21 @@ export const MODEL_CATALOG = [
   {
     id: "SmolLM2-360M-Instruct-q4f16_1-MLC",
     label: "SmolLM2 360M",
+    downloadEstimateMB: 190,
     approxVRAMMB: 376,
     role: "lower-bound experiment",
   },
   {
     id: "Qwen2.5-0.5B-Instruct-q4f16_1-MLC",
     label: "Qwen2.5 0.5B",
+    downloadEstimateMB: 290,
     approxVRAMMB: 945,
     role: "default smallest-useful candidate",
   },
   {
     id: "Llama-3.2-1B-Instruct-q4f16_1-MLC",
     label: "Llama 3.2 1B",
+    downloadEstimateMB: 700,
     approxVRAMMB: 879,
     role: "larger comparison",
   },
@@ -33,6 +36,8 @@ try {
 } catch {}
 
 export let MODEL_ID = selectedId;
+export let MODEL_APPROX_MB =
+  MODEL_CATALOG.find((model) => model.id === selectedId)?.downloadEstimateMB || 290;
 export let MODEL_APPROX_VRAM_MB =
   MODEL_CATALOG.find((model) => model.id === selectedId)?.approxVRAMMB || 945;
 
@@ -54,6 +59,7 @@ export function selectLocalAIModel(id) {
 
   selectedId = model.id;
   MODEL_ID = model.id;
+  MODEL_APPROX_MB = model.downloadEstimateMB;
   MODEL_APPROX_VRAM_MB = model.approxVRAMMB;
 
   try {
@@ -109,6 +115,7 @@ export async function loadLocalAI(onProgress = () => {}) {
         onProgress({
           ...report,
           model: MODEL_ID,
+          downloadEstimateMB: MODEL_APPROX_MB,
           approxVRAMMB: MODEL_APPROX_VRAM_MB,
         }),
     });
