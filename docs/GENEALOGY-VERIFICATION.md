@@ -1,140 +1,175 @@
-# Genealogy verification log
+# Genealogy source-status and claim register
 
 **Date:** 4 August 2026  
-**Document verified:** [`GENEALOGY.md`](GENEALOGY.md)  
-**Status:** internal source and claim verification; not an independent audit
+**Applies to:** [`GENEALOGY.md`](GENEALOGY.md) and [`REFERENCES.md`](REFERENCES.md)  
+**Status:** internal, machine-assisted verification record; not an independent audit
 
 ## 1. Purpose
 
-This document records how the TSDNE genealogy was checked, which claims were corrected, which sources remain mutable or incomplete, and which formulations are permitted. It does not claim independence: the verification was conducted within the same project and must not be represented as external peer review.
+This file records the evidential status of sources and claims used in the TSDNE genealogy. It does not certify the genealogy as correct and must not be represented as peer review or external validation.
 
-The verification standard is narrower and more useful than an “audit” label:
+A previous version used the heading “Corrections closed.” That language was too strong. Bibliographic metadata, project behaviour, and interpretive claims require different forms of checking, and several records remain mutable or incompletely read.
 
-1. identify the canonical work or publication;
-2. prefer proceedings, publisher, artist, project, repository, standards, or institutional records;
-3. distinguish first publication from later preprint upload;
-4. distinguish encounter-time generation from pregenerated delivery;
-5. distinguish local execution from offline operation, total privacy, or ethical provenance;
-6. distinguish source transfer from ownership;
-7. distinguish computational identification from perceptual uniqueness;
-8. treat absence from the search as a bounded finding, never as proof of priority.
+## 2. Verification states
 
-## 2. Corrections closed
+Each source may pass through the following states:
 
-| Item | Earlier problem | Verified correction |
+1. **Lead only** — discovered through search, a model, a bibliography, or a secondary reference.
+2. **Canonical record checked** — publisher, proceedings, artist, institutional, standards, or repository record inspected.
+3. **Relevant passage or behaviour checked** — the passage, feature, interface, or code supporting the genealogy’s claim inspected directly.
+4. **Full source read** — the complete work read by the human author responsible for the manuscript.
+5. **Submission ready** — bibliographic form, interpretation, quotation or paraphrase, and manuscript claim checked together.
+
+The current repository contains sources at states 1–3. It does not claim that the complete bibliography has reached states 4 or 5.
+
+## 3. Primary-source corrections and distinctions
+
+| Item | Current verified distinction | Current state |
 |---|---|---|
-| *ShadAR* | The earlier verification replaced a 2025 proceedings date with the date of a later arXiv upload | Published in *2025 IEEE International Symposium on Mixed and Augmented Reality Adjunct*, pp. 959–960, DOI `10.1109/ISMAR-Adjunct68609.2025.00267`; author manuscript posted to arXiv on 19 February 2026 |
-| *AI Co-Artist* | Treated only as a 2025 preprint and left for later status checking | Published in EvoMUSART 2026, LNCS 16523, pp. 192–206, DOI `10.1007/978-3-032-24350-8_13`; the 2025 arXiv version is a preprint |
-| Quiroz and Dascalu | Only the 2016 system was included | Added the 2017 follow-up, *Interactive Shape Perturbation*, arXiv:1706.04077 |
-| Artbreeder lineage | Picbreeder was discussed without its major browser descendant | Added Ganbreeder/Artbreeder and its explicit debt to Picbreeder |
-| LLuminate | Omitted despite direct relevance to evolutionary LLM generation of shaders and other artefacts | Added Joel Simon’s LLuminate framework and repository |
-| Demoscene | Effectively collapsed into generic procedural graphics | Added 4k/64k intros and executable graphics as a direct culture of executable, runtime-generated visual art |
-| ShaderGPT | Omitted contemporary cloud authoring counter-model | Added service and privacy-policy comparison |
-| LUMEN | Omitted close WebGL2 implementation neighbour | Added seeded browser studio, controls, perfect loops, and export comparison |
-| HCI locators | Reflective, adversarial, critical-technical, and seamful design were named without precise locators | Added DOI or publisher locators for Sengers et al., Agre, DiSalvo, and Chalmers et al. |
-| *Demokritos* | Named without a public locator | Added ISEA 2025 programme and ISEA Symposium Archives records |
+| *AI Co-Artist* | 2025 arXiv preprint; published at EvoMUSART 2026 in LNCS 16523, pp. 192–206, DOI `10.1007/978-3-032-24350-8_13` | Canonical publisher record checked |
+| *ShadAR*, ISMAR | Four-author paper published in IEEE ISMAR-Adjunct 2025, pp. 959–960, DOI `10.1109/ISMAR-Adjunct68609.2025.00267` | Canonical proceedings record checked |
+| *ShadAR*, arXiv | arXiv:2602.17481, posted 19 February 2026, identifies itself as an author manuscript associated with the 2025 ISMAR-Adjunct publication; it is not used to replace the proceedings date | Record and manuscript front matter checked |
+| *ShadAR*, CHI EA | Distinct expanded five-author CHI 2026 extended abstract, article 860, DOI `10.1145/3772363.3799378`; includes object-detection-assisted selective manipulation | Canonical institutional/publisher record checked |
+| *Demokritos* | Author order is Santiago Ferrando, Christian Clark, Tomas Laurenzo; ISEA 2025 proceedings contribution presented in the poster programme | Programme and author publication record checked |
+| ShaderGPT by 14islands | Separate 2025 experiment at `shadergpt.14islands.com`, announced by 14islands in February 2025 | Creator record and live project checked |
+| `shadergpt.com` | Separate account-based service with its own operator, interface, and privacy policy; its policies must not be attributed to 14islands | Service and policy checked; mutable |
+| LUMEN | Repository account `Leonxlnx`; GitHub display name “Leon Lin” is display metadata, not an independently verified byline | Repository checked; byline remains limited |
+| TWDNE | Gwern’s primary implementation record states 100,000 images, 100,000 text snippets, fifteen-second replacement, pause, and no rewind/history | Primary project record checked |
+| Quiroz and Dascalu | 2016 procedural vertex-shader system and 2017 *Interactive Shape Perturbation* follow-up are distinct records | Manuscript records checked |
 
-## 3. Documentation corrections
+These entries remain subject to final manuscript-level human reading and bibliographic formatting.
 
-The repository was reorganised in commit `3af2ee2`, which moved the principal project documents into `docs/`. The README and status document still pointed to their former root paths. Those links were therefore genuinely stale after the move, even though the files themselves had not been deleted.
+## 4. Art-historical and media-theoretical additions
 
-The corrected map now uses:
+The earlier genealogy overemphasised technical neighbours. The revised document gives central status to:
 
-- `docs/PROJECT.md`
-- `docs/ARCHITECTURE.md`
-- `docs/HYBRID-WEBLLM.md`
-- `docs/IMPLEMENTATION-ROADMAP.md`
-- `docs/PROTOTYPE.md`
-- `docs/DEPLOYMENT.md`
-- `docs/PAPER-1.md`
-- `docs/REFERENCES.md`
-- `docs/GENEALOGY.md`
-- `docs/GENEALOGY-VERIFICATION.md`
+- Wendy Hui Kyong Chun, “The Enduring Ephemeral, or the Future Is a Memory”;
+- Matthew G. Kirschenbaum, *Mechanisms*;
+- Felix Gonzalez-Torres’s candy works and paper stacks;
+- Tino Sehgal’s constructed situations;
+- gift and circulation scholarship where actually used;
+- algorithmic identity and recommender-system scholarship;
+- relational aesthetics together with its critiques;
+- free-software publics and executable circulation.
 
-Temporary public/private visibility can also cause anonymous GitHub requests to return 404, but it was not the sole cause of the broken README links after the reorganisation.
+Current verification boundary:
 
-## 4. Method correction
+- publisher and institutional records have been checked for bibliographic and project descriptions;
+- these sources must still be read in the form cited before manuscript submission;
+- structural comparison does not establish equivalence of historical, political, embodied, or memorial content.
 
-The first genealogy declared evidence classes but did not apply them consistently. That unused classification scheme has been removed. The revised genealogy instead:
+In particular, comparison with Gonzalez-Torres concerns taking, circulation, replenishment, and endless supply. It must not appropriate the bodily, mourning, AIDS-related, or political meanings of the works.
 
-- names a source basis for each close precedent in the comparison table;
-- provides locators at the point of substantive claims;
-- maintains a complete source ledger;
-- records unresolved matters here rather than inventing an empty “U” category.
+## 5. Implementation-related claim correction
 
-## 5. Argument correction: necessity, not vacancy
+The genealogy and project documents now distinguish the implemented alpha from future technical research.
 
-A conjunction of sufficiently specific properties will usually appear unique. “No one combined these six features” is therefore weak evidence of artistic or research contribution.
+### Implemented
 
-The revised claim is:
+- twelve authored GLSL families;
+- bounded scalar traits and palette record;
+- seeded deterministic generation;
+- local selection and recent non-repetition;
+- optional model proposals over traits and family choice;
+- random and authored comparison baselines;
+- executable exports.
 
-> TSDNE’s constraints are mutually motivated refusals. Each answers a named counter-model and changes the meaning of the others.
+### Not implemented
 
-| TSDNE constraint | Principal counter-model | What the constraint does |
+- general typed AST;
+- arbitrary node insertion or removal;
+- topology rewiring;
+- unrestricted structural synthesis;
+- model-generated new families;
+- evidence that model proposals outperform simpler baselines.
+
+The source retains historical `graph` names for compatibility. Documentation must call the current representation a bounded family program.
+
+## 6. Argument correction
+
+The genealogy does not argue:
+
+> No prior work has the exact same collection of properties.
+
+It argues:
+
+> TSDNE’s constraints form a motivated structure in which one generated process is temporarily available, replacement prevents interface retrieval, and executable source can circulate without exclusivity.
+
+Each constraint answers a counter-model:
+
+| Constraint | Counter-model or problem | Function |
 |---|---|---|
-| One object at a time | ShaderToy, Artbreeder, feeds, galleries, parameter studios | Removes comparison, ranking, previews, and browsing |
-| Irreversible **another** | Saved seeds, browser history, persistent branches, archives | Makes search consequential |
-| Executable source transfer | Image-only “This X Does Not Exist” sites and platform-bound output | Transfers the generative process rather than only its rendered surface |
-| No behavioural profile | Recommenders, accounts, analytics, taste optimisation | Makes the relation personal after encounter rather than personalised beforehand |
-| Optional bounded local model | Cloud shader assistants and general prompt services | Makes model agency narrow, explicit, defeasible, and non-essential |
-| No proprietary scarcity | Art Blocks, NFTs, editions, canonical ownership | Separates singularity from exclusion and resale |
-| No public archive | ShaderToy, Artbreeder, Picbreeder, *Electric Sheep* | Refuses accumulation as the default measure of value |
-| Bounded local history | Global registries and hidden cross-user tracking | Reduces local repetition without constructing a social identity |
+| One object at a time | catalogues, population grids, authoring studios | removes simultaneous comparison |
+| No interface return | saved histories and archives | makes replacement a withdrawal |
+| Executable export | image-only generative sites | lets the process persist elsewhere |
+| No ownership certificate | tokenised scarcity | separates circulation from exclusive title |
+| Bounded local trace | immediate recurrence and central registries | reduces repetition without shared profiling |
+| No preference model | recommender systems | avoids fitting output to a behavioural profile |
+| Optional local model | mandatory cloud inference | makes model participation defeasible and inspectable |
+| Explicit provenance | generic AI authorship claims | distinguishes procedural, authored, random, and model actions |
 
-## 6. Central conceptual consequence
+This is an argument about necessity and coherence, not vacancy.
 
-The bounded IndexedDB history is not merely an optimisation mechanism.
+## 7. Conceptual claim correction
 
-> The system remembers so that the encounter can forget.
+### Memory and forgetting
 
-The interface denies retrieval, while compact local signatures prevent immediate perceptual return. Three forms of memory diverge:
+“The system remembers so that the encounter can forget” is retained as a project figure. It is not presented as a new theory or a research result. It requires direct engagement with Chun, Kirschenbaum, and related scholarship.
 
-- computational memory retains bounded signatures;
-- interface memory is deliberately absent;
-- human memory remains affective, partial, and unverifiable.
+### Personalisation
 
-This must remain transparent and clearable. It must never be converted into a behavioural profile or interpreted as evidence of taste.
+“Personal without personalisation” is an open empirical and conceptual question. TSDNE does not currently individualise output to a person. It permits personally meaningful encounter without a preference model, which is not by itself unique to this artwork.
 
-## 7. Claim register
+### Behavioural trace
+
+The local encounter record is a behavioural trace in the descriptive sense. The defensible claim is that it is bounded, clearable, local, not uploaded, not attached to an account, and not interpreted as preference.
+
+### Disappearance
+
+The shader does not disappear universally. It becomes unavailable through the TSDNE interface after replacement. Seeds, files, caches, storage, and exported source may persist.
+
+## 8. Claim register
 
 | Potential claim | Status | Permitted formulation |
 |---|---|---|
-| “The first AI-generated shader artwork” | False | LLM shader tools and published systems precede TSDNE |
-| “No similar project exists” | Unprovable | No verified project located in this bounded review realises the same motivated configuration |
-| “The configuration is novel because it has six properties” | Weak | The constraints form a coherent set of refusals directed at named counter-models |
-| “Every shader is unique” | Unprovable | Candidates have computational identities; recent structural and perceptual repetition is reduced locally |
-| “Private because local” | Too broad | Project-controlled inference and generation occur locally; network, browser, cache, model, and hosting conditions are disclosed |
-| “The visitor owns the shader” | Misleading | The visitor receives reusable source under stated non-exclusive terms |
-| “The shader disappears forever” | False | It becomes unavailable through the TSDNE interface after relinquishment |
-| “The model creates the shader” | Incorrect division of agency | The model proposes bounded mutations; authored systems validate and render them |
-| “Behaviour measures preference” | Unsupported | Behaviour remains semantically ambiguous unless studied with explicit consent |
-| “Local AI is environmentally preferable” | Unsupported | Computation is displaced to the visitor’s device and must be measured rather than assumed |
+| “First AI-generated shader artwork” | False | LLM shader tools and publications precede TSDNE |
+| “First browser shader generator” | False | Browser-native shader authoring and generation have substantial precedents |
+| “No similar work exists” | Unprovable | No work located in this bounded review was found to realise the same withdrawal-and-transfer structure |
+| “Every shader is unique” | Unprovable | Candidates have computational identities; recent repetition is reduced locally |
+| “The shader disappears” | Too broad | Replacement removes interface retrieval; computational traces may persist |
+| “The visitor owns the shader” | Misleading | The visitor receives non-exclusive reusable source |
+| “The model creates or improves the shader” | Unsupported | The model proposes bounded changes that may be rejected; advantage requires comparison |
+| “The system personalises without profiling” | Unsupported | The current system does not fit output to a person; personal meaning remains an empirical question |
+| “Local AI is private” | Too broad | Inference executes locally after disclosed runtime and model requests; upstream and browser conditions remain |
+| “The local trace is not behavioural data” | Too broad | It is a bounded local encounter trace not interpreted as preference or linked to identity |
+| “The animation is safe” | Unsupported | A conservative dense luminance-change heuristic is implemented; external evaluation remains required |
+| “Local AI is environmentally preferable” | Unsupported | Device-side memory, energy, and hardware costs require measurement |
+| “The project discovered a new digital-memory principle” | False/unsupported | The implementation is interpreted through established media theory |
 
-## 8. Source-status register
+## 9. Mutable records
 
-### Stable enough for the current genealogy
+Recheck at manuscript or release freeze:
 
-- Karl Sims and interactive evolutionary computation;
-- Picbreeder, Ganbreeder/Artbreeder, novelty search, and MAP-Elites;
-- *Electric Sheep*, *Every Icon*, Reas, Processing, and AARON;
-- demoscene 4k/64k intros and executable graphics;
-- ShaderToy, Hydra, Shader Park, Material Maker, ISF, and related shader tools;
-- Quiroz and Dascalu 2016/2017; Sasso, Loiacono, and Lanzi 2023;
-- AIShader, published *AI Co-Artist*, published *ShadAR*, and *Demokritos* programme/archive records;
-- WebLLM’s 2024 research paper;
-- reflective, critical-technical, adversarial, seamful, local-first, and Human–Data Interaction references;
-- WebGL/WebGPU, WCAG, and shader-security documentation.
-
-### Mutable and requiring recheck at manuscript freeze
-
-- current WebLLM release, supported models, memory requirements, and browser coverage;
-- ShaderGPT features, data practices, pricing, and account requirements;
-- LUMEN implementation, repository state, licence, and export formats;
+- current WebLLM version, runtime host, model catalogue, and browser support;
+- model licences, provenance statements, and file hosts;
+- LUMEN features, repository status, and licence;
+- both ShaderGPT services and their data practices;
 - platform policies for ShaderToy, Artbreeder, and Art Blocks;
-- model artefact licences and acceptable-use terms;
-- browser support for WebGPU, OffscreenCanvas, IndexedDB, and relevant APIs;
-- final proceedings pagination and bibliographic form for *Demokritos* if a more specific record becomes available.
+- browser support for WebGPU, IndexedDB, OffscreenCanvas, and related APIs;
+- exact proceedings form and pagination for sources lacking a stable publisher record;
+- exhibition and institutional descriptions that may change URLs.
 
-## 9. Human-read requirement
+## 10. Human-read requirement
 
-Before submission, every source actually cited in the manuscript must be opened and read in the form being cited. Repository descriptions, search snippets, and metadata records are sufficient for constructing this working genealogy but not substitutes for reading the final cited publication. The manuscript bibliography should contain only sources that have passed that final human check.
+Before submission:
+
+1. open every source in the form being cited;
+2. read the relevant passage in context;
+3. read complete sources carrying central theoretical weight;
+4. verify all quotations and paraphrases;
+5. check author order, title, venue, year, pagination, and DOI;
+6. remove sources that remain leads only;
+7. rewrite the argument in the author’s own voice;
+8. disclose machine assistance according to venue policy.
+
+Repository metadata, search snippets, and this file are research aids. They are not substitutes for scholarly reading.
