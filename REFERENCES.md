@@ -65,8 +65,8 @@ This file is the compact source index for TSDNE. The interpretive analysis is in
 
 - Quiroz, Juan C., and Sergiu M. Dascalu. “Design and Implementation of a Procedural Content Generation Web Application for Vertex Shaders.” https://arxiv.org/abs/1608.05231
 - Sasso, Elio, Daniele Loiacono, and Pier Luca Lanzi. “A Tool for the Procedural Generation of Shaders using Interactive Evolutionary Algorithms.” https://arxiv.org/abs/2312.17587
-- Guerrero, Paul, et al. “MatFormer: Nested Transformer for Elastic Inference.” [Relevant here through procedural-material graph work; verify exact cited paper context before formal use.] https://arxiv.org/abs/2207.01044
-- Hu, Yiwei, et al. “Generating Procedural Materials from Text or Image Prompts.” https://arxiv.org/abs/2304.13172
+- Guerrero, Paul, Miloš Hašan, Kalyan Sunkavalli, Radomír Měch, Tamy Boubekeur, and Niloy J. Mitra. “MatFormer: A Generative Model for Procedural Materials.” *ACM Transactions on Graphics* 41(4), 2022. https://doi.org/10.1145/3528223.3530173
+- Hu, Yiwei, Paul Guerrero, Miloš Hašan, Holly Rushmeier, and Valentin Deschaintre. “Generating Procedural Materials from Text or Image Prompts.” 2023. https://arxiv.org/abs/2304.13172
 
 ## 6. LLM-generated shaders
 
@@ -111,15 +111,15 @@ No single perceptual hash or embedding should be presented as a definition of ae
 - Pirolli, Peter. “Rational Analyses of Information Foraging on the Web.” https://doi.org/10.1207/s15516709cog0000_20
 - Kogut, Tehila. “Possession Attachment.” https://doi.org/10.1002/bdm.698
 - Reb, Jochen, and Terry Connolly. “Possession, Feelings of Ownership and the Endowment Effect.” https://www.cambridge.org/core/journals/judgment-and-decision-making/article/possession-feelings-of-ownership-and-the-endowment-effect/A726037DF9BECAA30A484183892D66C8
-- Sengers, Phoebe, et al. “Reflective Design.” 2005. [Verify venue-formatted citation before manuscript use.]
+- Sengers, Phoebe, Kirsten Boehner, Shay David, and Joseph “Jofish” Kaye. “Reflective Design.” *Proceedings of the 4th Decennial Conference on Critical Computing: Between Sense and Sensibility*, 49–58, 2005. https://doi.org/10.1145/1094562.1094569
 - Agre, Philip. *Computation and Human Experience*. Cambridge University Press, 1997.
 - DiSalvo, Carl. *Adversarial Design*. MIT Press, 2012.
-- Mortier, Richard, et al. “Human–Data Interaction.” https://arxiv.org/abs/1412.6159
-- Kleppmann, Martin, et al. “Local-First Software.” https://doi.org/10.1145/3359591.3359737
+- Mortier, Richard, Hamed Haddadi, Tristan Henderson, Derek McAuley, and Jon Crowcroft. “Human–Data Interaction: The Human Face of the Data-Driven Society.” 2014. https://arxiv.org/abs/1412.6159
+- Kleppmann, Martin, et al. “Local-First Software: You Own Your Data, in Spite of the Cloud.” 2019. https://doi.org/10.1145/3359591.3359737
 
 ## 11. Politics, ownership, and circulation
 
-- Couldry, Nick, and Ulises A. Mejias. “Data Colonialism.” https://doi.org/10.1177/1527476418796632
+- Couldry, Nick, and Ulises A. Mejias. “Data Colonialism: Rethinking Big Data’s Relation to the Contemporary Subject.” *Television & New Media* 20(4), 2019. https://doi.org/10.1177/1527476418796632
 - GNU Project. Free Software Definition. https://www.gnu.org/philosophy/free-sw.html
 - Art Blocks. *Chromie Squiggle*. https://www.artblocks.io/collection/chromie-squiggle-by-snowfro
 - Art Blocks. “Inside the Algorithm.” https://www.artblocks.io/articles/chromie-squiggle-algorithm-guide
