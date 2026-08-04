@@ -1,0 +1,18 @@
+cff-version: 1.2.0
+message: "Please cite the artwork or software using this metadata."
+title: "This Shader Does Not Exist"
+type: software
+authors:
+  - family-names: Laurenzo
+    given-names: Tomas
+repository-code: "https://github.com/krahd/TSDNE"
+version: "0.1.0-alpha.1"
+date-released: 2026-08-04
+license: GPL-3.0-or-later
+abstract: "A browser artwork about exploration, ephemerality, freely circulating shaders, personal relation without ownership, and local bespoke AI without profiling."
+keywords:
+  - generative art
+  - shaders
+  - WebGL
+  - WebLLM
+  - computational art

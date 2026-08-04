@@ -1,261 +1,54 @@
-import {
-  describeCandidate,
-  generateCandidate,
-  mutateCandidate,
-} from "./generator.js";
-import { createRenderer, qualityMetrics } from "./webgl.js";
-import { exportBundle } from "./export.js";
-import { loadLocalAI, localAISupport, MODEL_ID, proposeMutation } from "./ai.js";
+import { describeCandidate, familyMeta, generateCandidate, mutateCandidate } from "./generator.js";
+import { createRenderer } from "./webgl.js";
+import { compactPerception, isTooSimilar, qualityAssessment, sequenceDescriptor } from "./perception.js";
+import { clearHistory, loadRecent, saveEncounter } from "./history.js";
+import { disableLocalAI, interruptLocalAI, loadLocalAI, localAISupport, MODEL_APPROX_MB, MODEL_CATALOG, MODEL_ID, proposeMutation, selectLocalAIModel } from "./ai.js";
+import { downloadText, exportFiles } from "./export.js";
+import { clearMetrics, measure, metricSummary } from "./metrics.js";
 
-const canvases = [document.querySelector("#stage-a"), document.querySelector("#stage-b")];
-const renderers = canvases.map((canvas) => createRenderer(canvas));
-const validationCanvas = document.createElement("canvas");
-const validator = createRenderer(validationCanvas);
-const status = document.querySelector("#status");
-const aiState = document.querySelector("#ai-state");
-const anotherButton = document.querySelector("#another");
-const panel = document.querySelector("#panel");
-const panelTitle = document.querySelector("#panel-title");
-const panelContent = document.querySelector("#panel-content");
+const $=(s)=>document.querySelector(s);
+const canvases=[$("#stage-a"),$("#stage-b")],renderers=canvases.map(c=>createRenderer(c,{onContextLost:()=>announce("graphics context lost; attempting recovery")}));
+const validatorCanvas=document.createElement("canvas"),validator=createRenderer(validatorCanvas);
+const status=$("#status"),aiState=$("#ai-state"),anotherButton=$("#another"),useButton=$("#use"),aboutButton=$("#about"),pauseButton=$("#pause"),panel=$("#panel"),panelTitle=$("#panel-title"),panelContent=$("#panel-content"),live=$("#live-region");
+const AWAKENING_DWELL_MS=12000,AWAKENING_TRANSITION_MS=7000,SAMPLE_TIMES=[.73,2.11,4.47],SAMPLE_SIZE=64,MAX_ATTEMPTS=72;
+const motionQuery=matchMedia("(prefers-reduced-motion: reduce)");
+let settings={paused:false,reducedMotion:motionQuery.matches,reducedIntensity:false,localAIEnabled:true};
+try{settings={...settings,...JSON.parse(localStorage.getItem("tsdne-settings-v1")||"{}")};}catch{}
+let recent=await loadRecent(350),activeIndex=0,current=null,encounterNumber=0,currentEncounterStarted=performance.now(),transitionTimer=null,animationFrame=null;
+const rendererStarts=[performance.now(),performance.now()];
+let localAI={state:"idle",detail:"",progress:0},awakeningStarted=false,awakeningCompleted=false,prefetchedHybrid=null,prefetching=null,generationBusy=false;
 
-const HISTORY_KEY = "tsdne-prototype-signatures-v2";
-const MAX_HISTORY = 500;
-const AWAKENING_DWELL_MS = 12000;
-const AWAKENING_TRANSITION_MS = 7000;
+function persistSettings(){try{localStorage.setItem("tsdne-settings-v1",JSON.stringify(settings));}catch{}}
+function announce(message){live.textContent="";requestAnimationFrame(()=>{live.textContent=message;});}
+function setStatus(message){status.textContent=message;}
+function applyRenderSettings(){const motion=settings.paused?0:settings.reducedMotion ? 0.12 : 1,intensity=settings.reducedIntensity ? 0.58 : 1;for(const r of [...renderers,validator])r.setSettings({motion,intensity});pauseButton.textContent=settings.paused?"play":"pause";pauseButton.setAttribute("aria-pressed",String(settings.paused));document.documentElement.dataset.reducedMotion=String(settings.reducedMotion);document.documentElement.dataset.reducedIntensity=String(settings.reducedIntensity);}
+applyRenderSettings();
 
-let stored = [];
-try {
-  stored = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]");
-} catch {
-  stored = [];
-}
+function candidateRecord(candidate){return{id:candidate.id,createdAt:candidate.createdAt,family:candidate.family,origin:candidate.origin,signature:candidate.signature,structuralVector:candidate.structuralVector,perception:candidate.perception};}
+async function validateCandidate(candidate){if(candidate.estimatedCost>13)return null;validator.setFragmentSource(candidate.source);const frames=validator.sampleSequence(SAMPLE_TIMES,SAMPLE_SIZE,{motion:settings.reducedMotion ? 0.12 : 1,intensity:settings.reducedIntensity ? 0.58 : 1}),perception=sequenceDescriptor(frames,SAMPLE_SIZE),assessment=qualityAssessment(perception,familyMeta(candidate.family),{reducedMotion:settings.reducedMotion});if(!assessment.pass)return null;const completed={...candidate,perception:compactPerception(perception),quality:assessment};const similarity=isTooSimilar(completed,recent,{threshold:.105});if(similarity.tooSimilar)return null;return{...completed,nearestPrior:similarity};}
+async function generateValidProceduralCandidate(){const started=performance.now();let lastError="No candidate passed validation.";for(let attempt=0;attempt<MAX_ATTEMPTS;attempt++){try{const c=await validateCandidate(generateCandidate());if(c){measure("procedural-candidate",started,{attempts:attempt+1,family:c.family});return c;}}catch(error){lastError=error instanceof Error?error.message:String(error);}}measure("procedural-candidate-failed",started,{attempts:MAX_ATTEMPTS});throw new Error(lastError);}
+async function acceptCandidate(candidate){recent.push(candidateRecord(candidate));recent=recent.slice(-500);await saveEncounter(candidateRecord(candidate),500);}
+function originLabel(c){return c.origin==="webllm"?"local ai + procedural":"procedural";}
+function displayLabel(c){setStatus(`${c.family} · ${c.id.slice(0,12)} · ${originLabel(c)}`);}
+function showCandidate(candidate,{transitionMs=900}={}){clearTimeout(transitionTimer);const previous=activeIndex,next=transitionMs>0&&current?1-activeIndex:activeIndex;renderers[next].setFragmentSource(candidate.source);rendererStarts[next]=performance.now();if(next!==previous){const duration=settings.reducedMotion?0:transitionMs;canvases[next].style.transitionDuration=`${duration}ms`;canvases[previous].style.transitionDuration=`${duration}ms`;canvases[next].classList.add("active");canvases[previous].classList.remove("active");canvases[next].setAttribute("aria-hidden","false");canvases[previous].setAttribute("aria-hidden","true");transitionTimer=setTimeout(()=>{activeIndex=next;},duration);}activeIndex=next;current=candidate;currentEncounterStarted=performance.now();encounterNumber+=1;displayLabel(candidate);void acceptCandidate(candidate);announce(`New ${candidate.family} shader, ${originLabel(candidate)}.`);}
+async function nextCandidate(){if(generationBusy)return;generationBusy=true;anotherButton.disabled=true;setStatus("generating locally…");try{let selected=prefetchedHybrid;prefetchedHybrid=null;if(!selected)selected=await generateValidProceduralCandidate();showCandidate(selected,{transitionMs:1100});scheduleAwakening();void prefetchHybridCandidate();}catch(error){showError(error);}finally{generationBusy=false;anotherButton.disabled=false;}}
+function animate(now){for(let i=0;i<renderers.length;i++)renderers[i].render((now-rendererStarts[i])/1000);animationFrame=requestAnimationFrame(animate);}
 
-const history = new Set(stored);
-const rendererStarts = [performance.now(), performance.now()];
-let activeIndex = 0;
-let current = null;
-let currentEncounterStarted = performance.now();
-let encounterNumber = 0;
-let transitionTimer = null;
-let localAI = { state: "idle", detail: "", readyAt: null };
-let awakeningStarted = false;
-let awakeningCompleted = false;
-let prefetchedHybrid = null;
-let prefetching = null;
+function setAIState(state,detail="",progress=localAI.progress){localAI={...localAI,state,detail,progress};aiState.dataset.state=state;aiState.textContent=state==="ready"?"local ai ready":state==="thinking"?"local ai thinking":state==="loading"?`local ai ${Math.round(progress*100)}%`:state==="failed"?"procedural mode":"procedural";aiState.title=detail||aiState.textContent;aiState.setAttribute("aria-label",detail||aiState.textContent);anotherButton.classList.toggle("ai-ready",state==="ready");}
+async function createHybridFrom(base){const started=performance.now(),proposal=await proposeMutation(describeCandidate(base),{retries:2}),mutated=mutateCandidate(base,proposal,{origin:"webllm",model:MODEL_ID}),validated=await validateCandidate(mutated);measure(validated?"hybrid-candidate":"hybrid-candidate-rejected",started,{model:MODEL_ID,family:base.family});return validated;}
+async function prefetchHybridCandidate(){if(localAI.state!=="ready"||prefetchedHybrid||prefetching||!settings.localAIEnabled)return;prefetching=(async()=>{try{const base=await generateValidProceduralCandidate(),hybrid=await createHybridFrom(base);if(hybrid)prefetchedHybrid=hybrid;}catch(error){console.warn("Hybrid prefetch failed",error);}finally{prefetching=null;}})();return prefetching;}
+async function awakenCurrentShader(){if(awakeningStarted||awakeningCompleted||localAI.state!=="ready"||!current||encounterNumber!==1)return;awakeningStarted=true;const expected=current.id;setAIState("thinking","The local model is proposing one restrained mutation.");try{const hybrid=await createHybridFrom(current);if(!hybrid||!current||current.id!==expected||encounterNumber!==1)return;showCandidate(hybrid,{transitionMs:AWAKENING_TRANSITION_MS});awakeningCompleted=true;setAIState("ready","The local model has joined this encounter. Later shaders may also be hybrid.",1);}catch(error){console.warn("Awakening failed",error);setAIState("ready","The local model is ready for later encounters.",1);}finally{awakeningStarted=false;void prefetchHybridCandidate();}}
+function scheduleAwakening(){if(awakeningStarted||awakeningCompleted||localAI.state!=="ready"||encounterNumber!==1||settings.reducedMotion)return;const delay=Math.max(0,AWAKENING_DWELL_MS-(performance.now()-currentEncounterStarted));setTimeout(()=>{if(document.visibilityState==="visible"&&!panel.open)void awakenCurrentShader();},delay);}
+async function startLocalAI(){if(!settings.localAIEnabled){setAIState("failed","Local AI is disabled in settings.");return;}const support=localAISupport();if(!support.supported){setAIState("failed",`${support.reason}; procedural mode remains complete.`);return;}const started=performance.now();setAIState("loading",`Downloading and loading approximately ${MODEL_APPROX_MB} MB locally. The artwork remains usable.`,0);try{await loadLocalAI(report=>{const progress=Number(report?.progress||0);setAIState("loading",report?.text||"Loading local model",progress);});measure("local-ai-load",started,{model:MODEL_ID,approxMB:MODEL_APPROX_MB});setAIState("ready","The local model is ready. Click to invite it, or remain and the first shader may change.",1);scheduleAwakening();void prefetchHybridCandidate();}catch(error){measure("local-ai-load-failed",started,{model:MODEL_ID});console.warn("Local AI unavailable",error);setAIState("failed",`Local AI unavailable: ${error instanceof Error?error.message:String(error)}. Procedural mode remains complete.`);}}
 
-function persist(signature) {
-  history.add(signature);
-  const bounded = [...history].slice(-MAX_HISTORY);
-  try {
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(bounded));
-  } catch {
-    // Storage is an optimisation; the artwork remains functional without it.
-  }
-}
+function escapeHTML(value){return String(value).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#39;"}[c]));}
+function showUse(){if(!current)return;const files=exportFiles(current),names=Object.keys(files);panelTitle.textContent="Use this shader";panelContent.innerHTML=`<p class="meta">Encounter <code>${escapeHTML(current.id)}</code><br>Family <code>${escapeHTML(current.family)}</code><br>Origin <code>${escapeHTML(current.origin)}</code>${current.parentId?`<br>Parent <code>${escapeHTML(current.parentId)}</code>`:""}</p><p>This encounter confers no ownership or exclusivity. Generated shader files are dedicated to free circulation under CC0 to the extent possible under law.</p><div class="export-grid" id="export-grid"></div><label for="code">Preview</label><textarea id="code" spellcheck="false"></textarea>`;const grid=$("#export-grid"),area=$("#code");for(const name of names){const button=document.createElement("button");button.type="button";button.textContent=`download ${name.split(".").pop()}`;button.addEventListener("click",()=>downloadText(name,files[name],name.endsWith(".html")?"text/html":"text/plain"));grid.append(button);}area.value=files[names[0]];const select=document.createElement("select");select.setAttribute("aria-label","Choose export preview");for(const name of names){const o=document.createElement("option");o.value=name;o.textContent=name;select.append(o);}select.addEventListener("change",()=>area.value=files[select.value]);grid.prepend(select);const copy=document.createElement("button");copy.type="button";copy.textContent="copy preview";copy.addEventListener("click",async()=>navigator.clipboard.writeText(area.value));grid.append(copy);panel.showModal();}
+function settingsControls(){const options=MODEL_CATALOG.map(model=>`<option value="${model.id}" ${model.id===MODEL_ID?"selected":""}>${model.label} — ${model.role}</option>`).join("");return `<fieldset><legend>Experience settings</legend><label><input id="setting-motion" type="checkbox" ${settings.reducedMotion?"checked":""}> reduce shader motion and disable long transitions</label><label><input id="setting-intensity" type="checkbox" ${settings.reducedIntensity?"checked":""}> reduce colour intensity</label><label><input id="setting-ai" type="checkbox" ${settings.localAIEnabled?"checked":""}> allow local AI model download (approximately ${MODEL_APPROX_MB} MB)</label><label>local model for next reload <select id="setting-model">${options}</select></label><button id="clear-history" type="button">clear local encounter history</button><button id="clear-metrics" type="button">clear local performance record</button></fieldset>`;}
+function showAbout(){panelTitle.textContent="This Shader Does Not Exist";const metrics=escapeHTML(JSON.stringify(metricSummary(),null,2));panelContent.innerHTML=`<p>TSDNE presents one generated shader at a time. <strong>Another</strong> relinquishes the current encounter. <strong>Use this shader</strong> lets freely reusable code continue elsewhere.</p><p>The system generates and validates shaders locally. On capable devices, a small model may propose constrained mutations without receiving personal data. The complete procedural artwork remains available without it.</p><p>No account, profile, cross-site identifier, advertising system, or server-side inference is used. A bounded local history reduces obvious repetition and is never uploaded.</p><p class="meta">Model: <code>${MODEL_ID}</code><br>State: <code>${localAI.state}</code><br>${escapeHTML(localAI.detail)}</p>${settingsControls()}<details><summary>local performance record</summary><pre>${metrics}</pre></details><p><a href="./privacy.html">privacy</a> · <a href="./accessibility.html">accessibility</a> · keyboard: <kbd>N</kbd> another, <kbd>U</kbd> use, <kbd>Space</kbd> pause, <kbd>A</kbd> about</p>`;const bind=(id,key)=>$(id).addEventListener("change",e=>{settings[key]=e.target.checked;persistSettings();applyRenderSettings();if(key==="localAIEnabled"){if(settings.localAIEnabled)void startLocalAI();else{disableLocalAI();setAIState("failed","Local AI disabled; procedural mode remains complete.");}}});bind("#setting-motion","reducedMotion");bind("#setting-intensity","reducedIntensity");bind("#setting-ai","localAIEnabled");$("#setting-model").addEventListener("change",event=>{try{selectLocalAIModel(event.target.value);announce("Model selection saved. Reload to use it.");}catch(error){announce(error.message);}});$("#clear-history").addEventListener("click",async()=>{await clearHistory();recent=[];announce("Local encounter history cleared.");});$("#clear-metrics").addEventListener("click",()=>{clearMetrics();announce("Local performance record cleared.");});panel.showModal();}
+function showError(error){console.error(error);setStatus(`generation error: ${error instanceof Error?error.message:String(error)}`);announce("A generation error occurred; procedural retry remains available.");}
 
-function passes(metrics) {
-  return metrics.mean > 14 && metrics.mean < 242 && metrics.variance > 130 && metrics.temporal > 1.2;
-}
+anotherButton.addEventListener("click",()=>void nextCandidate());useButton.addEventListener("click",showUse);aboutButton.addEventListener("click",showAbout);pauseButton.addEventListener("click",()=>{settings.paused=!settings.paused;persistSettings();applyRenderSettings();announce(settings.paused?"Shader paused.":"Shader playing.");});aiState.addEventListener("click",()=>{if(localAI.state==="ready")void awakenCurrentShader();else if(localAI.state==="failed"&&settings.localAIEnabled)void startLocalAI();});
+window.addEventListener("keydown",event=>{if(panel.open||event.target.matches("textarea,input,select"))return;if(event.key.toLowerCase()==="n"){event.preventDefault();void nextCandidate();}else if(event.key.toLowerCase()==="u"){event.preventDefault();showUse();}else if(event.key.toLowerCase()==="a"){event.preventDefault();showAbout();}else if(event.code==="Space"){event.preventDefault();pauseButton.click();}});
+window.addEventListener("resize",()=>renderers.forEach(r=>r.resize()));document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="hidden")void interruptLocalAI();});motionQuery.addEventListener?.("change",event=>{if(!localStorage.getItem("tsdne-settings-v1")){settings.reducedMotion=event.matches;applyRenderSettings();}});
 
-function validateCandidate(candidate) {
-  validator.setFragmentSource(candidate.source);
-  const a = validator.sample(1.37);
-  const b = validator.sample(2.83);
-  const metrics = qualityMetrics(a, b);
-  if (!passes(metrics)) return null;
-  return { ...candidate, metrics };
-}
-
-async function generateValidProceduralCandidate() {
-  let lastError = "No candidate passed the baseline checks.";
-  for (let attempt = 0; attempt < 48; attempt += 1) {
-    const candidate = generateCandidate();
-    if (history.has(candidate.signature)) continue;
-    try {
-      const validated = validateCandidate(candidate);
-      if (validated) return validated;
-    } catch (error) {
-      lastError = error instanceof Error ? error.message : String(error);
-    }
-  }
-  throw new Error(lastError);
-}
-
-function setAIState(state, detail = "") {
-  localAI = { ...localAI, state, detail };
-  aiState.dataset.state = state;
-  aiState.textContent = state === "ready" ? "local ai ready" : state === "thinking" ? "local ai thinking" : state === "loading" ? "local ai loading" : state === "failed" ? "procedural mode" : "procedural";
-  aiState.title = detail || aiState.textContent;
-  aiState.setAttribute("aria-label", detail || aiState.textContent);
-  anotherButton.classList.toggle("ai-ready", state === "ready");
-}
-
-function displayLabel(candidate) {
-  const origin = candidate.origin === "webllm" ? "local ai + procedural" : "procedural";
-  status.textContent = `${candidate.family} · ${candidate.id.slice(0, 12)} · ${origin}`;
-}
-
-function showCandidate(candidate, { transitionMs = 900 } = {}) {
-  clearTimeout(transitionTimer);
-  const previousIndex = activeIndex;
-  const nextIndex = transitionMs > 0 && current ? 1 - activeIndex : activeIndex;
-  renderers[nextIndex].setFragmentSource(candidate.source);
-  rendererStarts[nextIndex] = performance.now();
-
-  if (nextIndex !== previousIndex) {
-    canvases[nextIndex].style.transitionDuration = `${transitionMs}ms`;
-    canvases[previousIndex].style.transitionDuration = `${transitionMs}ms`;
-    canvases[nextIndex].classList.add("active");
-    canvases[previousIndex].classList.remove("active");
-    transitionTimer = setTimeout(() => {
-      activeIndex = nextIndex;
-    }, transitionMs);
-  }
-
-  activeIndex = nextIndex;
-  current = candidate;
-  currentEncounterStarted = performance.now();
-  encounterNumber += 1;
-  persist(candidate.signature);
-  displayLabel(candidate);
-}
-
-async function nextCandidate() {
-  anotherButton.disabled = true;
-  try {
-    let selected = prefetchedHybrid;
-    prefetchedHybrid = null;
-    if (!selected) selected = await generateValidProceduralCandidate();
-    showCandidate(selected, { transitionMs: 1100 });
-    scheduleAwakening();
-    void prefetchHybridCandidate();
-  } finally {
-    anotherButton.disabled = false;
-  }
-}
-
-function animate(now) {
-  for (let index = 0; index < renderers.length; index += 1) {
-    renderers[index].render((now - rendererStarts[index]) / 1000);
-  }
-  requestAnimationFrame(animate);
-}
-
-async function createHybridFrom(base) {
-  const proposal = await proposeMutation(describeCandidate(base));
-  const mutated = mutateCandidate(base, proposal, { origin: "webllm", model: MODEL_ID });
-  if (history.has(mutated.signature)) return null;
-  return validateCandidate(mutated);
-}
-
-async function prefetchHybridCandidate() {
-  if (localAI.state !== "ready" || prefetchedHybrid || prefetching) return;
-  prefetching = (async () => {
-    try {
-      const base = await generateValidProceduralCandidate();
-      const hybrid = await createHybridFrom(base);
-      if (hybrid) prefetchedHybrid = hybrid;
-    } catch (error) {
-      console.warn("Hybrid prefetch failed", error);
-    } finally {
-      prefetching = null;
-    }
-  })();
-  return prefetching;
-}
-
-async function awakenCurrentShader() {
-  if (awakeningStarted || awakeningCompleted || localAI.state !== "ready" || !current || encounterNumber !== 1) return;
-  awakeningStarted = true;
-  const expectedId = current.id;
-  setAIState("thinking", "The local model is proposing one mutation to the current shader.");
-  try {
-    const hybrid = await createHybridFrom(current);
-    if (!hybrid || !current || current.id !== expectedId || encounterNumber !== 1) return;
-    showCandidate(hybrid, { transitionMs: AWAKENING_TRANSITION_MS });
-    awakeningCompleted = true;
-    setAIState("ready", "The local model has joined this encounter. Later shaders may also be hybrid.");
-  } catch (error) {
-    console.warn("In-place awakening failed", error);
-    setAIState("ready", "The local model is ready for later encounters.");
-  } finally {
-    awakeningStarted = false;
-    void prefetchHybridCandidate();
-  }
-}
-
-function scheduleAwakening() {
-  if (awakeningStarted || awakeningCompleted || localAI.state !== "ready" || encounterNumber !== 1) return;
-  const elapsed = performance.now() - currentEncounterStarted;
-  const delay = Math.max(0, AWAKENING_DWELL_MS - elapsed);
-  setTimeout(() => {
-    if (document.visibilityState === "visible" && !panel.open) void awakenCurrentShader();
-  }, delay);
-}
-
-async function startLocalAI() {
-  const support = localAISupport();
-  if (!support.supported) {
-    setAIState("failed", `${support.reason}; the complete procedural artwork remains available.`);
-    return;
-  }
-  setAIState("loading", "A small model is loading locally. The artwork remains fully usable.");
-  try {
-    await loadLocalAI((report) => {
-      const detail = report?.text || "Loading the local model";
-      setAIState("loading", detail);
-    });
-    localAI.readyAt = performance.now();
-    setAIState("ready", "The local model is ready. Click here to invite it now, or remain and the first shader may slowly change.");
-    scheduleAwakening();
-    void prefetchHybridCandidate();
-  } catch (error) {
-    console.warn("Local AI unavailable", error);
-    setAIState("failed", "The local model could not load; the complete procedural artwork remains available.");
-  }
-}
-
-function showUse() {
-  if (!current) return;
-  const bundle = exportBundle(current);
-  panelTitle.textContent = "Use this shader";
-  panelContent.innerHTML = `<p class="meta">Encounter <code>${current.id}</code><br>Family <code>${current.family}</code><br>Origin <code>${current.origin}</code>${current.parentId ? `<br>Parent <code>${current.parentId}</code>` : ""}.</p><p>The record confers no ownership or exclusivity. The code may be copied, modified, shared, studied, and used elsewhere.</p><div class="actions"><button id="copy" type="button">copy encounter record</button></div><textarea id="code" spellcheck="false" aria-label="Exported shader code"></textarea>`;
-  const area = panelContent.querySelector("#code");
-  area.value = bundle;
-  panelContent.querySelector("#copy").addEventListener("click", async () => {
-    await navigator.clipboard.writeText(bundle);
-  });
-  panel.showModal();
-}
-
-function showAbout() {
-  panelTitle.textContent = "This Shader Does Not Exist";
-  const aiDescription = localAI.state === "ready" ? "A small local model is available in this browser and may propose constrained mutations." : localAI.state === "loading" ? "A small local model is loading in the background; the procedural artwork remains complete while it loads." : "This browser is currently using the procedural generator.";
-  panelContent.innerHTML = `<p>TSDNE presents one generated shader at a time. Choosing <strong>another</strong> relinquishes the current encounter. Choosing <strong>use this shader</strong> lets the freely reusable code continue elsewhere.</p><p>The first shader is generated procedurally and appears immediately. ${aiDescription}</p><p>No account, profile, behavioural history, advertising identifier, or server-side prompt archive is used. Computationally distinct candidates are generated locally, and obvious recent repetition is reduced without claiming absolute visual uniqueness.</p><p class="meta">Prototype model: <code>${MODEL_ID}</code><br>AI state: <code>${localAI.state}</code></p>`;
-  panel.showModal();
-}
-
-function showError(error) {
-  console.error(error);
-  status.textContent = `generation error: ${error instanceof Error ? error.message : String(error)}`;
-}
-
-anotherButton.addEventListener("click", () => nextCandidate().catch(showError));
-document.querySelector("#use").addEventListener("click", showUse);
-document.querySelector("#about").addEventListener("click", showAbout);
-aiState.addEventListener("click", () => {
-  if (localAI.state === "ready") void awakenCurrentShader();
-});
-window.addEventListener("resize", () => renderers.forEach((renderer) => renderer.resize()));
-document.addEventListener("visibilitychange", scheduleAwakening);
-
-(async () => {
-  try {
-    const first = await generateValidProceduralCandidate();
-    showCandidate(first, { transitionMs: 0 });
-    requestAnimationFrame(animate);
-    window.setTimeout(() => void startLocalAI(), 300);
-  } catch (error) {
-    showError(error);
-  }
-})();
+await nextCandidate();animationFrame=requestAnimationFrame(animate);setTimeout(()=>void startLocalAI(),700);

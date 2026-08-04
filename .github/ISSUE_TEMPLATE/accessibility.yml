@@ -1,0 +1,11 @@
+name: Accessibility or visual-safety report
+description: Report an accessibility barrier or visual-safety concern
+title: "[accessibility] "
+body:
+  - type: textarea
+    attributes: {label: Barrier or concern}
+    validations: {required: true}
+  - type: textarea
+    attributes: {label: Assistive technology, settings, browser, and device}
+  - type: textarea
+    attributes: {label: Suggested resolution}

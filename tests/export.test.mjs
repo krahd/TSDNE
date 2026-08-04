@@ -1,0 +1,4 @@
+import test from "node:test";import assert from "node:assert/strict";import {generateCandidate} from "../prototype/src/generator.js";import {exportFiles,encounterRecord,selfContainedHTML,shaderToy,isf} from "../prototype/src/export.js";
+const candidate=generateCandidate([101,202,303,404]);
+test("encounter record is non-proprietary and reconstructable",()=>{const r=encounterRecord(candidate);assert.equal(r.id,candidate.id);assert.deepEqual(r.graph,candidate.graph);assert.match(r.notice,/no ownership/i);});
+test("all promised export formats are generated",()=>{const files=exportFiles(candidate),names=Object.keys(files);assert.equal(names.length,6);assert.ok(names.some(n=>n.endsWith(".html")));assert.ok(names.some(n=>n.includes("three")));assert.match(selfContainedHTML(candidate),/WebGL2 required/);assert.match(shaderToy(candidate),/mainImage/);assert.match(isf(candidate),/RENDERSIZE/);});

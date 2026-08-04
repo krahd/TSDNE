@@ -1,0 +1,13 @@
+{
+  "name": "this-shader-does-not-exist",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "type": "module",
+  "description": "A browser artwork about exploration, ephemerality, freely circulating shaders, and local bespoke AI without profiling.",
+  "scripts": {
+    "test": "node --test tests/*.test.mjs",
+    "check": "node --check prototype/src/generator.js && node --check prototype/src/perception.js && node --check prototype/src/history.js && node --check prototype/src/webgl.js && node --check prototype/src/ai.js && node --check prototype/src/ai-worker.js && node --check prototype/src/export.js && node --check prototype/src/main.js"
+  },
+  "license": "GPL-3.0-or-later",
+  "author": "Tomas Laurenzo"
+}

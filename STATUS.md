@@ -2,137 +2,161 @@
 
 **Status date:** 4 August 2026  
 **Repository:** `krahd/TSDNE`  
-**Visibility:** private; do not make public until release checks and licence are complete  
-**Phase:** first fully implemented alpha; browser and aesthetic validation in progress
+**Visibility:** private pending account-level release actions  
+**Phase:** source-complete release candidate; hardware, browser, aesthetic, and public-release validation pending
 
-## Milestone reached
+## Release-candidate milestone reached
 
-The first self-contained working alpha is implemented in `prototype/`.
+The bounded TSDNE artwork described in the project records is implemented as a static browser application in `prototype/`.
 
-It includes:
+The implementation includes:
 
 - immediate full-screen procedural generation;
-- cryptographically seeded, typed and serialisable shader graphs;
-- five initial visual families;
-- deterministic GLSL ES 3.00 emission;
-- browser compilation and coarse luminance, variance, and motion validation;
-- bounded local non-repetition;
-- `another`, `use this shader`, and `about`;
-- Qwen2.5 0.5B loading locally through WebLLM on WebGPU-capable devices;
-- complete procedural fallback when WebLLM is unavailable or data-saver is enabled;
-- the agreed B + C interaction:
-  - a subtle readiness invitation;
-  - one optional slow in-place mutation of the first shader after sufficient dwell;
-  - click-to-invite mutation when the model is ready;
-  - mixed later procedural and model-mutated encounters through background prefetching;
-- non-proprietary encounter export containing source, graph, seed, parent, origin, model, and mutation;
-- a static GitHub Pages deployment workflow;
-- professional public-facing README and explicit alpha acceptance record.
+- twelve typed and serialisable visual families;
+- cryptographically seeded graph generation;
+- deterministic GLSL ES 3.00 compilation;
+- family-specific technical and aesthetic quality gates;
+- multi-frame perceptual descriptors and bounded local novelty comparison;
+- IndexedDB encounter history with localStorage fallback;
+- the agreed B + C local-AI interaction;
+- Qwen2.5 0.5B as the default local WebLLM model, with SmolLM2 360M and Llama 3.2 1B comparison options;
+- schema-constrained local mutation proposals over twelve visual traits;
+- model-load, inference, network, memory, data-saver, and unsupported-device fallbacks;
+- immediate procedural operation when WebLLM is unavailable;
+- one optional slow in-place mutation and later prefetched hybrid candidates;
+- raw GLSL, encounter JSON, self-contained WebGL, Three.js, ShaderToy, and ISF exports;
+- non-proprietary CC0 encounter and shader terms;
+- reduced-motion, reduced-intensity, pause, keyboard, screen-reader, and focus support;
+- local-only timing and diagnostic records;
+- privacy, accessibility, security, contribution, citation, licence, changelog, and release documents;
+- automated syntax and unit tests;
+- GitHub Pages and CI workflows.
 
-See [`PROTOTYPE.md`](PROTOTYPE.md).
+## Implemented visual families
 
-## Implementation details
+1. folded flow;
+2. liquid field;
+3. moiré orbit;
+4. cellular drift;
+5. polar vault;
+6. aurora ribbons;
+7. reaction lace;
+8. crystalline lens;
+9. tidal ink;
+10. magnetic sand;
+11. spectral loom;
+12. echo garden.
 
-### Immediate encounter
+These families share a typed graph while retaining family-specific cost, motion, variance, and visual-selection requirements.
 
-The first candidate is produced procedurally and does not wait for model download or inference. The interface remains responsive while the local model loads.
+## Local AI implementation
 
-### Bespoke local AI
+- default: Qwen2.5 0.5B;
+- lower-bound comparison: SmolLM2 360M;
+- larger comparison: Llama 3.2 1B;
+- current model choice stored locally;
+- support checks for HTTPS, WebGPU, data saver, and coarse device-memory limits;
+- progress reporting, load timeout, generation timeout, interruption, and one retry;
+- JSON-schema response format;
+- deterministic normalisation, compilation, visual testing, and rejection after inference.
 
-The WebLLM agent receives a compact typed graph description and returns bounded JSON changes to eight traits:
+## Perceptual non-repetition
 
-- scale;
-- tempo;
-- density;
-- turbulence;
-- contrast;
-- palette;
-- complexity;
-- rotation.
+The release candidate samples three fixed temporal frames and calculates:
 
-The model does not write unrestricted GLSL. Deterministic code normalises the mutation, compiles the shader, renders temporal samples, applies quality thresholds, and rejects invalid or weak proposals.
+- luminance mean and variance;
+- saturation;
+- edge energy;
+- temporal change;
+- flash ratio;
+- luminance and RGB histograms;
+- a 64-bit spatial difference hash;
+- a structural graph vector.
 
-### B + C interaction
+Candidates are rejected only where family-specific quality thresholds fail or structural and visual distance jointly indicate excessive proximity to bounded local history.
 
-When the model becomes ready, the upper-right status becomes a restrained invitation. The visitor may click it to invite the model immediately. If the first encounter remains visible for twelve seconds, the system may initiate one validated mutation automatically and reveal it through a seven-second crossfade.
+## Export implementation
 
-Later model-mutated candidates are prepared in the background. **Another** remains immediate: it uses a prefetched hybrid candidate when available and otherwise supplies a procedural candidate.
+`use this shader` downloads:
 
-### Privacy and property
+- encounter JSON;
+- raw GLSL;
+- standalone WebGL HTML;
+- Three.js module;
+- ShaderToy GLSL;
+- ISF fragment shader.
 
-- no account;
-- no behavioural profile;
-- no cross-site identifier;
-- no server-side inference;
-- no marketplace, NFT, ownership certificate, or artificial scarcity;
-- bounded recent signatures remain in local browser storage and are not uploaded;
-- encounter records identify computational relations and confer no exclusivity.
+Encounter records contain source, graph, seed, visual descriptor, lineage, origin, model, mutation, generator version, and a CC0/non-property statement.
 
-## Frozen artistic decisions
+## Accessibility and visual safety
 
-1. TSDNE remains a small, bounded, self-contained browser artwork.
-2. The experience centres the shader and the wager of refreshing, not AI branding.
-3. Visual quality is constitutive.
-4. The work makes no absolute firstness or visual-uniqueness claim.
-5. Personal relation is produced through encounter rather than prior profiling.
-6. Exported shaders are intended to circulate freely.
-7. The first shader appears immediately; there is no mandatory loading screen.
-8. WebLLM is consequential but not sovereign.
-9. The procedural version is a complete artwork rather than an error fallback.
-10. The first publication remains journal-first and practice-led.
+Implemented:
 
-## Validation completed
+- pause/play;
+- keyboard commands;
+- reduced-motion and reduced-intensity settings;
+- system reduced-motion detection;
+- no automatic model awakening under reduced motion;
+- disabled crossfades under reduced motion;
+- visible focus, semantic dialogs, live announcements, and skip link;
+- family motion limits;
+- automated flash-ratio and temporal-change rejection.
 
-- JavaScript syntax checks pass for the generator, WebLLM client, worker, export, and interaction controller.
-- Typed graph generation produces distinct seeded candidates.
-- Bounded mutation preserves lineage and produces a changed shader program.
-- Static files serve correctly through a local HTTP server.
-- The GitHub Pages workflow follows the current official Pages action structure.
+The work does not claim clinical seizure safety. Public release requires external flash analysis and representative-device review.
 
-## Validation still required
+## Automated validation completed
 
-This environment could not complete an ordinary GPU browser run. Before public release, test:
+- JavaScript syntax checks pass for all application and test modules.
+- Ten unit tests pass.
+- All twelve visual families compile deterministically at the source-generation level.
+- Seeded generation is reproducible.
+- Bounded mutations preserve parent lineage and change shader source.
+- Perceptual-distance and local-history calculations are tested.
+- Flat frames are rejected by quality assessment.
+- All six export formats are generated and checked structurally.
+- `npm install --ignore-scripts` reports no package vulnerabilities and installs no runtime dependencies.
+- Static files serve through a local HTTP server.
 
-- WebGL rendering and transitions in current Chrome, Edge, Firefox, and Safari;
-- WebLLM cold download, cached startup, JSON output, and worker behaviour;
-- macOS, Windows, Android, and iOS devices;
-- WebGPU absence, memory failure, network interruption, and data-saver fallback;
-- model download size, latency, memory, energy, and cache persistence;
-- photosensitive-seizure risk and reduced-motion behaviour;
-- keyboard, screen-reader, contrast, and lower-power-device accessibility;
-- the aesthetic strength and diversity of all visual families;
-- standalone execution of exported shaders;
-- GitHub Pages deployment after repository visibility or plan is resolved.
+## Manual validation still required
 
-## Immediate next actions
+The current execution environment could not provide a normal GPU browser session. The following are release validation rather than missing source implementation:
 
-1. Run the alpha locally on the user's M1 Max MacBook Pro and record cold/cached timings.
-2. Verify one complete local-AI awakening and one prefetched hybrid **another** cycle.
-3. Curate, revise, and expand the visual families from five toward 8–12.
-4. Add stronger dynamic perceptual signatures rather than structural signatures alone.
-5. Implement verified self-contained WebGL, Three.js, ShaderToy, and ISF exports.
-6. Finalise accessibility and photosensitive-content rules.
-7. Choose and add the public-domain or maximally permissive licence.
-8. Add `CITATION.cff`, contribution guidance, issue templates, and release metadata.
-9. Decide whether to make `krahd/TSDNE` public or publish a separate deployment repository.
-10. Enable GitHub Pages and test the generated public URL.
-11. Verify availability and purchase the canonical domain.
-12. Maintain production notes and begin the source ledger for the first journal article.
+- visual review of every family on actual displays;
+- Chrome, Edge, Firefox, and Safari testing;
+- macOS, Windows, Android, and iOS testing;
+- WebLLM cold download and cached startup measurement;
+- worker, JSON, timeout, cache, network, device-loss, and memory-failure testing on actual hardware;
+- photosensitive-content review beyond the implemented automated threshold;
+- keyboard and screen-reader review with assistive technology;
+- aesthetic curation using the user's judgement;
+- execution tests for every generated export in its target host;
+- public Pages deployment smoke test.
 
-## Hosting
+## Account and registrar actions not executable through the current connector
 
-The repository remains private. A Pages workflow is present but deployment requires Pages to be enabled and either:
+- change repository visibility from private to public, if selected;
+- enable GitHub Pages in repository settings if required;
+- purchase `thisshaderdoesnotexist.com`, `tsdne.com`, or both;
+- configure DNS, `CNAME`, HTTPS, and secondary-domain redirect;
+- publish the first tagged release.
 
-- a plan supporting Pages from this private repository;
-- changing the repository to public after review;
-- or publishing the static prototype through a separate public deployment repository.
+These steps are listed in `RELEASE-CHECKLIST.md` and should occur only after the manual validation above.
 
-The existing Laurenzo host remains a portable alternative.
+## Publication status
 
-## Publication
-
-The first paper remains:
+The first paper remains journal-first and practice-led:
 
 > **Personal without Personalisation: Ephemerality, Relation, and Bespoke AI in *This Shader Does Not Exist***
 
-It will centre exploration, refreshing, ephemerality, contingent uniqueness, relation without property, individualisation without surveillance, and the political and aesthetic possibilities of a local bespoke AI.
+The implemented release candidate now supplies the material basis for production notes, screenshots, encounter observations, measured local-AI timings, and the first argument memorandum.
+
+## Immediate next actions
+
+1. Run `npm test` and the local site on the user's M1 Max MacBook Pro.
+2. Record one cold and one cached local-model session.
+3. Review and rank the twelve visual families aesthetically.
+4. Test all export formats in their actual hosts.
+5. Complete accessibility and photosensitive-content review.
+6. Decide repository-publication route and execute the account-level release checklist.
+7. Purchase and configure the canonical domain.
+8. Begin the journal article's production diary and source ledger.

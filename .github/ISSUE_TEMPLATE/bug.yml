@@ -1,0 +1,18 @@
+name: Bug report
+description: Report a reproducible technical failure
+title: "[bug] "
+body:
+  - type: textarea
+    attributes: {label: What happened?}
+    validations: {required: true}
+  - type: input
+    attributes: {label: Browser and version}
+    validations: {required: true}
+  - type: input
+    attributes: {label: Device and operating system}
+  - type: dropdown
+    attributes:
+      label: Mode
+      options: [Procedural, Local AI loading, Local AI ready, Hybrid mutation, Export]
+  - type: textarea
+    attributes: {label: Steps to reproduce}
