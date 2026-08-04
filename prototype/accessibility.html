@@ -1,1 +1,27 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Accessibility — TSDNE</title><style>body{max-width:52rem;margin:3rem auto;padding:0 1rem;font:16px/1.6 system-ui;background:#080808;color:#eee}a{color:#fff}</style></head><body><p><a href="./">← artwork</a></p><h1>Accessibility and visual safety</h1><p>The artwork provides pause, reduced-motion, and reduced-intensity controls. It respects the system reduced-motion preference and suppresses the long local-AI transition in reduced-motion mode.</p><p>Keyboard: <kbd>N</kbd> another, <kbd>U</kbd> use, <kbd>Space</kbd> pause/play, <kbd>A</kbd> about.</p><p>Automated candidate checks reject extreme temporal differences and high flash ratios, but the project does not claim clinical seizure safety. Visitors sensitive to animation should enable reduced motion or pause immediately.</p></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Accessibility and visual safety — TSDNE</title>
+  <style>body{max-width:52rem;margin:3rem auto;padding:0 1rem;font:16px/1.6 system-ui;background:#080808;color:#eee}a{color:#fff}</style>
+</head>
+<body>
+  <p><a href="./">← artwork</a></p>
+  <h1>Accessibility and visual safety</h1>
+
+  <p>The artwork provides pause, reduced-motion, and reduced-intensity controls. It respects the system reduced-motion preference, removes long transitions in reduced-motion mode, and does not require WebGPU or a model download.</p>
+
+  <p>Keyboard: <kbd>N</kbd> another, <kbd>U</kbd> use, <kbd>Space</kbd> pause/play, <kbd>A</kbd> about.</p>
+
+  <h2>Automated screening</h2>
+  <p>Candidates are checked using broad temporal descriptors and a separate dense, low-resolution screen for repeated large-area luminance transitions. The dense screen is designed to reject obvious high-frequency full-screen or large-area flashing that sparse samples could miss.</p>
+
+  <p>This is a conservative automated heuristic. It is not a medical assessment, a Harding test, WCAG certification, or a guarantee across every display, browser, refresh rate, and visual pattern.</p>
+
+  <h2>Guidance</h2>
+  <p>Visitors sensitive to animation should enable system reduced motion before opening the work where possible, use <strong>pause</strong> immediately, and enable reduced intensity through <strong>about</strong>.</p>
+
+  <p>External photosensitive-content analysis and assistive-technology review remain required before release.</p>
+</body>
+</html>
