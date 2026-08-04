@@ -1,303 +1,254 @@
-# Hybrid procedural generation and WebLLM
+# Optional local-model protocol
 
-**Status:** agreed architecture  
-**Date:** 3 August 2026
+**Status:** implemented alpha with unresolved research value  
+**Date:** 4 August 2026
 
-## Decision
+## 1. Decision
 
-TSDNE will combine a **typed procedural shader synthesiser** with an optional but meaningful **local WebLLM agent**.
+TSDNE retains an optional browser-local language model as an experimental proposal mechanism. It is:
 
-The two systems have different responsibilities:
+- off by default;
+- unnecessary for the baseline artwork;
+- constrained to a bounded program representation;
+- explicitly attributed;
+- subject to deterministic rejection;
+- evaluated against random and authored baselines rather than presumed valuable.
 
-> The procedural system defines what can exist. The model proposes how a viable possibility might become otherwise.
+The model is not described as bespoke merely because it runs locally. The bespoke element, where defensible, lies in the narrow action vocabulary, the authored visual families, and the validation context.
 
-The procedural system remains the reliable substrate. It guarantees valid structures, bounded cost, exportability, broad device support, and an immediate first encounter. WebLLM provides situated variation by proposing mutations inside a bespoke representation. It does not need to write unrestricted GLSL and should not become the visible protagonist of the artwork.
+## 2. Current representation
 
-## Why use WebLLM
+The model receives:
 
-Using a local model has artistic, political, and computational value when it is materially integrated rather than added as branding.
+- the current family;
+- the list of available families;
+- twelve normalised traits;
+- an instruction describing the permitted scope.
 
-- Inference can occur on the visitor's device.
-- The current shader graph need not leave the browser.
-- The work requires no account, API rent, central prompt archive, or behavioural profile.
-- The model is deliberately narrow rather than presented as universal intelligence.
-- Its action vocabulary and limits can be documented and inspected.
-- The model can participate in an individualised encounter without knowing the visitor.
-- The system demonstrates a form of computational personal relation that does not depend on surveillance, exclusive ownership, artificial scarcity, or market exchange.
+This is a bounded family program. It is not a typed AST and does not contain arbitrary nodes or topology.
 
-Local inference is not automatically just or non-extractive. Model provenance, training labour, hardware requirements, energy, browser compatibility, and unequal device access remain part of the work's context and possible research.
-
-## Division of labour
-
-### Procedural system
-
-The procedural layer controls:
-
-- the typed graph or abstract syntax tree;
-- available visual primitives and operators;
-- valid type connections;
-- coordinate systems, fields, masks, warps, palettes, compositors, and temporal operations;
-- structural and numerical constraints;
-- shader cost and performance limits;
-- deterministic GLSL generation;
-- compilation and runtime validation;
-- verified export formats;
-- fallback operation on devices without WebGPU or sufficient model capacity.
-
-### WebLLM agent
-
-The local model proposes:
-
-- graph mutations;
-- substitutions and rewiring;
-- structural simplification or complication;
-- changes of rhythm, symmetry, scale, density, palette relation, or temporal behaviour;
-- preservation of one visual property while disrupting another;
-- combinations that are unlikely under uniform procedural sampling.
-
-It does not decide whether a candidate compiles, performs adequately, differs sufficiently from recent encounters, or should be shown.
-
-### Validator and selector
-
-The deterministic system:
-
-1. validates the proposed mutation against a schema;
-2. applies it to a valid graph;
-3. generates GLSL;
-4. compiles and renders it;
-5. samples several temporal frames;
-6. rejects technical, accessibility, and obvious aesthetic failures;
-7. compares structural and perceptual signatures with recent local history;
-8. selects among viable candidates through plural thresholds and family coverage rather than one universal beauty score.
-
-The AI is consequential but not sovereign.
-
-## Bespoke representation
-
-The model should operate on a TSDNE-specific graph description rather than raw source code. A graph may describe:
-
-- coordinate domain and transformations;
-- field and pattern generators;
-- signed-distance primitives;
-- domain warps;
-- masks and layer relations;
-- colour systems;
-- temporal operators;
-- compositing and post-processing;
-- cost and compatibility metadata.
-
-A simplified graph could resemble:
+The current schema permits the model to return:
 
 ```json
 {
-  "coordinates": {"system": "centred", "scale": 2.4},
-  "field": {"primitive": "voronoi", "frequency": 5.2},
-  "warp": [{"type": "sinusoidal", "strength": 0.7}],
-  "palette": {"type": "cosine", "contrast": 0.8},
-  "composition": {"symmetry": "radial", "layers": 2}
+  "changes": {
+    "scale": 0.2,
+    "tempo": -0.4,
+    "density": 0,
+    "turbulence": 0.5,
+    "contrast": 0,
+    "palette": -0.1,
+    "complexity": -0.3,
+    "rotation": 0,
+    "symmetry": -0.6,
+    "softness": 0.2,
+    "drift": 0,
+    "depth": 0
+  },
+  "targetFamily": "",
+  "intention": "reduce symmetry and slow the field while retaining its broad spatial rhythm"
 }
 ```
 
-The model returns mutation operations rather than a complete replacement:
+`targetFamily` may be empty to retain the family or name one of the twelve authored families.
 
-```json
-{
-  "operations": [
-    {"operation": "replace", "target": "warp[0].type", "value": "curl"},
-    {"operation": "retime", "target": "field", "speed_multiplier": 0.63}
-  ],
-  "intention": [
-    "reduce central symmetry",
-    "introduce slow local turbulence",
-    "preserve large dark regions"
-  ]
-}
-```
+## 3. What the model can and cannot do
 
-The prose intention may support research and debugging, but only the validated graph mutation affects execution.
+### Can
 
-## Bespoke AI
+- propose bounded changes to traits;
+- request a change to an existing authored family;
+- state a short intention;
+- produce a proposal that may be logged for later comparison.
 
-A bespoke AI does not initially require training a model from scratch.
+### Cannot
 
-### 1. Bespoke ontology
+- define a new shader family;
+- insert or remove typed nodes;
+- rewire arbitrary graph topology;
+- write unrestricted GLSL in the production path;
+- decide that its own proposal is valid;
+- bypass visual, cost, similarity, or luminance-change screening;
+- receive visitor identity or a behavioural profile;
+- claim that a failed proposal succeeded.
 
-TSDNE defines the concepts through which the model understands shaders. The ontology is an artistic account of executable visual form.
+Earlier mutation vocabularies listing `insert`, `remove`, `replace`, `rewire`, `duplicate`, and similar operations described a possible future AST. They are not current capabilities.
 
-### 2. Bespoke action language
+## 4. Consent and network behaviour
 
-The model operates through a bounded mutation vocabulary such as:
+Local AI is disabled for new visitors until they opt in through **about**.
 
-- `insert`
-- `remove`
-- `replace`
-- `rewire`
-- `retime`
-- `repalette`
-- `duplicate`
-- `invert`
-- `attenuate`
-- `amplify`
-- `simplify`
+Enabling it may cause:
 
-### 3. Bespoke dispositions
+1. a request to `esm.run` for the pinned WebLLM runtime;
+2. requests to external model hosts for model artefacts;
+3. browser and runtime cache writes;
+4. substantial memory and GPU use;
+5. local performance records.
 
-System instructions and examples can encourage the model to:
+“Local inference” describes where inference executes. It does not mean:
 
-- change structure rather than only parameters;
-- preserve one characteristic while disrupting another;
-- treat slowness, quietness, emptiness, and simplification as valid;
-- avoid equating complexity or detail with quality;
-- alternate continuity and rupture;
-- avoid repeatedly reproducing fashionable generative-art motifs.
+- no network requests;
+- complete privacy;
+- open or ethical training data;
+- low energy use;
+- equal device access;
+- freedom from supply-chain risk.
 
-### 4. Bespoke weights, later
+The procedural work remains complete when the model is disabled, unsupported, still loading, interrupted, or rejected.
 
-A later research phase may fine-tune a small model on accepted and rejected mutations, paired comparisons, and authored explanations. This is not required for the first artwork.
+## 5. Proposal validity
 
-## Progressive operation
+A proposal is materially valid only when it contains:
 
-### Mode A: procedural
+- at least two trait deltas with absolute magnitude of at least `0.06`; or
+- a valid family change.
 
-Used when WebGPU is unavailable, the model has not loaded, the visitor declines the download, the device lacks capacity, or inference fails. The artwork remains complete.
+An ineffective proposal is rejected.
 
-### Mode B: hybrid
+The alpha previously inserted a fixed authored mutation when the model returned negligible changes and then labelled the result as WebLLM-derived. That branch has been removed. Authored interventions must be labelled as authored.
 
-The procedural system and WebLLM both produce candidates. This is the preferred capable-device mode.
+## 6. Provenance
 
-A candidate batch may contain:
+A model-derived child records:
 
-- purely procedural graphs;
-- deterministic graph mutations;
-- recombinations of verified structures;
-- WebLLM-proposed mutations.
+- `origin: "model-proposal"`;
+- model identifier;
+- parent encounter identifier;
+- normalised changes;
+- active traits;
+- requested family;
+- intention;
+- proposer type;
+- runtime version where available.
 
-Candidates compete only after deterministic validation.
+This record does not establish authorship, ownership, intelligence, or aesthetic success. It identifies the path by which the candidate was proposed.
 
-### Mode C: research or exhibition mode
+## 7. Deterministic validation
 
-A separate interface may expose:
+After the proposal is applied, the resulting candidate must pass the same gates as any other candidate:
 
-- model and procedural proposals;
-- rejected mutations;
-- compiler and schema failures;
-- disagreements among models;
-- deterministic interventions that overruled the model.
+1. known family;
+2. bounded traits;
+3. cost threshold;
+4. GLSL compilation;
+5. broad rendered descriptor;
+6. family-specific luminance, variance, motion, and saturation thresholds;
+7. dense high-frequency luminance-change screen;
+8. distance from recent local encounters.
 
-This mode is not part of the ordinary public encounter.
+A rejected proposal is not shown and should remain available only in an explicit research or diagnostic mode.
 
-## Loading and interaction
+## 8. Comparison baselines
 
-- The first shader must appear immediately through procedural generation.
-- WebLLM loads unobtrusively in a Web Worker after the encounter begins.
-- The interface does not become a chat window or model dashboard.
-- Model branding, token streams, and inference statistics remain absent from the main visual field.
-- A model failure never prevents the visitor from receiving another shader.
+The source includes two baselines.
 
-## Model scale and selection
+### Random baseline
 
-Begin with small instruction models in approximately the 0.5B–1B range and benchmark rather than assume a winner.
+- changes two to five distinct traits;
+- samples bounded signed magnitudes;
+- occasionally requests a family change;
+- carries `baseline: "random"`.
 
-Evaluate:
+### Authored baseline
 
-- model and runtime download size;
-- cold and warm start latency;
-- memory consumption and failure rates;
-- structured-output validity;
-- mutation validity and diversity;
-- tendency toward superficial parameter changes;
-- tendency toward unnecessary complication;
-- aesthetic interest after deterministic selection;
-- desktop and mobile support;
-- energy use where measurable.
+- balances complexity, symmetry, tempo, and softness using a transparent heuristic;
+- carries `baseline: "authored"`.
 
-The model's task is narrow: understand a compact graph and propose a few valid mutations. General benchmark superiority is not the selection criterion.
+Neither baseline is currently part of the ordinary public encounter. They exist to make a controlled comparison possible.
 
-## Uniqueness and repetition
+## 9. Required ablation
 
-Cryptographic seeds provide highly reliable computational identifiers, not guaranteed visual uniqueness.
+The model should not remain central to the publication argument without a study comparing:
 
-Different seeds or graphs may produce identical or quasi-identical appearances. TSDNE should respond proportionately:
+- model proposals;
+- matched random proposals;
+- authored heuristic proposals;
+- no mutation.
 
-- sample several small frames at fixed times;
-- compute graph fingerprints and temporal perceptual signatures;
-- compare candidates with current-session and bounded local-browser history;
-- reject only when several measures agree that a candidate is too close;
-- maintain family coverage and avoid turning difference into one optimisation objective.
+A defensible protocol would:
 
-The system does not claim absolute global uniqueness. Disconnected static clients share no allocation history, and visual identity is not reducible to a hash.
+1. begin from the same parent candidates;
+2. normalise proposal magnitude and opportunity for family change;
+3. apply the same deterministic validation;
+4. blind raters to proposal origin;
+5. measure technical acceptance, perceptual distance, perceived continuity, interest, and preference separately;
+6. preserve negative results;
+7. avoid interpreting dwell time alone as preference.
 
-The work distinguishes:
+Possible outcomes:
 
-- **computational identity:** seed, graph, generator version, and source;
-- **perceptual identity:** the contingent resemblance among rendered outputs;
-- **encounter identity:** this visitor's relation to this shader at this moment.
+- the model produces a measurable difference;
+- the model differs but is not preferred;
+- the model is indistinguishable from simpler baselines;
+- the model performs worse;
+- device and ecological costs outweigh any benefit.
 
-The accurate formulation is:
+All are valid research results.
 
-> TSDNE generates computationally distinct candidates and actively reduces recent perceptual repetition. It does not guarantee absolute visual uniqueness.
+## 10. Interaction modes
 
-## Encounter record without ownership
+### Procedural mode
 
-Hashes and identifiers do not create property.
+The baseline public work. Immediate, static-host compatible, and available without WebGPU or model downloads.
 
-When a visitor chooses **use this shader**, the export may include:
+### Optional proposal mode
 
-- exact shader source;
-- seed;
-- canonical graph hash;
-- generator version;
-- compact visual signature;
-- encounter identifier;
-- optional local date;
-- verified host templates;
-- a free-use statement.
+After opt-in, the model may propose one slow mutation to the first encounter or contribute a later prefetched candidate. The interface labels an accepted proposal as such.
 
-The record authenticates correspondence among these materials. It does not identify the visitor, confer exclusivity, prevent reuse, or establish economic ownership.
+### Research mode
 
-Suggested statement:
+A separate later interface may expose:
 
-> This record identifies a computational encounter generated by TSDNE. It confers no ownership, scarcity, exclusivity, or control over subsequent use. The shader may be copied, modified, shared, studied, and incorporated into other works.
+- parent and child programs;
+- model, random, and authored proposals;
+- accepted and rejected candidates;
+- proposal magnitudes;
+- family transitions;
+- compiler and validation failures;
+- blinded comparison instruments.
 
-The relationship is personal because the visitor encountered, considered, relinquished, or carried the shader elsewhere. It is not proprietary.
+This mode should not be confused with the ordinary artwork.
 
-## Political and aesthetic proposition
+## 11. Political boundary
 
-TSDNE asks whether a computational object can be:
+Local inference can refuse several platform conventions:
 
-- personal without being behaviourally personalised;
-- individualised without profiling;
-- singular without a guarantee of uniqueness;
-- meaningful without exclusive ownership;
-- freely circulating without becoming an extractive platform;
-- generated by AI without requiring central surveillance or continuous rent.
+- central prompt collection;
+- API rent;
+- account requirements;
+- server-side behavioural linking.
 
-The result becomes personal **after** the encounter rather than being personalised **before** it through prediction.
+It can also reproduce other inequalities:
 
-## Bounded scope
+- hardware exclusion;
+- model-training opacity;
+- energy use displaced to visitors;
+- remote dependency delivery;
+- unequal latency and failure;
+- software supply-chain concentration.
 
-The first artwork is not:
+The project should expose this ambivalence. It should not use “local” as an ethical conclusion.
 
-- a global uniqueness registry;
-- a blockchain or NFT project;
-- a marketplace;
-- an account system;
-- a social network;
-- a profiling engine;
-- an unrestricted shader-writing chatbot;
-- a universal visual-similarity infrastructure.
+## 12. Publication language
 
-It remains a small static browser artwork with one shader, one decision, local generation, optional local AI, free code, and no public history.
+Permitted:
 
-## Frozen architecture
+> An optional local model proposes bounded changes within an authored family program. Proposals are attributed, validated, and may be rejected. The project includes random and authored baselines for evaluating whether the model contributes a meaningful difference.
 
-1. Typed procedural synthesis is the substrate.
-2. WebLLM proposes constrained graph mutations on capable devices.
-3. The first encounter never waits for model loading.
-4. Procedural mode is a complete artwork, not a degraded error page.
-5. The model does not receive personal or behavioural data.
-6. Raw GLSL generation is an experiment, not the production default.
-7. Deterministic validation controls validity, safety, performance, and export.
-8. Local perceptual comparison reduces obvious repetition without absolute claims.
-9. Encounter records identify relations and artefacts, not ownership.
-10. The public interface foregrounds exploration, attachment, relinquishment, and use rather than AI spectacle.
+Not permitted before an ablation:
+
+> The AI is consequential, personalises the encounter, improves the shader, creates bespoke aesthetics, or produces results unattainable by simpler procedures.
+
+## 13. Future structural path
+
+A later typed grammar could permit meaningful operations such as:
+
+- inserting a compatible warp;
+- replacing a field generator;
+- rewiring a compositor;
+- duplicating or removing a layer;
+- changing temporal operators;
+- simplifying a program under a cost constraint.
+
+This requires implementation, tests, renderer integration, export support, and visual evaluation. It is not implied by the current use of the word `graph` in source code.
