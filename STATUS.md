@@ -67,9 +67,10 @@ This material may inform another artwork or a technical paper. It no longer dete
 - The prior implementation was preserved before revision at commit `84617a3f39a4e3a9b9d768f568551a36dff91746`.
 - The revised package was reconstructed from a checksum-locked archive with SHA-256 `c86f901bf9229c6776e017d6f78ba245a6d5eadef5082bb2588a55e735ca9886`.
 - The materialisation workflow completed successfully before committing the revision.
-- `npm install --ignore-scripts` completed successfully.
-- Every JavaScript source file passed `node --check`.
-- The complete automated test suite passed before the revised tree was pushed.
+- `npm install --ignore-scripts` completed successfully during materialisation.
+- Every JavaScript source file passed `node --check` during materialisation.
+- The complete automated test suite passed during materialisation.
+- An independent ordinary GitHub Actions CI run, `30959327318`, subsequently completed successfully on the finished tree: clean checkout, Node 24 setup, `npm ci --ignore-scripts`, syntax checks, and all tests passed.
 - Model runtime files, mutation controls, staged payloads, and temporary materialisation workflows are absent from `main`.
 - The canonical paper and portfolio records in `krahd/academic-writing` have been aligned with the revised artwork.
 
@@ -95,7 +96,6 @@ These require real browsers, hardware, aesthetic judgement, or account administr
 
 The repository remains private until:
 
-- an ordinary independent CI run passes on the completed tree;
 - a normal GPU-browser session passes;
 - the visual curation pass is complete;
 - the README and paper framing remain free of contradictory model, ownership, certificate, scarcity, or collectible language.
