@@ -10,6 +10,8 @@ The artwork presents one full-screen animated shader at a time. A visitor may re
 
 **Release candidate implemented.** The application, tests, documentation, CI, and GitHub Pages workflow are present. The repository remains private until the final account-level release actions are performed and the work is tested on the target hardware and browsers.
 
+A comprehensive related-work genealogy and strict source/claim audit are available in [`docs/GENEALOGY.md`](docs/GENEALOGY.md) and [`docs/GENEALOGY-AUDIT.md`](docs/GENEALOGY-AUDIT.md).
+
 ## Experience
 
 - **another** relinquishes the current shader;
@@ -69,6 +71,8 @@ Model selection is stored locally and takes effect after reload. Cold downloads 
 TSDNE uses no account, analytics, advertising, behavioural profile, cross-site identifier, database, or server-side inference.
 
 A bounded local history of encounter identifiers, structural vectors, and compact visual descriptors is stored in IndexedDB or local storage to reduce obvious repetition on that device. It is never uploaded and can be cleared from **about**.
+
+Local execution changes where data and computation occur; it does not by itself establish offline operation, complete privacy, ethical model provenance, equal device access, or reduced energy use. Network requests, storage, dependencies, and limitations are documented explicitly.
 
 See [`PRIVACY.md`](PRIVACY.md).
 
@@ -148,6 +152,9 @@ The intended canonical domain is `thisshaderdoesnotexist.com`, subject to availa
 - [`PROTOTYPE.md`](PROTOTYPE.md) — acceptance record;
 - [`DEPLOYMENT.md`](DEPLOYMENT.md) — hosting and domains;
 - [`PAPER-1.md`](PAPER-1.md) — journal-first paper plan;
+- [`docs/GENEALOGY.md`](docs/GENEALOGY.md) — art, HCI, political, technical, browser, and implementation genealogy;
+- [`docs/GENEALOGY-AUDIT.md`](docs/GENEALOGY-AUDIT.md) — verification protocol, corrections, exclusions, and claim controls;
+- [`REFERENCES.md`](REFERENCES.md) — compact verified reference index;
 - [`STATUS.md`](STATUS.md) — current state;
 - [`CHANGELOG.md`](CHANGELOG.md) — release history;
 - [`CONTRIBUTING.md`](CONTRIBUTING.md) — contribution policy;
@@ -161,6 +168,8 @@ The first planned article is journal-first and practice-led:
 > **Personal without Personalisation: Ephemerality, Relation, and Bespoke AI in *This Shader Does Not Exist***
 
 It centres exploration, refreshing, contingent uniqueness, ephemerality, relation without property, local bespoke AI, and computational individualisation outside surveillance-based personalisation.
+
+The genealogy establishes that TSDNE should not make component-level priority claims. Its defensible contribution is the realised synthesis of irreversible encounter, non-exclusive executable transfer, bounded local AI, non-profiling, and refusal of proprietary scarcity.
 
 ## Citation
 
