@@ -1,236 +1,172 @@
-# Deployment and domain strategy
+# Deployment strategy
 
-**Status date:** 3 August 2026  
-**Decision state:** GitHub Pages is the recommended initial host; existing Laurenzo infrastructure remains a fallback or later migration path.
+**Status date:** 4 August 2026  
+**Current status:** alpha; staging deployment not yet validated
 
-## Hosting requirements
+## 1. Requirements
 
-TSDNE is deliberately compatible with static hosting.
-
-The public site requires:
+The baseline artwork must remain deployable as static files with:
 
 - HTTPS;
-- HTML, CSS, JavaScript, WebAssembly, and static assets;
+- HTML, CSS, JavaScript, and static assets;
 - WebGL2;
-- optional WebGPU for WebLLM;
-- service-worker or browser-cache support;
-- correct MIME types;
 - no application server;
-- no database;
-- no user accounts;
+- no account system;
+- no project database;
 - no paid inference endpoint.
 
-Model artefacts should be downloaded from an appropriate external model host or CDN and cached locally by the browser. They should not normally be committed to or served from the website repository.
+Optional local-model mode additionally requires:
 
-## Recommended initial architecture
+- WebGPU;
+- a pinned WebLLM runtime;
+- external or self-hosted model artefacts;
+- disclosed network requests;
+- explicit visitor opt-in.
 
-### Application
+The deployment must not block the procedural encounter while optional model assets load.
 
-Host the static application through GitHub Pages from `krahd/TSDNE` or from a dedicated deployment branch/workflow.
+## 2. Hosting options
 
-### Model artefacts
+### GitHub Pages
 
-Load the selected MLC/WebLLM model from its model repository or a suitable external host with correct CORS and caching support.
+Suitable for staging or production when:
 
-### Domain
+- the current account and repository configuration support the intended Pages route;
+- static hosting limits are compatible with the site;
+- required MIME types and HTTPS work;
+- public deployment from a private source repository is understood and acceptable.
 
-Point one canonical custom domain directly to GitHub Pages through DNS. Do not embed or wrap the GitHub Pages site in an iframe.
+GitHub plan entitlements, Pages limits, domain behaviour, and Actions configuration are mutable. Recheck current official GitHub documentation at deployment time rather than relying on figures preserved in this repository.
 
-The browser should show the canonical TSDNE domain while GitHub Pages serves the underlying static files.
+### Separate public deployment repository
 
-## GitHub Pages suitability
+A private source repository may publish only the deployable `prototype/` artefacts to a public Pages repository.
 
-GitHub Pages is appropriate because:
+This separates research notes from the deployment repository, but client-side JavaScript remains inspectable in the deployed site.
 
-- TSDNE is a public non-commercial artwork;
-- the site is static;
-- GitHub supplies HTTPS and custom-domain support;
-- deployment can be tied directly to repository commits;
-- the application itself should remain small;
-- model traffic can be served externally rather than consuming Pages storage and bandwidth;
-- no sensitive transaction or server-side state is required.
+### Existing Laurenzo hosting
 
-Current documented constraints include:
+The infrastructure used for `laurenzo.net` may be preferable when it provides:
 
-- private-repository Pages requires GitHub Pro, Team, or Enterprise;
-- a Pages site remains publicly accessible even when its source repository is private;
-- published sites have a documented 1 GB maximum;
-- Pages has a soft bandwidth limit of 100 GB per month;
-- one GitHub Pages site accepts one custom-domain value in its `CNAME` configuration;
-- apex and `www` variants of the same domain can redirect automatically when configured correctly;
-- unrelated secondary domains require an external redirect.
+- simpler private staging;
+- explicit cache and security headers;
+- redirect management;
+- more transparent logs;
+- easier self-hosting of runtime assets;
+- less dependence on GitHub plan features.
 
-These limits are compatible with TSDNE as long as model weights are not served from the Pages repository.
+The choice should be made after comparing actual current capabilities, not assumed in advance.
 
-## Private-repository question
+## 3. Recommended sequence
 
-`krahd/TSDNE` is private.
+1. deploy to a non-public or obscure staging URL;
+2. run browser and mobile smoke tests;
+3. inspect all network requests;
+4. verify local storage and clearing;
+5. measure procedural generation latency;
+6. test optional model opt-in, loading, failure, and caching;
+7. execute all export targets;
+8. complete accessibility and photosensitive-content review;
+9. only then select production hosting and domain.
 
-Possible routes:
+## 4. External runtime and model assets
 
-### Route A — GitHub Pages from the private repository
+The current alpha imports a pinned WebLLM runtime from `esm.run` and obtains model files through WebLLM’s configured external hosts.
 
-Use this when the GitHub account plan supports Pages for private repositories.
+Before production, decide among:
 
-Advantages:
+- retain remote delivery with explicit disclosure;
+- vendor and bundle the runtime;
+- self-host model files where licensing permits;
+- publish asset hashes and an external-request manifest;
+- remove optional local AI from the public build.
 
-- one repository;
-- simplest versioning and deployment;
-- source can remain private while the published site is public.
+Version pinning alone does not provide Subresource Integrity for a dynamic import and does not eliminate supply-chain risk.
 
-### Route B — private source repository plus public deployment repository
+Model downloads should remain opt-in and off by default. Do not place large model files in the principal static deployment without measuring bandwidth, caching, cost, and preservation consequences.
 
-Build the static site from `krahd/TSDNE` and publish only generated site artefacts to a separate public Pages repository.
+## 5. Privacy and logs
 
-Advantages:
+“No analytics” does not mean “no logs.” Static hosts, CDNs, DNS providers, runtime hosts, and model hosts may retain ordinary request metadata.
 
-- works without private-repository Pages entitlement;
-- keeps research notes and source implementation private;
-- public repository contains only deployable assets.
+Before release:
 
-Costs:
+- document which services receive requests;
+- inspect network traffic in a clean browser profile;
+- review host logging and retention controls where available;
+- avoid adding analytics, advertising, cross-site identifiers, or fingerprinting;
+- ensure the public privacy notice matches the deployed topology.
 
-- additional deployment configuration;
-- public build artefacts reveal browser-side JavaScript and shaders regardless, since all client-side code is ultimately inspectable.
+## 6. Domains
 
-### Route C — existing Laurenzo hosting
+Possible domains:
 
-Deploy the generated static site to the same paid hosting infrastructure used for `laurenzo.net`.
+- `thisshaderdoesnotexist.com`;
+- `tsdne.com` as a shorter redirect.
 
-Advantages:
+Availability and price must be checked at purchase time. Do not wrap one deployment in an iframe. Use one canonical HTTPS origin and redirect secondary domains permanently.
 
-- avoids GitHub plan dependency;
-- may provide more control over redirects, caching headers, custom response headers, logs, and deployment topology;
-- both domains can be handled within one existing hosting account;
-- easier later migration if custom workers, edge redirects, or headers become necessary.
+The title itself remains provisional until visual and public testing, so domain purchase need not precede staging.
 
-Costs:
+## 7. Caching and versioning
 
-- deployment becomes coupled to the Laurenzo hosting configuration;
-- may create unnecessary integration work for a deliberately self-contained artwork;
-- exact benefits depend on the actual host and plan.
+Preserve:
 
-## Recommendation
+- application version;
+- generator schema and version;
+- WebLLM runtime version where used;
+- model identifier and licence;
+- deployment commit;
+- browser and hardware notes;
+- representative screenshots and video;
+- external-request inventory.
 
-Begin with GitHub Pages unless one of these conditions applies:
+Cache policy should distinguish:
 
-- the GitHub plan does not support Pages from the private repository and a public deployment repository is undesirable;
-- the existing Laurenzo host provides an already working static deployment pipeline that is equally simple;
-- TSDNE later requires response headers, edge redirects, or traffic controls unavailable through Pages;
-- Pages bandwidth becomes material.
+- small versioned application assets;
+- optional large model artefacts;
+- user-clearable local encounter traces;
+- local diagnostic records.
 
-The application should remain host-portable so migration consists primarily of changing deployment and DNS.
+## 8. Offline and exhibition deployment
 
-## Domains
+The baseline procedural artwork should be packageable for local exhibition hardware.
 
-The intended long domain is:
+A genuinely offline package requires:
 
-- `thisshaderdoesnotexist.com`
+- bundled application assets;
+- no remote fonts or runtime imports;
+- vendored model runtime and artefacts if local AI is retained;
+- tested cache-independent startup;
+- documented hardware and browser version;
+- recovery procedure after context or device failure.
 
-The shorter alternative is:
+Do not describe the current web deployment as offline-capable while it retains remote optional assets.
 
-- `tsdne.com`
+## 9. Security headers
 
-The spelling `thishaderdoesnotexist.com` omits the second `s` in `this shader` and should not be used unless intentionally acquired as a typo redirect.
+Where the host allows, evaluate:
 
-Domain availability was not established by the current web search and must be checked through a registrar immediately before purchase.
+- Content Security Policy;
+- restrictive `connect-src`, `script-src`, and worker policies;
+- `X-Content-Type-Options`;
+- referrer policy;
+- permissions policy;
+- framing restrictions;
+- immutable caching for versioned assets.
 
-## One or both domains
+A policy must be tested with WebGL, module workers, dynamic runtime loading, and model fetches. Do not publish a nominal CSP that is silently disabled or overly permissive.
 
-### Preferred canonical domain
+## 10. Production gate
 
-`thisshaderdoesnotexist.com` is the stronger artwork title and should be the canonical public address if available and affordable.
+Production deployment requires:
 
-### Secondary shorthand
+- alpha and beta criteria in [`PROTOTYPE.md`](PROTOTYPE.md);
+- completed [`../RELEASE-CHECKLIST.md`](../RELEASE-CHECKLIST.md);
+- staged network and storage verification;
+- accessible public notices;
+- final decision on model inclusion;
+- final title and canonical domain decision;
+- preservation capture.
 
-`tsdne.com` is useful as:
-
-- a short spoken and printed address;
-- a protective registration;
-- a redirect to the canonical site.
-
-If both are purchased:
-
-1. configure one as the only canonical GitHub Pages domain;
-2. redirect the other at the registrar, DNS provider, Cloudflare, or the existing Laurenzo host;
-3. use a permanent HTTPS redirect rather than iframe wrapping;
-4. retain one canonical origin for service-worker caches, model storage, analytics-free privacy claims, and search indexing.
-
-GitHub Pages does not accept two unrelated domains in one `CNAME` file.
-
-## DNS outline for GitHub Pages
-
-The exact records must be copied from current GitHub documentation when deployment occurs.
-
-General sequence:
-
-1. verify the domain through GitHub before pointing DNS where possible;
-2. configure the custom domain in repository **Settings → Pages**;
-3. configure the apex with GitHub's supported `A`, `ALIAS`, or `ANAME` records;
-4. configure `www` as a `CNAME` pointing to the GitHub Pages account domain;
-5. wait for DNS and certificate propagation;
-6. enable **Enforce HTTPS**;
-7. test apex, `www`, canonical redirects, service worker, model downloads, and browser caches;
-8. avoid wildcard DNS records.
-
-## Model-hosting and bandwidth policy
-
-Do not place a 300 MB–1 GB WebLLM model inside GitHub Pages unless there is a compelling preservation reason.
-
-At 300 MB per cold visitor:
-
-- 100 visitors transfer approximately 30 GB;
-- 1,000 visitors transfer approximately 300 GB.
-
-This can exceed GitHub Pages' soft bandwidth allowance quickly.
-
-Instead:
-
-- use official or project-controlled Hugging Face/MLC model hosting;
-- rely on long-lived browser caching;
-- load only one selected small model;
-- avoid downloading the model until the procedural encounter is already visible;
-- consider explicit disclosure of model size and local storage use;
-- retain a clear-cache control in **about** or diagnostics;
-- record model version and integrity metadata.
-
-## Deployment workflow
-
-### Initial alpha
-
-1. Build static files.
-2. Run syntax, unit, deterministic-generation, export, and browser smoke tests.
-3. Deploy to the default `github.io` project URL.
-4. Test WebGL2, WebGPU, workers, service worker, external model CORS, caching, and mobile behaviour.
-5. Purchase and attach the custom domain only after the deployment is stable.
-
-### Production
-
-1. Push or merge to `main`.
-2. GitHub Actions builds and tests the site.
-3. Publish an immutable build artefact to Pages.
-4. Preserve generator version and release tag.
-5. Keep project research documents outside the published site unless deliberately exposed.
-6. Confirm custom domain and HTTPS after every deployment change.
-
-## Portability rule
-
-The site must not depend on GitHub-specific runtime APIs. It should be deployable unchanged, or with only base-path configuration, to:
-
-- GitHub Pages;
-- the existing Laurenzo static host;
-- Netlify, Cloudflare Pages, or another static host;
-- local exhibition hardware;
-- an offline package.
-
-The domain belongs to the artwork, not to the hosting provider.
-
-## Current decision
-
-- Use immediate procedural rendering.
-- Do not block the first encounter with model loading.
-- Develop and test on GitHub Pages first.
-- Keep the deployment portable to the existing Laurenzo host.
-- Use one canonical domain and redirect any secondary domain.
-- Prefer `thisshaderdoesnotexist.com` as the canonical name if available.
-- Consider purchasing `tsdne.com` as a shorthand redirect if the additional annual cost is acceptable.
+The application remains host-portable. The domain and artwork should not depend conceptually on one hosting provider.
