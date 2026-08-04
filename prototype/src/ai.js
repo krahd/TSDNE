@@ -1,3 +1,5 @@
+import { FAMILY_NAMES } from "./generator.js";
+
 export const MODEL_CATALOG = [
   {
     id: "SmolLM2-360M-Instruct-q4f16_1-MLC",
@@ -22,7 +24,9 @@ export const MODEL_CATALOG = [
   },
 ];
 
-const WEBLLM_URL = "https://esm.run/@mlc-ai/web-llm@0.2.83";
+export const WEBLLM_VERSION = "0.2.83";
+export const WEBLLM_RUNTIME_HOST = "esm.run";
+export const WEBLLM_URL = `https://${WEBLLM_RUNTIME_HOST}/@mlc-ai/web-llm@${WEBLLM_VERSION}`;
 
 let selectedId = "Qwen2.5-0.5B-Instruct-q4f16_1-MLC";
 let engine = null;
@@ -117,6 +121,8 @@ export async function loadLocalAI(onProgress = () => {}) {
           model: MODEL_ID,
           downloadEstimateMB: MODEL_APPROX_MB,
           approxVRAMMB: MODEL_APPROX_VRAM_MB,
+          runtimeHost: WEBLLM_RUNTIME_HOST,
+          runtimeVersion: WEBLLM_VERSION,
         }),
     });
 
@@ -172,30 +178,34 @@ function mutationSchema() {
         ),
         additionalProperties: false,
       },
+      targetFamily: {
+        type: "string",
+        enum: ["", ...FAMILY_NAMES],
+      },
       intention: { type: "string", maxLength: 160 },
     },
-    required: ["changes", "intention"],
+    required: ["changes", "targetFamily", "intention"],
     additionalProperties: false,
   };
 }
 
-async function requestMutation(graphDescription, attempt) {
+async function requestMutation(programDescription, attempt) {
   const completion = await timeout(
     engine.chat.completions.create({
       messages: [
         {
           role: "system",
           content:
-            "You are the local mutation agent inside the artwork This Shader Does Not Exist. Return valid JSON only. Propose restrained numeric deltas from -1 to 1. Preserve a recognisable relation while changing rhythm, structure, atmosphere, or spatial organisation. Do not maximise complexity. Slowness, emptiness, simplification, asymmetry, and quiet contrast are valid. Change at least two traits.",
+            "You are an optional local proposal agent inside the artwork This Shader Does Not Exist. Return valid JSON only. The current representation is a bounded family program, not an unrestricted shader AST. Propose at least two material numeric deltas from -1 to 1, or select a different targetFamily when the change serves the intention. Preserve a legible relation where possible. Slowness, emptiness, simplification, asymmetry, and quiet contrast are valid. Do not maximise complexity. Your proposal will be validated and may be rejected. Do not claim authorship or success.",
         },
         {
           role: "user",
-          content: `Current typed shader graph:\n${JSON.stringify(graphDescription)}\n\nAttempt ${attempt}. Return a changes object and a brief intention.`,
+          content: `Current bounded shader program:\n${JSON.stringify(programDescription)}\n\nAttempt ${attempt}. Return changes, targetFamily (empty string to retain the family), and a brief intention.`,
         },
       ],
       temperature: 0.82,
       top_p: 0.9,
-      max_tokens: 220,
+      max_tokens: 260,
       response_format: { type: "json_object", schema: mutationSchema() },
     }),
     30000,
@@ -205,13 +215,22 @@ async function requestMutation(graphDescription, attempt) {
   return extractJSON(completion.choices?.[0]?.message?.content);
 }
 
-export async function proposeMutation(graphDescription, { retries = 2 } = {}) {
+export async function proposeMutation(programDescription, { retries = 2 } = {}) {
   if (!engine) throw new Error("The local model is not ready.");
 
   let lastError;
   for (let attempt = 1; attempt <= retries + 1; attempt += 1) {
     try {
-      return await requestMutation(graphDescription, attempt);
+      const proposal = await requestMutation(programDescription, attempt);
+      return {
+        ...proposal,
+        proposalProvenance: {
+          proposer: "webllm",
+          model: MODEL_ID,
+          runtime: `@mlc-ai/web-llm@${WEBLLM_VERSION}`,
+          attempt,
+        },
+      };
     } catch (error) {
       lastError = error;
     }
