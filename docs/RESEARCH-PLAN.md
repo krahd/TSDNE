@@ -1,139 +1,303 @@
 # Research plan
 
-## Research programme
+## 1. Programme structure
 
-TSDNE supports a research programme with three linked but separable strands.
+TSDNE supports four separable research strands. They should not be collapsed into one article or treated as already completed.
 
-## A. Browser-native code generation
+1. withdrawal, executable transfer, and digital persistence;
+2. encounter and stopping behaviour;
+3. local-model mutation versus simpler baselines;
+4. dynamic-shader similarity and generative breadth.
 
-### Question
+The realised artwork is the common apparatus. Each strand requires different evidence and may lead to a different publication.
 
-How can a browser synthesise aesthetically compelling, executable shader programs under strict validity, latency, compatibility, and zero-cost constraints?
-
-### Comparative study
-
-Implement at least four generators behind the same typed representation and renderer:
-
-1. random typed grammar;
-2. graph mutation and recombination;
-3. novelty search over procedural candidates;
-4. local browser model generating constrained ASTs.
-
-Optional fifth condition: local code model generating raw GLSL.
-
-### Measures
-
-- initial download size;
-- cold and warm start time;
-- candidate generation latency;
-- compile and link success;
-- runtime frame time;
-- device memory and failures;
-- device and browser coverage;
-- structural diversity;
-- perceptual distance across temporal samples;
-- human aesthetic judgements;
-- human estimates of repetition;
-- energy use where measurable;
-- export portability.
-
-### Contribution
-
-The paper should not be organised around proving that browser shader synthesis is unprecedented. Its contribution can be a rigorous comparison of how technical architectures shape visual possibility, access, material cost, and artistic experience.
-
-## B. Perceptual non-repetition
+## 2. Strand A: withdrawal and executable persistence
 
 ### Question
 
-What does it mean for two dynamic shaders to be the same or different?
+What kind of loss is produced when an interface prevents retrieval while the computational process remains reproducible and transferable?
 
-### Descriptor families
+### Material
 
-- graph and AST fingerprints;
-- source-token or tree-edit distance;
-- DCT or wavelet perceptual hashes on sampled frames;
-- colour and luminance histograms;
-- edge orientation and spatial-frequency spectra;
-- optical-flow or temporal-difference descriptors;
-- symmetry and repetition estimates;
-- lightweight image embeddings;
-- human pairwise similarity judgements.
+- one-object interface;
+- unknown replacement;
+- no interface history;
+- deterministic seed and program;
+- bounded local encounter trace;
+- executable export;
+- non-exclusive licensing.
 
-### Experiment
+### Method
 
-Construct a controlled dataset of generated shaders with known relationships:
+Practice-led analysis grounded in:
 
-- identical code and seed;
-- same graph, different parameters;
-- same family, different structure;
-- different family with similar visual output;
-- visually similar sampled frames but different motion;
-- different output across GPU precision and browser implementations.
+- the realised work;
+- production decisions and failures;
+- interface and storage inspection;
+- public or exhibition documentation;
+- art-historical and media-theoretical reading.
 
-Compare descriptor agreement and identify which combinations best predict human judgements without collapsing diversity.
+### Required theoretical engagement
 
-## C. The poetics of refreshing
+- Wendy Hui Kyong Chun;
+- Matthew G. Kirschenbaum;
+- Felix Gonzalez-Torres;
+- Tino Sehgal;
+- gift and circulation scholarship where appropriate;
+- free-software and reproducibility scholarship.
+
+### Contribution boundary
+
+This strand may analyse the structure of the work without claiming that every visitor experiences attachment or regret.
+
+## 3. Strand B: encounter, stopping, and interpretation
 
 ### Questions
 
-- Does the statement that a shader may not return change viewing duration?
-- What predicts a decision to keep or relinquish a shader?
-- Does exportability change attachment?
-- Do visitors regret refreshing?
-- Does a visible history weaken the work?
-- How does perceived abundance affect standards of acceptance?
+- Does no-return replacement change stopping behaviour?
+- Do visitors describe the current shader as more consequential when replacement is irreversible through the interface?
+- Does source export alter perceived custody, responsibility, or value?
+- Does disclosing computational recoverability weaken or complicate experienced loss?
+- What does “personal” mean to visitors when the system does not fit output to them?
 
-### Possible study
+### Study conditions
 
-With explicit consent, compare interface conditions:
+Possible controlled conditions:
 
-- reversible gallery versus irreversible another;
+- retrieval versus no retrieval;
 - export available versus unavailable;
-- uniqueness statement versus no statement;
-- immediate next shader versus a short delay;
-- current encounter only versus a small visible history.
+- full recoverability disclosure versus minimal disclosure;
+- one object versus a comparison grid;
+- immediate replacement versus a short transition.
 
-Primary outcomes: dwell, refresh count, claim rate, return, reported attachment, regret, and interpretation. The public artwork does not need to collect this data; a separate study deployment can.
+### Measures
 
-## Development experiments
+Behavioural measures may include:
 
-### Experiment 1: grammar baseline
+- viewing time;
+- replacement count;
+- export use;
+- return visits.
 
-Build 8–12 visual families and generate 10,000 offline or browser candidates. Measure validity, performance, family coverage, and structural duplication.
+They must not be interpreted as preference by themselves. Pair them with:
 
-### Experiment 2: visual rejection
+- interviews;
+- open-ended interpretation;
+- explicit ratings where justified;
+- recall and recognition tasks;
+- reported regret, attachment, indifference, or scepticism.
 
-Test whether cheap browser metrics can remove blank, static, clipped, and trivial output without selecting only high-frequency noise.
+### Ethics
 
-### Experiment 3: model comparison
+- separate research deployment from the public artwork;
+- explicit consent;
+- no covert analytics;
+- no device fingerprinting;
+- institutional review where applicable;
+- minimal and justified data retention;
+- no inference that export creates ownership.
 
-On capable devices, compare SmolLM2 135M, Qwen2.5 0.5B, and Qwen2.5-Coder 0.5B for constrained graph generation and raw GLSL generation. Record model weight, memory, latency, validity, and visual quality. The 135M model is a size baseline, not expected to be a strong shader author.
+## 4. Strand C: local model, random mutation, and authored heuristic
 
-### Experiment 4: cross-device rendering
+### Question
 
-Render identical seeds on representative Chrome, Safari, Firefox, desktop, and mobile configurations. Measure pixel, perceptual, and motion differences caused by precision, driver, and implementation.
+Does a small local language model produce a meaningful difference within the bounded TSDNE program, compared with matched random and authored mutation?
 
-### Experiment 5: export portability
+### Conditions
 
-Test every generated shader against the promised target templates. A target is advertised only after automated and manual compatibility tests.
+1. unmutated parent;
+2. model proposal;
+3. random baseline;
+4. authored heuristic baseline.
 
-## Data and ethics
+### Controls
 
-- The generator can operate without analytics.
-- Research data collection must be a separate explicit-consent mode.
-- Do not use device fingerprinting as a hidden uniqueness mechanism.
-- Do not retain browsing identity or cross-site identifiers.
-- If claimed shader locations are documented, submission should be voluntary.
-- Photosensitive-seizure risk must be addressed before public deployment.
+- identical parent candidates;
+- equal opportunity for family change;
+- comparable mutation magnitude;
+- identical deterministic validation;
+- blinded presentation;
+- equal rendering conditions;
+- preserved rejected proposals.
 
-## Publication routes
+### Outcomes
 
-- Creativity & Cognition;
-- CHI Interactive Demos, Late-Breaking Work, or later full paper;
-- DIS;
-- EvoMUSART;
-- ACM Multimedia art/demo tracks;
-- ISEA;
-- SIGGRAPH Art Papers or Art Gallery;
-- Leonardo, Digital Creativity, or JSTA;
-- software-studies or artistic-research journals for the ephemerality and transfer argument.
+Technical:
+
+- structured-output validity;
+- material-proposal rate;
+- acceptance after validation;
+- latency;
+- memory use;
+- failure rate;
+- device coverage.
+
+Perceptual and aesthetic:
+
+- continuity with parent;
+- perceived difference;
+- interest;
+- preference;
+- family recognisability;
+- surprise;
+- explanation–result correspondence.
+
+### Valid results
+
+- model advantage;
+- model difference without preference advantage;
+- no detectable difference;
+- model disadvantage;
+- costs outweigh benefit.
+
+A negative result is publishable and may justify removing the model from the artwork.
+
+## 5. Strand D: dynamic-shader similarity
+
+### Question
+
+When should two animated shader programs be considered the same, similar, or different?
+
+### Controlled relationships
+
+- identical source and seed;
+- same family and nearby traits;
+- same family and distant traits;
+- different families with similar still frames;
+- similar colour and structure but different motion;
+- different code producing similar output;
+- same program rendered across devices and precision conditions.
+
+### Descriptor families
+
+- source and program fingerprints;
+- family and trait distance;
+- spatial perceptual hashes;
+- colour and luminance histograms;
+- edge and spatial-frequency descriptors;
+- dense temporal difference;
+- optical flow where feasible;
+- symmetry and repetition estimates;
+- lightweight embeddings;
+- human pairwise judgements.
+
+### Contribution boundary
+
+The current alpha uses simple descriptors sufficient for recent local de-duplication. It does not solve the general similarity problem.
+
+## 6. Visual-breadth study
+
+Before formal publication, generate and inspect at least 200 encounters.
+
+Record:
+
+- family distribution;
+- repeated motifs;
+- within-family diversity;
+- cross-family confusion;
+- rejected candidates;
+- selection latency;
+- observer judgements;
+- families removed or revised.
+
+The purpose is not to prove a large design space statistically from seed cardinality. It is to establish whether the visible space sustains the artwork.
+
+## 7. Cross-device rendering
+
+Render identical accepted programs across representative:
+
+- Chrome, Firefox, Safari, and Edge;
+- macOS and Windows;
+- iOS and Android;
+- integrated and discrete GPUs;
+- common pixel ratios and refresh rates.
+
+Measure:
+
+- compilation success;
+- frame time;
+- pixel and perceptual variation;
+- motion variation;
+- context loss;
+- dense-screen consistency;
+- export behaviour.
+
+## 8. Export portability
+
+Each advertised target requires:
+
+- automated structural checks;
+- manual execution;
+- screenshots or video;
+- version and environment record;
+- limitations and unsupported features.
+
+Targets:
+
+- native GLSL ES 3.00 contract;
+- standalone WebGL2;
+- Three.js;
+- ShaderToy;
+- ISF;
+- encounter JSON round-trip.
+
+## 9. Research records
+
+Maintain:
+
+- production diary;
+- source-status ledger;
+- visual contact sheets;
+- performance measurements;
+- failed and rejected examples;
+- model and baseline proposals;
+- browser and device matrix;
+- accessibility and security findings;
+- consent and study documentation;
+- AI-use disclosure.
+
+## 10. Publication separation
+
+### Practice-based paper
+
+Withdrawal, transfer, persistence, and encounter. Written after deployment or exhibition.
+
+### Empirical HCI paper
+
+Only after a defined and reviewed study of replacement, retrieval, export, and interpretation.
+
+### AI/creative-computation paper
+
+Only if the model comparison produces a substantive positive or negative result.
+
+### Technical graphics paper
+
+Dynamic-shader similarity, structural breadth, or cross-device rendering, only after a rigorous dataset and evaluation.
+
+### Software-studies paper
+
+Potentially focused on executable circulation, free software, interface memory, and the distinction between formal disappearance and forensic persistence.
+
+## 11. Venue discipline
+
+Venues and deadlines are mutable and must be rechecked when work reaches the relevant stage. Possible fields include:
+
+- artistic research and media art;
+- HCI and critical computing;
+- evolutionary art and creative AI;
+- computer graphics and multimedia;
+- software studies and digital media theory.
+
+Venue selection should follow the result rather than predetermine it.
+
+## 12. Immediate research priorities
+
+1. complete the 200-encounter visual audit;
+2. measure latency introduced by candidate selection and dense screening;
+3. validate every export;
+4. complete accessibility and photosensitive-content review;
+5. deploy to staging;
+6. decide whether to conduct the local-model ablation;
+7. document public or exhibition encounters;
+8. read the central theoretical sources in full;
+9. write the article only after the realised evidence changes or confirms the provisional argument.
