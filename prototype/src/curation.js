@@ -305,7 +305,11 @@ async function saveAndContinue() {
       setRating(null);
       return;
     }
+    generating = false;
     await generateForReview();
+  } catch (error) {
+    console.error(error);
+    ratingStatus.textContent = `Could not save rating: ${error instanceof Error ? error.message : String(error)}`;
   } finally {
     generating = false;
   }
