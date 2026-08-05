@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <meta name="theme-color" content="#000000">
+  <title>TSDNE — private curation instrument</title>
+  <link rel="stylesheet" href="./curation.css">
+</head>
+<body>
+  <main class="layout">
+    <section class="stage" aria-label="Shader under review">
+      <canvas id="curation-stage" aria-label="Generated shader under review"></canvas>
+      <div id="generation-status" class="generation-status" role="status" aria-live="polite"></div>
+    </section>
+
+    <aside class="instrument" aria-labelledby="instrument-title">
+      <header>
+        <p class="eyebrow">private research instrument</p>
+        <h1 id="instrument-title">TSDNE curation</h1>
+        <p class="progress"><strong id="rated-count">0</strong> / <span id="target-count">250</span> rated</p>
+        <progress id="progress" value="0" max="250">0 of 250</progress>
+      </header>
+
+      <section class="rating" aria-labelledby="rating-title">
+        <h2 id="rating-title">Assessment</h2>
+        <div class="rating-buttons">
+          <button id="interesting" type="button" class="positive"><span>I</span> interesting</button>
+          <button id="not-interesting" type="button" class="negative"><span>X</span> not interesting</button>
+          <button id="skip" type="button"><span>S</span> skip / cannot judge</button>
+        </div>
+        <label for="comment">Comment <small>optional; specific observations are most useful</small></label>
+        <textarea id="comment" rows="6" placeholder="What works or fails? Composition, movement, colour, depth, repetition, family weakness, artefacts, emotional or aesthetic response…"></textarea>
+        <button id="save-next" type="button" disabled>save rating and generate next</button>
+        <p id="rating-status" class="rating-status" role="status" aria-live="polite"></p>
+      </section>
+
+      <details>
+        <summary>Current shader data</summary>
+        <dl id="shader-data"></dl>
+      </details>
+
+      <section class="dataset" aria-labelledby="dataset-title">
+        <h2 id="dataset-title">Dataset</h2>
+        <div class="dataset-actions">
+          <button id="export-json" type="button">export JSON</button>
+          <button id="export-csv" type="button">export CSV</button>
+          <button id="clear-study" type="button" class="danger">clear study data</button>
+        </div>
+        <p>Ratings and reconstructive generator data remain in this browser until exported or cleared. This page is not part of the public artwork.</p>
+      </section>
+
+      <footer>
+        <p><kbd>I</kbd> interesting · <kbd>X</kbd> not interesting · <kbd>S</kbd> skip · <kbd>Enter</kbd> save and next</p>
+        <p><a href="./index.html">open public artwork</a></p>
+      </footer>
+    </aside>
+  </main>
+  <script type="module" src="./src/curation.js"></script>
+</body>
+</html>
