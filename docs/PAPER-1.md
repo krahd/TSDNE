@@ -12,7 +12,7 @@ Alternative:
 
 The first publication is a substantial practice-led journal article. It is not a technical shader-generation paper and does not depend on a novelty claim about procedural graphics.
 
-The article’s contribution is the articulation and material enactment of a computational relation that refuses several assumptions of platform culture:
+The article's contribution is the articulation and material enactment of a computational relation that refuses several assumptions of platform culture:
 
 - individual difference requires behavioural extraction;
 - personal significance requires exclusive possession;
@@ -28,29 +28,29 @@ TSDNE demonstrates that a computational system may produce a singular and person
 
 The work does not claim that the generated shader is globally unique. Its singularity belongs to the encounter rather than to an exclusive object.
 
-The generator is infrastructure for this argument rather than the paper's novelty claim. Its visual range must nevertheless be credible: if successive shaders appear trivially similar, the work's proposition of computational abundance fails experientially regardless of the strength of the conceptual framing.
+The generator is infrastructure for this argument rather than the paper's novelty claim. Its visual range must nevertheless be credible: if successive shaders appear trivially similar, the work's proposition of computational abundance fails experientially regardless of the conceptual framing.
 
 ## Core formulations
 
-> TSDNE retains provenance but abolishes title.
-
-> The shader can be identified, copied, and reconstructed, but not claimed.
-
-> The system remembers enough not to repeat, but not enough to restore.
-
-> The procedural system produces difference. The visitor produces relation.
+> **TSDNE retains provenance but abolishes title.**
+>
+> **The shader can be identified, copied, and reconstructed, but not claimed.**
+>
+> **The system remembers enough not to repeat, but not enough to restore.**
+>
+> **The procedural system produces difference. The visitor produces relation.**
 
 ## Current realised generator
 
-As of 7 August 2026, the public runtime uses no language model. It generates locally through an explicit procedural grammar with thirty-nine structural families organised across continuous fields, constructivist and hard-edge geometry, reprographic systems, recursive and fractal systems, marched three-dimensional space, biological systems, and physical systems.
+As of 7 August 2026, the public runtime uses no language model. It generates locally through an explicit procedural grammar with **forty-nine structural families** organised across continuous fields, constructivist and hard-edge geometry, reprographic systems, recursive/fractal systems, marched three-dimensional space, biological and physical systems, line/lattice systems, synthetic period styles, volumetric/water systems, and rule-driven structures.
 
-Visual variation is now separated into three axes:
+Visual variation is separated into three axes:
 
 1. **structure** — the family determines the underlying spatial or dynamical system;
-2. **colour** — a separate generated `shade()` function maps scalar structure into one of several colour regimes;
-3. **finish** — a separate reprographic stage adds clean, grain, posterised, dithered, scanline, vignette, or bloom surfaces.
+2. **colour** — an independent `shade()` stage maps scalar structure into one of six colour regimes;
+3. **finish** — an independent surface stage supplies seven clean/reprographic treatments.
 
-This separation emerged from production criticism rather than a claim of algorithmic firstness. The earlier twelve-family system and its complexity weighting produced too much stylistic convergence. The 7 August revision broadened the grammar and reduced the systematic preference for dense, high-edge, dither-like results.
+The move from twelve families, through the thirty-nine-family expansion, to the current forty-nine-family grammar emerged from production criticism rather than a claim of algorithmic firstness. Earlier revisions exposed stylistic convergence and a systematic bias towards dense, high-edge, dither-like results. The current system broadens the grammar, separates structural and surface axes, and uses stratified family scheduling so candidate pools cross macro-categories before returning to them.
 
 The paper should use this production history as evidence that perceived abundance is not guaranteed by a large formal possibility space: it must be sustained perceptually across actual encounters.
 
@@ -69,7 +69,7 @@ The paper should use this production history as evidence that perceived abundanc
 
 ### Personal / personalised
 
-Personal significance emerges from an event, duration, and decision. Personalisation emerges from a system’s representation of a person. TSDNE permits the first while refusing the second.
+Personal significance emerges from an event, duration, and decision. Personalisation emerges from a system's representation of a person. TSDNE permits the first while refusing the second.
 
 ### Singular encounter / unique object
 
@@ -101,42 +101,97 @@ The public artwork does not run an LLM, diffusion model, learned checkpoint, rem
 
 ## Private curation as production methodology
 
-A researcher-only interface is being developed for a bounded 250-item generator audit. It is not part of the public artwork and does not alter TSDNE's refusal of visitor profiling.
+The private curation system is an **external audit surface over the exact production TSDNE runtime**. It is not a second generator, a forked selector, or a visitor-facing feature. Generation, validation, quality screening, anti-repetition, selection, provenance, rendering, and prefetch are centralised in the shared production runtime; the curation adapter only observes the resulting encounter and records an explicit judgement.
 
-For each reviewed shader the instrument should record:
+The deployed curation route is intentionally unlinked from the public artwork and excluded from indexing. Its data remains local to the curator's browser.
 
-- explicit `interesting`, `not interesting`, or `skip` judgement;
-- optional qualitative comment;
-- structural family and macro-category;
-- colour mode and finish;
-- seed, traits, palette, generator version, graph/source hashes;
-- perceptual descriptors and technical quality results;
+The audit has no fixed quota. A session may contain two judgements or many dozens; closing the browser ends that session, and later sessions continue the cumulative local corpus. This makes sustained curation practically feasible without converting it into a compulsory long experiment.
+
+The three labels are:
+
+- **OK** — the shader is acceptable for TSDNE as-is;
+- **not OK** — the shader should not appear in TSDNE as-is;
+- **repetitive** — the shader is acceptable in itself but too similar to something shown recently.
+
+This distinction separates intrinsic visual failure from sequence-level failure. In analysis, `OK + repetitive` constitute individually acceptable outputs, while `repetitive` also marks a failure of perceived abundance or anti-repetition.
+
+The rating interface is intentionally blind to family names, seeds, scores, hashes, and diagnostics. An optional comment can be added after a judgement.
+
+### What the audit records
+
+Each explicit rating is paired with production telemetry already generated by TSDNE:
+
+- global/session ordinal, timestamp, and display duration;
+- application version and deployed Git revision where available;
+- runtime, selector, generator, perception, and curation-protocol versions;
+- browser and display environment;
+- exact seed, graph, traits, palette, family and macro-category;
+- colour mode, finish, and variant;
+- source and graph hashes;
+- compact perceptual descriptors, quality assessment, and flash-screen result;
 - selector score components;
-- complete candidate-pool composition;
-- generation conditions and technical failures.
+- complete ranked candidate pool;
+- every generation/validation attempt and its rejection stage/reason;
+- recent non-reconstructive perceptual traces available to the selector before selection;
+- generation duration;
+- a small visual thumbnail;
+- optional qualitative comment.
 
-The study has two analytically distinct purposes:
+The curation layer recalculates none of these production decisions. Its architectural invariant is:
 
-1. **generator audit** — identify weak families, parameter regions, colour/finish interactions, and recurring artefacts;
-2. **selector audit** — identify cases in which the public selection function chooses a weaker candidate than alternatives it already generated.
+> **TSDNE produces; curation observes.**
 
-The study must not treat viewing duration as preference, must not generalise one artist's ratings to a population, and must not use the same 250 observations both to optimise the generator and to claim unbiased improvement. Revisions should be evaluated on a held-out batch.
+### No online adaptation
 
-The current private curation branch predates the 39-family expansion and must be refreshed against current `main` before data collection begins.
+Curation labels never alter generation while a corpus is being collected. The process is:
+
+`production → observation → export/analysis → explicit authored revision → later version`
+
+not:
+
+`production ↔ curator preference model`.
+
+The corpus is used to diagnose weak families, parameter regions, family/colour/finish interactions, quality thresholds, selector weights, and shortcomings in the perceptual-distance metric. Any resulting change is made explicitly in a later version of the authored system.
+
+### Repetition as a particularly useful signal
+
+The `repetitive` label directly tests a central requirement of the artwork. For every such judgement, analysis can compare the curator's explicit perception of repetition with the selector's own measured distance to the recent local traces that were available when it made its decision.
+
+A case where the curator marks `repetitive` while the metric reports high novelty identifies a missing component in the perceptual descriptor or a poorly calibrated threshold. The reverse disagreement is equally useful. This produces evidence about the anti-repetition mechanism without treating `another` itself as dislike or preference.
+
+### Methodological status
+
+The audit is best described as a bounded-by-practice, first-person generator audit within an autobiographical-design / research-through-design production process. It documents how the artist inspects and revises an authored generative system.
+
+It is **not** a user-preference study and cannot establish what a broader visitor population likes. Its rates are descriptive of the production audit, not estimates of population preference.
+
+The paper should therefore use the corpus as transparent production evidence rather than statistical authority.
 
 ## Visual genealogy and explicit reference
 
-The expanded grammar makes several historical references explicit in family names, including Hans Richter, Viking Eggeling, Suprematism, and Bauhaus, alongside procedural references such as Truchet systems, Julia/orbit-trap fractals, Apollonian structures, ray-marched space, phyllotaxis, contour mapping, and reprographic techniques.
+The expanded grammar makes historical references explicit in family names, including Hans Richter, Viking Eggeling, Suprematism, and Bauhaus, alongside procedural references such as Truchet systems, Julia/orbit-trap fractals, Apollonian structures, ray-marched space, phyllotaxis, contour mapping, reprographic techniques, cellular automata and other rule-driven systems.
 
 This should be documented as a legible genealogy rather than treated as neutral stylistic vocabulary. The paper should distinguish explicit formal reference from model-based stylistic imitation: TSDNE's public runtime contains no learned corpus, but its authored rules still emerge from histories of art, cinema, mathematics, computer graphics, printing, and visual culture.
 
-Relevant primary museum documentation includes MoMA's records of Hans Richter's *Rhythmus 21/23* and Viking Eggeling's *Symphonie diagonale* in the history of abstract/absolute film, and the Metropolitan Museum of Art's account of Suprematism, Constructivism, and Bauhaus within geometric abstraction.
+## Verification as production evidence
+
+The current repository verification includes:
+
+- JavaScript syntax checks;
+- 37 unit and architectural-contract tests;
+- tests that the curation adapter and public adapter both delegate production mechanics to the shared runtime;
+- tests that the curation vocabulary is exactly `OK / not OK / repetitive` and that ratings do not adapt generation online;
+- tests covering family/category ledgers, stratified scheduling, provenance, export, anti-repetition traces, perceptual descriptors, quality checks and flash screening;
+- a real WebGL2 headless-browser compile/render smoke test across all forty-nine structural families under three variant conditions each: **147/147 conditions pass** on the current CI revision;
+- verified GitHub Pages deployment with a generated build manifest so curation records can identify the deployed Git commit.
+
+These checks establish technical consistency and one real WebGL2-driver smoke test. They do not replace actual artistic inspection, cross-browser/device testing, or photosensitive-safety review.
 
 ## Proposed structure
 
 ### 1. Introduction
 
-Introduce the saturation of generative output and the platform assumption that individualised experience requires extraction. Present TSDNE’s question and central contribution.
+Introduce the saturation of generative output and the platform assumption that individualised experience requires extraction. Present TSDNE's question and central contribution.
 
 ### 2. The artwork
 
@@ -170,9 +225,9 @@ Describe local perceptual memory: remembering enough to avoid repetition while p
 
 Explain the decision not to use a model at runtime. Connect the title to the contemporary AI imaginary while arguing that generativity exceeds foundation models. Address training corpora, labour, copyright, device inequality, dependency, and preservation without turning the article into a universal anti-AI claim. Explicitly disclose AI-assisted software development so the runtime refusal is not confused with a claim of tool purity.
 
-### 10. Authored visual genealogy and curation
+### 10. Authored visual genealogy and private curation
 
-Describe the explicit historical, computational, and reprographic lineages of the procedural grammar; the expansion from 12 to 39 families; the separation of structure, colour, and finish; and the private 250-item artistic curation process. Treat this as production methodology and evidence, not as visitor personalisation or a technical-priority claim.
+Describe the historical, computational, and reprographic lineages of the procedural grammar; the expansion of its visual vocabulary; structure/colour/finish separation; the production critique that motivated those changes; and the external artist-only curation audit. Treat this as production methodology and evidence, not visitor personalisation or a technical-priority claim.
 
 ### 11. Executable circulation and the user–programmer continuum
 
@@ -186,36 +241,24 @@ Acknowledge browser infrastructure, energy, hardware, hosting, authored selectio
 
 Return to the proposition that personal relation does not require behavioural personalisation or property.
 
-## Evidence required
+## Evidence required before submission
 
-Before submission, the article must be grounded in:
-
-- a stable public artwork;
-- documentation of the exact interaction;
-- real-browser compilation/render validation across the retained shader families;
-- evidence that first encounters are perceptually diverse;
-- records of local anti-repetition behaviour across reloads;
-- privacy and storage inspection;
-- export examples;
-- browser and hardware compatibility results;
-- the 250-item private curation dataset and analysis, after the instrument is updated to the 39-family generator;
-- a held-out post-revision validation batch;
-- production notes explaining both removal of runtime WebLLM and later AI-assisted development work;
-- an explicit visual-grammar genealogy;
-- critical reflection on failures, selector bias, and revisions;
+- stable public artwork and documentation of the exact interaction;
+- sustained private curation corpus from one or several practical sessions;
+- analysis separating `not OK` from `repetitive` failures;
+- explicit record of generator/selector revisions motivated by the audit;
+- real-device and cross-browser rendering checks beyond CI's headless WebGL2 smoke test;
+- evidence that early encounters remain perceptually diverse in actual use;
+- inspection of local anti-repetition storage and privacy behaviour;
+- verified export examples;
+- reduced-motion and photosensitive-safety review;
+- production notes explaining removal of runtime WebLLM and later AI-assisted development work;
+- explicit visual-grammar genealogy;
+- critical reflection on failures, selector bias, metric disagreements, and revisions;
 - screenshots and video documentation;
-- optional consented interviews or observational study, only if they materially support phenomenological claims.
+- optional consented interviews or observational study only if they materially support claims about visitor phenomenology.
 
-## Current audit constraints
-
-The 7 August 2026 audit identified four issues that must be resolved or explicitly reported before the curation data is treated as evidence:
-
-1. `familySchedule()` rotates through a categorically ordered family list, while candidate collection stops early; pools can therefore sample categorical neighbourhoods rather than an unbiased cross-section of all 39 families.
-2. The existing `research/curation-instrument-250` branch is based on the obsolete twelve-family generator.
-3. CI checks generated GLSL structurally but does not actually WebGL-compile every family/colour/finish combination.
-4. clearing persistent anti-repetition memory currently leaves session-only colour-mode history active.
-
-See `docs/AUDIT-2026-08-07.md`.
+No arbitrary number of curation judgements is required for the artwork or paper. The evidentiary value lies in the documented relation between inspection, diagnosis, revision, and later production behaviour.
 
 ## Claims to avoid
 
@@ -225,23 +268,24 @@ See `docs/AUDIT-2026-08-07.md`.
 - destruction of relinquished shaders;
 - total absence of extraction or material cost;
 - universal solution to AI ethics;
-- invention of anti-repetition or novelty search;
+- invention of anti-repetition, novelty search, procedural grammar, or first-person curation;
 - invention of provenance without ownership;
 - implication that hashes are politically neutral;
 - implication that CC0 resolves every possible third-party right;
 - implication that “authored procedural” means produced without AI-assisted development;
-- treating the expanded 39-family grammar, structure/colour/finish separation, or curation method as technical firsts without evidence.
+- treating the forty-nine-family grammar, structure/colour/finish separation, shared runtime, or curation method as technical firsts without evidence;
+- treating curator ratings as public-user preferences or population statistics.
 
 ## Contribution statement
 
-The article contributes a practice-based account of an interaction architecture in which computational abundance is encountered without a catalogue, difference is produced without profiling, provenance is retained without title, local memory prevents obvious repetition without preserving a recoverable archive, and executable objects circulate without exclusive possession. Its production history further demonstrates that this refusal of personalisation does not remove the need for intensive artistic curation: heterogeneity is developed privately in the generator rather than extracted publicly from visitors.
+The article contributes a practice-based account of an interaction architecture in which computational abundance is encountered without a catalogue, difference is produced without profiling, provenance is retained without title, local memory prevents obvious repetition without preserving a recoverable archive, and executable objects circulate without exclusive possession. Its production history further demonstrates that refusing public personalisation does not remove the need for intensive artistic curation: heterogeneity is developed privately in the authored system rather than extracted publicly from visitors.
 
 ## Candidate journals
 
-Current venue scope must be verified before submission. Likely candidates remain:
+Venue scope must be verified immediately before submission. Current likely candidates remain:
 
 1. *Digital Creativity*;
 2. *Leonardo*;
 3. *Journal of Science and Technology of the Arts*;
-4. *Convergence* or a comparable media journal if the personalisation argument becomes dominant;
-5. *AI & Society* only if the refusal of foundation-model generativity is sufficiently distinct from the user's other AI-and-memory work.
+4. *Convergence* or a comparable media journal if the personalisation/platform argument becomes dominant;
+5. *AI & Society* only if the refusal of foundation-model generativity is sufficiently distinct from other ongoing AI-and-memory work.
