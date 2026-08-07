@@ -391,6 +391,7 @@ function showAbout() {
     await clearHistory();
     recentTraces = [];
     recentFamilies = [];
+    recentModes = [];
     announce("Local anti-repetition memory cleared.");
   });
   panel.showModal();
