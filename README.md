@@ -171,15 +171,18 @@ See [`GENERATED-SHADERS-LICENSE.md`](GENERATED-SHADERS-LICENSE.md).
 
 ## Research and writing
 
-The first paper is practice-led and HCI-adjacent. Its central claim is not a new shader-generation algorithm. It examines how computational systems may stage personally meaningful difference while refusing behavioural personalisation, proprietary title, certification, accumulation, and manufactured scarcity.
-
-See:
+Project research, implementation genealogy, architecture, testing, and reproducibility material remain in this repository:
 
 - [`docs/PROJECT.md`](docs/PROJECT.md)
-- [`docs/PAPER-1.md`](docs/PAPER-1.md)
 - [`docs/GENEALOGY.md`](docs/GENEALOGY.md)
 - [`docs/RESEARCH-PLAN.md`](docs/RESEARCH-PLAN.md)
 - [`docs/AI-USE-STATEMENT.md`](docs/AI-USE-STATEMENT.md)
+
+The journal article and all paper-specific planning, source verification, writing-register, and manuscript-audit documents are canonical in:
+
+`krahd/academic-writing/my_papers_2026/2026 - This Shader Does Not Exist/`
+
+The current paper is organised around a stronger claim than the earlier “personal without personalisation” framing: TSDNE does not abolish scarcity, memory, provenance, or selection; it relocates them within the apparatus. Implementation facts are reverified against a frozen version before they enter a submitted manuscript.
 
 ## Authorship and development
 
