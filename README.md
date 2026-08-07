@@ -25,19 +25,33 @@ The artwork creates individual difference without identifying or modelling the v
 
 The encounter may become personal because of attention, decision, attachment, regret, or continuation. It is not personalised because the system has classified the visitor.
 
-## Generativity without a language model
+## Generativity without a runtime language model
 
-The public artwork uses authored procedural systems, WebGL2, deterministic seeds, perceptual analysis, and local novelty-and-quality search. It does not use an LLM or external inference service.
+The public artwork uses explicit procedural systems, WebGL2, deterministic seeds, perceptual analysis, and local novelty-and-quality search. It does not run an LLM, diffusion model, learned generative checkpoint, or external inference service.
 
-This is a deliberate artistic and infrastructural decision. The title enters the cultural field of generative-AI “does not exist” projects while refusing the assumption that contemporary generativity must depend on a foundation model, scraped training corpus, remote model host, or high-memory device.
+This is a deliberate artistic and infrastructural decision. The title enters the cultural field of generative-AI “does not exist” projects while refusing the assumption that contemporary generativity must depend on a foundation model, scraped runtime corpus, remote model host, or high-memory model runtime.
 
-Shader richness is treated as an artistic and engineering requirement. Candidate programs are generated from several authored visual grammars, rendered locally, screened for technical and perceptual quality, and selected for difference from recent encounters.
+The runtime position is distinct from the development process. AI programming assistants have contributed to software and documentation under Tomas Laurenzo's direction and review; this is documented in [`docs/AI-USE-STATEMENT.md`](docs/AI-USE-STATEMENT.md).
+
+## Visual grammar
+
+Shader richness is treated as an artistic and engineering requirement rather than a technical-priority claim.
+
+The current generator contains **thirty-nine structural families** across continuous fields, constructivist and hard-edge geometry, reprographic systems, recursive/fractal systems, marched three-dimensional space, biological systems, and physical systems.
+
+Variation is separated into three axes:
+
+- **structure** — the spatial or dynamical family;
+- **colour** — one of several independently selected colour-mapping regimes;
+- **finish** — a reprographic surface stage including clean, grain, posterised, dithered, scanline, vignette, and bloom treatments.
+
+The expansion was introduced because a formally large parameter space is insufficient if successive encounters remain perceptually similar. The generator is screened and selected for difference, but no claim of global or perceptual uniqueness is made.
 
 ## Local anti-repetition memory
 
 A shallow generator would undermine the work: three similar results can make computational abundance appear fraudulent. TSDNE therefore keeps a bounded local memory of perceptual difference.
 
-The memory stores only:
+The persistent memory stores only:
 
 - a local random key;
 - time of display;
@@ -73,13 +87,15 @@ They are not presented as certificates. TSDNE provides:
 
 When the visitor takes the code, a plain technical manifest accompanies it. The manifest explicitly describes itself as **not a certificate** and confers no title.
 
-## Status
+## Status and audit
 
-The current target is the complete revised public-release candidate described in [`docs/UPDATED-VERSION-GOAL.md`](docs/UPDATED-VERSION-GOAL.md).
-
-The former WebLLM, model-mutation, and awakening implementation is preserved at the branch:
+The former WebLLM, model-mutation, and awakening implementation is preserved at:
 
 `archive/webllm-release-candidate-2026-08-04`
+
+The expanded 39-family generator was audited on 7 August 2026. The audit identifies sampling, curation-instrument, real-WebGL-validation, and state-clearing issues that should be resolved before the 250-run curation study is treated as evidence:
+
+[`docs/AUDIT-2026-08-07.md`](docs/AUDIT-2026-08-07.md)
 
 ## Running locally
 
@@ -115,17 +131,17 @@ Keyboard controls:
 
 ## Architecture
 
-The browser performs all generation and evaluation locally:
+The browser performs generation and evaluation locally:
 
-1. the authored procedural grammar generates candidate shader programs;
+1. the explicit procedural grammar generates candidate shader programs;
 2. WebGL2 compiles and renders them;
 3. fixed temporal samples produce compact perceptual descriptors;
 4. technical, flash, motion, luminance, and variance checks reject unsuitable candidates;
-5. a maximin novelty tournament favours candidates distant from recent local traces;
-6. early encounters apply stricter family and perceptual separation;
+5. a novelty tournament favours candidates distant from recent local traces while also considering family, colour mode, and visual articulation;
+6. early encounters apply stricter separation;
 7. only the selected shader is shown;
 8. its reconstructive information remains in active memory unless the visitor takes the code;
-9. only a non-reconstructive perceptual trace enters local anti-repetition memory.
+9. only a non-reconstructive perceptual trace enters persistent local anti-repetition memory.
 
 See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
@@ -147,7 +163,7 @@ See [`PRIVACY.md`](PRIVACY.md).
 
 ## Free circulation
 
-The authored application and generator are licensed under GPL-3.0-or-later. Generated shader output is offered under a CC0 waiver to the extent that waivable rights exist.
+The application and generator are licensed under GPL-3.0-or-later. Generated shader output is offered under a CC0 waiver to the extent that waivable rights exist.
 
 The gesture is not “you own this.” It is “this executable form may continue elsewhere.”
 
@@ -163,7 +179,10 @@ See:
 - [`docs/PAPER-1.md`](docs/PAPER-1.md)
 - [`docs/GENEALOGY.md`](docs/GENEALOGY.md)
 - [`docs/RESEARCH-PLAN.md`](docs/RESEARCH-PLAN.md)
+- [`docs/AI-USE-STATEMENT.md`](docs/AI-USE-STATEMENT.md)
 
-## Authorship
+## Authorship and development
 
-Concept, artistic direction, procedural grammar, software, and writing: Tomas Laurenzo.
+Concept and artistic direction: Tomas Laurenzo.
+
+Software, procedural grammar, and documentation are developed under Tomas Laurenzo's direction, with AI programming assistance disclosed in the repository history and [`docs/AI-USE-STATEMENT.md`](docs/AI-USE-STATEMENT.md). Artistic selection, acceptance of committed code, project claims, licensing, and responsibility remain with Tomas Laurenzo.
