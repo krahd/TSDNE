@@ -17,3 +17,28 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run check
       - run: npm test
+      - name: Compile and render every shader family in real WebGL2
+        shell: bash
+        run: |
+          set -euo pipefail
+          browser="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$browser" || { echo "No Chrome/Chromium executable on runner"; exit 1; }
+          python3 -m http.server 4173 --directory prototype >/tmp/tsdne-http.log 2>&1 &
+          server=$!
+          trap 'kill "$server" 2>/dev/null || true' EXIT
+          for _ in {1..30}; do
+            curl -fsS http://127.0.0.1:4173/diagnostics/compile/ >/dev/null && break
+            sleep .2
+          done
+          "$browser" \
+            --headless=new \
+            --no-sandbox \
+            --enable-webgl \
+            --ignore-gpu-blocklist \
+            --use-angle=swiftshader \
+            --enable-unsafe-swiftshader \
+            --virtual-time-budget=30000 \
+            --dump-dom \
+            http://127.0.0.1:4173/diagnostics/compile/ > /tmp/tsdne-compile.html
+          cat /tmp/tsdne-compile.html
+          grep -q 'TSDNE_WEBGL_COMPILE_PASS' /tmp/tsdne-compile.html

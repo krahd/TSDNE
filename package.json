@@ -6,8 +6,9 @@
   "description": "A self-contained procedural artwork about serendipity, relinquishment, non-extractive individualisation, provenance without title, and free circulation.",
   "scripts": {
     "test": "node --test tests/*.test.mjs",
-    "check": "node --check prototype/src/generator.js && node --check prototype/src/perception.js && node --check prototype/src/history.js && node --check prototype/src/webgl.js && node --check prototype/src/synthesis.js && node --check prototype/src/provenance.js && node --check prototype/src/export.js && node --check prototype/src/main.js",
-    "verify": "npm run check && npm test"
+    "check": "node --check prototype/src/generator.js && node --check prototype/src/perception.js && node --check prototype/src/history.js && node --check prototype/src/webgl.js && node --check prototype/src/synthesis.js && node --check prototype/src/provenance.js && node --check prototype/src/export.js && node --check prototype/src/runtime.js && node --check prototype/src/version.js && node --check prototype/src/curation-data.js && node --check prototype/src/curation.js && node --check prototype/src/main.js && node --check scripts/analyse-curation.mjs",
+    "verify": "npm run check && npm test",
+    "analyse:curation": "node scripts/analyse-curation.mjs"
   },
   "license": "GPL-3.0-or-later",
   "author": "Tomas Laurenzo"

@@ -7,6 +7,8 @@ on:
       - main
     paths:
       - "prototype/**"
+      - "package.json"
+      - "package-lock.json"
 
 permissions:
   contents: read
@@ -37,6 +39,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v6
+      - name: Write deployed-build manifest
+        env:
+          BUILD_SHA: ${{ github.sha }}
+        run: |
+          node --input-type=module -e 'import fs from "node:fs"; fs.writeFileSync("prototype/build.json", JSON.stringify({gitCommit:process.env.BUILD_SHA,deployedAt:new Date().toISOString()},null,2)+"\n")'
       - name: Configure Pages
         uses: actions/configure-pages@v6
       - name: Upload artwork

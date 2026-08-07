@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>TSDNE WebGL compile diagnostic</title>
+</head>
+<body>
+<pre id="result">running</pre>
+<script type="module">
+import {
+  COLOR_MODES,
+  FAMILY_NAMES,
+  FINISHES,
+  candidateFromGraph,
+  createGraph,
+} from "../../src/generator.js";
+import { enrichGraph } from "../../src/synthesis.js";
+import { createRenderer } from "../../src/webgl.js";
+
+const output = document.querySelector("#result");
+const canvas = document.createElement("canvas");
+canvas.width = 32;
+canvas.height = 32;
+const renderer = createRenderer(canvas);
+const finishValues = [2/11, 5/11, 6.5/11, 7.5/11, 8.5/11, 9.5/11, 10.5/11];
+const variantValues = [0.08, 0.5, 0.92];
+const failures = [];
+let checked = 0;
+
+for (let familyIndex = 0; familyIndex < FAMILY_NAMES.length; familyIndex += 1) {
+  const family = FAMILY_NAMES[familyIndex];
+  for (let variantIndex = 0; variantIndex < variantValues.length; variantIndex += 1) {
+    const seed = [
+      0x13579bdf ^ familyIndex,
+      0x2468ace0 ^ (familyIndex << 5),
+      0x9e3779b9 ^ variantIndex,
+      0x7f4a7c15 ^ (familyIndex * 17 + variantIndex),
+    ].map((value) => value >>> 0);
+    try {
+      const graph = enrichGraph(createGraph(seed, family));
+      graph.traits.variant = variantValues[variantIndex];
+      const colourIndex = (familyIndex + variantIndex) % COLOR_MODES.length;
+      const finishIndex = (familyIndex * 3 + variantIndex) % FINISHES.length;
+      graph.traits.colorMode = (colourIndex + 0.5) / COLOR_MODES.length;
+      graph.traits.finish = finishValues[finishIndex];
+      const candidate = candidateFromGraph(graph, { seed, origin: "compile-diagnostic" });
+      renderer.setFragmentSource(candidate.source);
+      renderer.sample(0.73, 32, { motion: 1, intensity: 1 });
+      checked += 1;
+    } catch (error) {
+      failures.push({ family, variantIndex, error: error instanceof Error ? error.message : String(error) });
+    }
+  }
+}
+renderer.destroy();
+
+if (failures.length) {
+  document.documentElement.dataset.tsdneCompile = "fail";
+  output.textContent = `TSDNE_WEBGL_COMPILE_FAIL ${failures.length}/${checked + failures.length}\n${JSON.stringify(failures, null, 2)}`;
+} else {
+  document.documentElement.dataset.tsdneCompile = "pass";
+  output.textContent = `TSDNE_WEBGL_COMPILE_PASS ${checked}/${checked}`;
+}
+</script>
+</body>
+</html>

@@ -3,151 +3,128 @@
 **Date:** 7 August 2026  
 **Repository:** `krahd/TSDNE`  
 **Primary branch:** `main`  
-**Preserved predecessor:** `archive/webllm-release-candidate-2026-08-04`  
-**Expanded-generator audit:** `docs/AUDIT-2026-08-07.md`
+**Preserved predecessor:** `archive/webllm-release-candidate-2026-08-04`
 
 ## Current definition
 
-*This Shader Does Not Exist* is not a shader exploration interface. It is an artwork that uses generated shaders to stage an encounter with computational abundance, serendipity, relinquishment, executable persistence, and non-proprietary circulation.
+*This Shader Does Not Exist* is an artwork that stages an encounter with computational abundance, serendipity, relinquishment, executable persistence, and non-proprietary circulation. It is not an interactive shader-exploration or recommendation system.
 
-Frozen formulations:
+> **TSDNE retains provenance but abolishes title.**
+>
+> **The shader can be identified, copied, and reconstructed, but not claimed.**
+>
+> **The system remembers enough not to repeat, but not enough to restore.**
 
-> TSDNE retains provenance but abolishes title.
+## Frozen public-artwork decisions
 
-> The shader can be identified, copied, and reconstructed, but not claimed.
-
-## Decisions now frozen
-
-- No LLM or model download in the public artwork.
-- No prompt, sliders, evolutionary controls, preference learning, or user-directed lineage.
-- No visible awakening or mutation of a shader after it appears.
+- No LLM, diffusion model, learned checkpoint, remote inference service, prompt, preference learner, or user-directed lineage in the public runtime.
 - One shader at a time.
 - **another** means relinquishment, not dislike.
 - **take the code** means continuation, not acquisition or ownership.
-- No catalogue, restore function, public archive, certificate, title record, mint, edition, or global uniqueness claim.
+- No catalogue, restore function, public encounter archive, certificate, title record, mint, edition, or global uniqueness claim.
 - Hashing remains implicit and operational.
-- A bounded local anti-repetition memory stores only non-reconstructive perceptual traces.
-- Shader visual complexity is pursued through explicit procedural grammar, local computational search, perceptual evaluation, and private artistic curation.
-- “No model” is a runtime property of the artwork, not a claim that AI tools were absent from software development.
+- Persistent anti-repetition memory stores only bounded, non-reconstructive perceptual traces.
+- Public visitors are not used as behavioural training data.
+- AI-assisted development is disclosed separately from the no-model runtime claim.
 
-## Current implementation
+## Current production system
 
-The current `main` branch provides:
+The production runtime provides:
 
-- immediate self-contained procedural generation;
-- forty-nine structural families spanning continuous fields, constructivist and hard-edge geometry, reprographic surfaces, recursive and fractal systems, marched space with a moving camera, biological systems, physical systems, line and lattice projection, synthetic period styles, volume and water, and rule-driven structure;
-- three separable axes of variation: structural family, colour mode, and reprographic finish;
-- six colour modes and seven finish modes;
-- relaxed complexity enrichment that preserves sparse, quiet, and slow regions rather than forcing maximal density;
-- local WebGL2 compilation and rendering;
-- temporal, luminance, variance, motion, saturation, and flashing checks;
-- a maximin candidate tournament balancing perceptual novelty, family separation, colour-mode separation, and visual complexity;
-- stricter separation across the first four encounters of a session;
-- persistent local anti-repetition across reloads;
-- no stored seed, source, graph, parameters, frame, screenshot, source hash, account, identity, or inferred preference in persistent anti-repetition memory;
+- forty-nine structural families derived from one explicit family/category ledger;
+- separable structural, colour, and surface-finish axes;
+- six colour modes and seven finishes;
+- authored procedural complexity with sparse, quiet, slow, dense, geometric, recursive, dimensional, biological, physical, period and rule-driven regions;
+- stratified family scheduling across macro-categories;
+- real local WebGL2 compilation and rendering;
+- temporal, luminance, variance, motion, saturation and flashing checks;
+- candidate selection balancing perceptual novelty, family separation, colour-mode separation and visual complexity;
+- stronger separation in early encounters;
+- local anti-repetition across reloads;
 - internal SHA-256 source and graph provenance;
-- technical export manifests explicitly marked as non-certificates;
+- explicitly non-certificate export manifests;
 - free and non-exclusive shader circulation;
-- frame-budgeted candidate search with visible activity feedback;
-- static deployment without runtime package or model dependencies;
-- accessibility, privacy, licensing, deployment, audit, and paper documentation.
+- frame-budgeted background generation and prefetch;
+- static deployment without model or runtime-package dependencies.
 
-## 7 August generator expansion
+## Shared runtime and external curation audit
 
-Commit `47fb889035ed6dbe06a6b422dd5c51779e426091` expanded the grammar from twelve to thirty-nine structural families and separated structure, colour, and finish.
+Generation, validation, selection, anti-repetition, provenance and rendering are now centralised in `prototype/src/runtime.js`.
 
-The change also:
+The public adapter (`prototype/src/main.js`) and the private curation adapter (`prototype/src/curation.js`) both call that same runtime. Contract tests prohibit the curation adapter from importing or reimplementing generator, selector, perception, history, WebGL or provenance mechanics.
 
-- reduced the previous bias towards uniformly dense/high-edge images;
-- introduced colour-mode separation into candidate selection;
-- made generation progress visible;
-- sliced search work across animation frames so the displayed shader remains responsive;
-- deferred the expensive flash-screen check until after cheaper perceptual rejection;
-- prevented a foreground request from competing with an already-running prefetch.
+The former standalone branches `research/curation-instrument-250` and `research/curation-instrument-250-v2` have been retired and deleted. Their central architectural flaw was duplication of the production system.
 
-GitHub Actions verification passed for this revision, and the Pages deployment workflow also completed successfully.
+The replacement curation surface is deployed at the unlinked route:
 
-## Audit findings requiring attention
+`/curation/`
 
-The 7 August audit found no conceptual regression, but four implementation/research issues should be addressed before the 250-run curation study is used as evidence.
+It is marked `noindex,nofollow,noarchive` and is not linked from the public artwork. Discovery of the URL is not treated as authentication; all curation data remains local to the browser.
 
-1. ~~**Family sampling bias.**~~ **Resolved.** `familySchedule()` draws a stratified schedule across the macro-category ledger. The ledger now covers all forty-nine families, including the eleven added in 0.3.0-alpha.1, and a test asserts it matches `FAMILY_NAMES` exactly.
-2. **Stale curation instrument.** `research/curation-instrument-250` remains based on the pre-expansion twelve-family generator and must be refreshed before collecting the planned 250 ratings. Still outstanding, and now further behind at forty-nine families.
-3. **No real GLSL compile matrix in CI.** Unit tests validate emitted source structurally but do not invoke a real WebGL2 compiler for every family/colour/finish combination.
-4. ~~**Incomplete memory clear.**~~ **Resolved in 0.3.0-alpha.1.** Clearing anti-repetition memory now also resets the session-only recent colour-mode list.
+### Curation controls
 
-A fifth documentation issue is also recorded: named visual references such as Richter, Eggeling, Suprematism, and Bauhaus should receive an explicit genealogy rather than remain unexplained style labels.
+- `F` — **OK**: acceptable for TSDNE as-is;
+- `G` — **not OK**: should not appear in TSDNE as-is;
+- `H` — **repetitive**: acceptable in itself, but too similar to something shown recently;
+- `C` — optional comment on the latest rating;
+- `E` — JSON export;
+- `Shift+E` — CSV export.
 
-See `docs/AUDIT-2026-08-07.md` for the complete analysis and recommended order of work.
+There is no fixed 250-item quota in the interface. Sessions may be abandoned by closing the browser and resumed later as a new session within the same cumulative local corpus.
 
-## Private 250-run curation study
+Ratings never influence generation online. They are used only after collection to diagnose and explicitly revise the authored generator or selector.
 
-The private curation instrument remains conceptually valid but is temporarily **not ready for data collection** because it targets the old generator.
+See `docs/CURATION-AUDIT.md`.
 
-When refreshed, the study should record and analyse:
+## Audit data captured
 
-- macro-category;
-- family;
-- colour mode;
-- finish;
-- complete traits and palette;
-- seed and generator version;
-- selector score components;
-- complete candidate-pool composition;
-- perceptual descriptors;
-- explicit `interesting`, `not interesting`, or `skip` judgement;
-- optional comments;
-- technical failures and rejections.
+Each rating records the exact production encounter and its context, including:
 
-The study should distinguish a balanced generator audit from an audit of the actual public selector. This is necessary to separate weaknesses in the grammar from weaknesses in selection.
+- application/deployment revision;
+- runtime, selector, generator and perception versions;
+- seed, graph, traits, palette, family/category, colour mode, finish and variant;
+- source/graph hashes;
+- perceptual and safety descriptors;
+- selected-score components;
+- complete ranked candidate-pool summaries;
+- every generation/validation attempt and rejection reason;
+- recent non-reconstructive perceptual traces available to the selector;
+- generation and display durations;
+- browser/display conditions;
+- optional comment and a small visual thumbnail.
 
-## AI/runtime distinction
+The analysis separates intrinsic failure (`not OK`) from sequence failure (`repetitive`). Human repetition judgements can therefore be compared directly with the production descriptor's own distances to recent traces.
 
-The public artwork runs without a language model, diffusion model, generative checkpoint, or remote inference service.
+## Verification architecture
 
-Software development has nevertheless used AI programming assistance. The 7 August generator expansion was explicitly committed with Claude Opus 5 credited as a code co-author. This production fact is documented in `docs/AI-USE-STATEMENT.md` and should remain explicit in the paper.
+Repository verification includes:
+
+- Node syntax checks for all runtime, curation and analysis modules;
+- unit/contract tests;
+- an architectural test ensuring curation remains an observer of the shared production runtime;
+- a headless Chrome WebGL2 diagnostic that compiles and renders three variant conditions for every current structural family, while cycling through colour and finish regimes;
+- GitHub Pages verification before deployment;
+- a deployed `build.json` manifest so curation exports can record the exact Git commit that produced them.
+
+The browser diagnostic is a CI smoke/compile test, not a substitute for cross-device visual curation or photosensitive-safety review.
 
 ## Preserved work
 
-The archived branch preserves:
+`archive/webllm-release-candidate-2026-08-04` preserves the former WebLLM, mutation, awakening and intention/action research apparatus for possible separate use. It no longer determines TSDNE's public interaction.
 
-- WebLLM loading and worker integration;
-- Qwen/SmolLM model experiments;
-- model-generated graph mutation;
-- B + C delayed awakening;
-- intention/action logging;
-- mutation baselines and technical-study scaffolding;
-- the previous AI-oriented documents and audits.
+## Remaining empirical/artistic work
 
-This material may inform another artwork or a technical paper. It no longer determines TSDNE’s public interaction.
+1. use `/curation/` in one or several practical sessions and export the corpus periodically;
+2. inspect `not OK` failures and `repetitive` failures separately;
+3. revise weak families, parameter regions, colour/finish interactions, quality thresholds, selector weights or perceptual descriptors explicitly;
+4. begin later curation sessions against the revised version and compare epochs where useful;
+5. run normal visual testing on the M1 Max and other real GPU/browser combinations;
+6. test Chrome, Safari, Firefox, Android and iOS;
+7. verify every export format in its intended host;
+8. conduct reduced-motion and photosensitive-seizure review;
+9. continue visual-genealogy documentation for explicitly referenced families;
+10. document the realised artwork with stills/video and integrate curation evidence into the practice-led manuscript.
 
-## Verification completed
+## Interpretation rule
 
-- The previous WebLLM implementation was preserved before the no-model revision.
-- Model runtime files and mutation controls are absent from current `main`.
-- JavaScript syntax checks and the repository unit tests pass in GitHub Actions.
-- The 7 August expanded-generator CI run completed successfully.
-- The 7 August GitHub Pages deployment workflow completed successfully.
-- The canonical paper plan now records the 39-family structure/colour/finish grammar, private curation methodology, and AI-development/runtime distinction.
-
-## Remaining empirical and release gates
-
-1. resolve or explicitly model the family-pool sampling bias;
-2. refresh the private 250-run curation instrument against current `main`;
-3. add or perform real WebGL2 compilation/render checks across the expanded family set;
-4. fix or clarify the colour-mode state left after clearing anti-repetition memory;
-5. run the artwork on normal GPU-browser hardware and verify first-display latency;
-6. inspect and rate at least 250 generated outputs using the updated study design;
-7. curate family probabilities, weak parameter regions, and problematic colour/finish interactions;
-8. evaluate revisions on a held-out batch;
-9. test repeated reloads and longer **another** sequences;
-10. test Chrome, Safari, Firefox, Android, and iOS;
-11. verify every export format in its intended host;
-12. conduct reduced-motion and photosensitive-seizure review;
-13. attach the canonical domain when selected/purchased;
-14. document the completed artwork with video and still images;
-15. draft the 1,500–2,000-word journal argument memorandum.
-
-## Public-release rule
-
-Repository visibility and deployment should remain subordinate to the empirical gates above. A successful CI/Pages deployment does not by itself establish visual quality or cross-driver GLSL validity.
+The curation corpus is first-person production evidence. It can document the artist's generator audit and the revisions that follow from it. It must not be presented as a population-preference study or as evidence that public visitors share the curator's judgements.
