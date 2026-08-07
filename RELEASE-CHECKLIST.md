@@ -70,6 +70,10 @@
 
 ## Verification
 
+- [ ] The version agrees across `package.json`, `CITATION.cff`, and
+      `APP_VERSION` in `prototype/src/main.js`. The prototype has no build step,
+      so the displayed version is declared separately and does not follow
+      `package.json` automatically.
 - [ ] `npm run check` passes.
 - [ ] `npm test` passes.
 - [ ] GitHub CI passes.

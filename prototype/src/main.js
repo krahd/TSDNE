@@ -38,7 +38,13 @@ const statusCount = $("#status-count");
 const panel = $("#panel");
 const panelTitle = $("#panel-title");
 const panelContent = $("#panel-content");
+const panelVersion = $("#panel-version");
 const live = $("#live-region");
+
+// The prototype is served as static files with no build step, so the version is
+// declared here. Keep it in step with package.json and CITATION.cff on release.
+const APP_VERSION = "0.2.0-alpha.1";
+panelVersion.textContent = `v${APP_VERSION}`;
 
 const SAMPLE_TIMES = [0.73, 2.11, 4.47];
 const FLASH_TIMES = Array.from({ length: 13 }, (_, index) => index / 12);
@@ -310,6 +316,7 @@ function showUse() {
   if (!current) return;
   const files = exportFiles(current);
   const names = Object.keys(files);
+  panel.dataset.view = "use";
   panelTitle.textContent = "Take the code";
   panelContent.innerHTML = `
     <p>The shader may continue elsewhere. No title, ownership, exclusivity, scarcity, authenticity, or uniqueness claim is created.</p>
@@ -362,6 +369,7 @@ function settingsControls() {
 }
 
 function showAbout() {
+  panel.dataset.view = "about";
   panelTitle.textContent = "This Shader Does Not Exist";
   panelContent.innerHTML = `
     <p>One shader appears. You may remain with it, relinquish it for another, or take its executable code elsewhere.</p>
