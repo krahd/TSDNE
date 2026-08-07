@@ -189,12 +189,18 @@ See [`GENERATED-SHADERS-LICENSE.md`](GENERATED-SHADERS-LICENSE.md).
 
 The first paper is practice-led and HCI-adjacent. Its central claim is not a new shader-generation algorithm. It examines how computational systems may stage personally meaningful difference while refusing behavioural personalisation, proprietary title, certification, accumulation, and manufactured scarcity.
 
+Paper manuscripts, paper-specific audits, source ledgers, venue strategy, and writing-register material are maintained canonically in:
+
+`krahd/academic-writing/my_papers_2026/2026 - This Shader Does Not Exist/`
+
+This repository retains only artwork implementation, project/research context, production audits, curation/reproducibility material, and technical documentation.
+
 See:
 
 - [`docs/PROJECT.md`](docs/PROJECT.md)
-- [`docs/PAPER-1.md`](docs/PAPER-1.md)
 - [`docs/GENEALOGY.md`](docs/GENEALOGY.md)
 - [`docs/RESEARCH-PLAN.md`](docs/RESEARCH-PLAN.md)
+- [`docs/CURATION-AUDIT.md`](docs/CURATION-AUDIT.md)
 - [`docs/AI-USE-STATEMENT.md`](docs/AI-USE-STATEMENT.md)
 
 ## Authorship and development
