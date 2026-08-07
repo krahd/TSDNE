@@ -2,6 +2,12 @@ name: Deploy artwork to GitHub Pages
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - "prototype/**"
+      - ".github/workflows/pages.yml"
 
 permissions:
   contents: read
