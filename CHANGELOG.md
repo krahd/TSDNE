@@ -1,8 +1,52 @@
 # Changelog
 
-## Unreleased
+## 0.3.0-alpha.1 — expanded aesthetic range
 
 ### Visual range
+
+- Added eleven structural families, taking the grammar to forty-nine, and
+  opening aesthetic directions the previous set did not reach:
+  - **wireframe-solid** — projected polyhedron edges with depth falloff;
+  - **stereo-parallax** — side-by-side eyes with lens distortion;
+  - **grid-horizon** — receding neon grid under a banded sun;
+  - **memphis-pattern** — flat confetti primitives on a bright ground;
+  - **latent-wash** — the surface of a generative image model, rendered
+    procedurally: latent-grid interpolation, repeated contrast pushes,
+    checkerboard upsampling artefacts and residual noise. No model is involved
+    or consulted; it is an authored imitation of an appearance;
+  - **volume-tomogram** — emission-absorption volume with a travelling slice;
+  - **caustic-pool** — light refracted through a moving surface;
+  - **newton-basins** — Newton's method basins of attraction;
+  - **rule-automaton** — elementary cellular automaton in closed form, where
+    rule 90 from a single live cell is evaluated directly by a bitwise AND;
+  - **grammar-spiral** — context-free substitution of one rule on one shape;
+  - **branch-growth** — a tree grown by folding space, with a growth front.
+- Removed **echo-garden**. Measured against the rest of the grammar it was
+  below median in internal variability and among the closest neighbours of both
+  `aurora-ribbons` and `tidal-ink`, so it contributed a duplicate of a soft
+  radial bloom rather than a distinct outcome.
+- Reworked `stereo-parallax` after measurement showed it produced nearly the
+  same image every time (within-family variability 0.07 against a median of
+  0.26). It now has three scene variants and a freely varying lens strength,
+  raising variability to 0.19.
+- Widened the parameter spread of `volume-tomogram` and `grid-horizon` for the
+  same reason.
+- Raised the `neon` ground level and widened its glow, which had made it the
+  colour mode most often rejected as too dark, and lifted the darkest `riso`
+  ink. Measured across 238 samples per mode, all six modes now sit within
+  0.33–0.37 internal spread, so none was pruned.
+
+### Selection
+
+- Extended the macro-category ledger behind the stratified `familySchedule()`
+  to cover all forty-nine families. The ledger is asserted to match
+  `FAMILY_NAMES` exactly, so a family added without a category, or a category
+  naming a family that no longer exists, fails the test suite rather than
+  silently dropping out of the sampler or throwing at generation time.
+- Clearing anti-repetition memory now also resets the session-only recent
+  colour-mode list. This was audit item 4.
+
+### Grammar, colour and finish
 
 - Expanded the authored grammar from twelve to thirty-nine visual families,
   adding constructivist geometry (Richter, Eggeling, Suprematist, Bauhaus),
@@ -21,8 +65,7 @@
   dithering, scanlines, vignette, and highlight bloom.
 - Relaxed complexity enrichment so sparse, quiet and slow results remain
   reachable instead of forcing every result towards maximal density.
-- Added colour separation to candidate selection and widened the family
-  schedule across the whole vocabulary.
+- Added colour separation to candidate selection.
 - Under-weighted per-pixel edge energy in the complexity score, which was
   quietly promoting dithered surfaces into a house style.
 

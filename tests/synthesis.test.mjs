@@ -1,5 +1,6 @@
 import test from "node:test";
 import assert from "node:assert/strict";
+import { FAMILY_NAMES } from "../prototype/src/generator.js";
 import {
   enrichGraph,
   familyCategory,
@@ -12,7 +13,6 @@ import {
   selectCandidate,
   visualComplexityScore,
 } from "../prototype/src/synthesis.js";
-import { FAMILY_NAMES } from "../prototype/src/generator.js";
 
 const perception = (mean, variance, edge, temporal, saturation = .25) => ({
   mean, variance, edge, temporal, saturation,

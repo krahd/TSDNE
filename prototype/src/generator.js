@@ -27,6 +27,7 @@ float sdTorus(vec3 p,vec2 t){vec2 q=vec2(length(p.xz)-t.x,p.y);return length(q)-
 float sdSeg(vec2 p,vec2 a,vec2 b){vec2 pa=p-a,ba=b-a;float h=clamp(dot(pa,ba)/max(dot(ba,ba),1e-6),0.0,1.0);return length(pa-ba*h);}
 float smin(float a,float b,float k){float h=clamp(.5+.5*(b-a)/k,0.0,1.0);return mix(b,a,h)-k*h*(1.0-h);}
 vec2 cmul(vec2 a,vec2 b){return vec2(a.x*b.x-a.y*b.y,a.x*b.y+a.y*b.x);}
+vec2 cdiv(vec2 a,vec2 b){float d=max(dot(b,b),1e-9);return vec2(dot(a,b),a.y*b.x-a.x*b.y)/d;}
 float tri(float x){return abs(fract(x)-.5)*2.0;}
 float bayer2(vec2 a){a=floor(a);return fract(a.x*.5+a.y*a.y*.75);}
 float bayer4(vec2 a){return bayer2(.5*a)*.25+bayer2(a);}
@@ -67,7 +68,6 @@ export const FAMILY_NAMES = [
   "tidal-ink",
   "magnetic-sand",
   "spectral-loom",
-  "echo-garden",
   // Constructivist and hard-edge geometry
   "richter-rhythm",
   "eggeling-diagonal",
@@ -101,6 +101,21 @@ export const FAMILY_NAMES = [
   "contour-survey",
   "phyllotaxis-swarm",
   "neon-circuit",
+  // Line and lattice
+  "wireframe-solid",
+  "stereo-parallax",
+  // Synthetic period styles
+  "grid-horizon",
+  "memphis-pattern",
+  "latent-wash",
+  // Volume and water
+  "volume-tomogram",
+  "caustic-pool",
+  // Rule-driven structure
+  "newton-basins",
+  "rule-automaton",
+  "grammar-spiral",
+  "branch-growth",
 ];
 
 export const TRAIT_KEYS = [
@@ -126,7 +141,6 @@ export const FAMILY_META = {
   "tidal-ink": { cost: 7, motionMin: 0.55, varianceMin: 70 },
   "magnetic-sand": { cost: 8, motionMin: 0.8, varianceMin: 120 },
   "spectral-loom": { cost: 6, motionMin: 0.9, varianceMin: 110 },
-  "echo-garden": { cost: 7, motionMin: 0.65, varianceMin: 80 },
   "richter-rhythm": { cost: 7, motionMin: 0.6, varianceMin: 90 },
   "eggeling-diagonal": { cost: 7, motionMin: 0.6, varianceMin: 110 },
   "suprematist-drift": { cost: 6, motionMin: 0.35, varianceMin: 80 },
@@ -154,6 +168,17 @@ export const FAMILY_META = {
   "contour-survey": { cost: 8, motionMin: 0.4, varianceMin: 85 },
   "phyllotaxis-swarm": { cost: 10, motionMin: 0.5, varianceMin: 70 },
   "neon-circuit": { cost: 7, motionMin: 0.5, varianceMin: 85 },
+  "wireframe-solid": { cost: 8, motionMin: 0.45, varianceMin: 38 },
+  "stereo-parallax": { cost: 9, motionMin: 0.5, varianceMin: 55 },
+  "grid-horizon": { cost: 7, motionMin: 0.6, varianceMin: 90 },
+  "memphis-pattern": { cost: 6, motionMin: 0.5, varianceMin: 110 },
+  "latent-wash": { cost: 9, motionMin: 0.5, varianceMin: 75 },
+  "volume-tomogram": { cost: 12, motionMin: 0.5, varianceMin: 55 },
+  "caustic-pool": { cost: 9, motionMin: 0.8, varianceMin: 70 },
+  "newton-basins": { cost: 10, motionMin: 0.45, varianceMin: 80 },
+  "rule-automaton": { cost: 5, motionMin: 0.6, varianceMin: 130 },
+  "grammar-spiral": { cost: 8, motionMin: 0.3, varianceMin: 90 },
+  "branch-growth": { cost: 8, motionMin: 0.4, varianceMin: 70 },
 };
 
 /** Ceiling on estimated fragment cost allowed to reach the screen. */
@@ -290,9 +315,9 @@ function shadeFunction(graph) {
   }
   if (mode === "riso") {
     const inks = [
-      withLuma(saturate(c0, 1.4), 0.3),
-      withLuma(saturate(c1, 1.4), 0.58),
-      withLuma(saturate(c2, 1.25), 0.11),
+      withLuma(saturate(c0, 1.4), 0.32),
+      withLuma(saturate(c1, 1.4), 0.6),
+      withLuma(saturate(c2, 1.25), 0.16),
     ];
     const phase = fixed(t.drift);
     return `vec3 shade(float t){float u=fract(t*1.5+${phase});u=floor(u*3.0);return u<.5?${v3(inks[0])}:(u<1.5?${v3(inks[1])}:${v3(inks[2])});}`;
@@ -303,10 +328,13 @@ function shadeFunction(graph) {
     return `vec3 shade(float t){float u=.5+.5*cos(TAU*t);return mix(${v3(paper)},${v3(ink)},smoothstep(.18,.82,u));}`;
   }
   if (mode === "neon") {
-    const ground = withLuma(saturate(c0, 0.85), 0.025);
-    const glow = saturate(withLuma(c1, 0.42), 1.7);
+    // A near-black ground made this the mode most often rejected as too dark.
+    // Lifting the ground and widening the glow keeps the look while leaving
+    // more of the frame lit.
+    const ground = withLuma(saturate(c0, 0.85), 0.05);
+    const glow = saturate(withLuma(c1, 0.5), 1.7);
     const hot = withLuma(saturate(c2, 0.55), 0.94);
-    return `vec3 shade(float t){float u=.5+.5*cos(TAU*t);return ${v3(ground)}+${v3(glow)}*pow(u,2.2)+${v3(hot)}*pow(u,11.0);}`;
+    return `vec3 shade(float t){float u=.5+.5*cos(TAU*t);return ${v3(ground)}+${v3(glow)}*pow(u,1.8)+${v3(hot)}*pow(u,11.0);}`;
   }
   if (mode === "mono") {
     const tint = withLuma(saturate(c0, 0.4), 0.5);
@@ -386,7 +414,6 @@ function crystallineLens(g){const c=common(g);return `${uv}p*=rot(${c.rotation})
 function tidalInk(g){const c=common(g);return `${uv}p*=rot(${c.rotation})*${c.scale};float t=u_time*u_motion*${c.speed};vec2 q=p;float ink=0.0;for(int k=0;k<${c.layers};k++){float fk=float(k);q+=${c.warp}*.12*vec2(sin(q.y*(1.4+fk*.1)+t),cos(q.x*(1.2+fk*.13)-t));float f=fbm(q*(1.1+fk*.28)+fk*3.7);ink+=smoothstep(.62-${c.soft},.62+${c.soft},f);}ink/=float(${c.layers});float tide=sin(p.y*${c.density}+fbm(p*1.3)*4.0+t*2.0);vec3 col=shade(ink*.7+tide*.08+t*.015);col*=.18+ink*.72;`;}
 function magneticSand(g){const c=common(g);return `${uv}p*=rot(${c.rotation})*${c.scale};float t=u_time*u_motion*${c.speed};float field=0.0;for(int k=0;k<${c.layers};k++){float fk=float(k);vec2 pole=.55*vec2(cos(t*(.3+fk*.05)+fk*2.1),sin(t*(.23+fk*.07)+fk*1.7));vec2 d=p-pole;field+=sin(1.0/(.08+dot(d,d))*${c.depth}+atan(d.y,d.x)*${c.symmetry});}float grain=hash21(floor(gl_FragCoord.xy*(.35+${c.density}*.04)));float v=smoothstep(.55-${c.soft},.55+${c.soft},.5+.5*sin(field+grain*2.0));vec3 col=shade(field*.06+grain*.12+t*.01);col*=.2+v*.75;`;}
 function spectralLoom(g){const c=common(g);return `${uv}p*=rot(${c.rotation})*${c.scale};float t=u_time*u_motion*${c.speed};float warp=sin(p.x*${c.density}+sin(p.y*${c.symmetry}+t))*cos(p.y*(${c.density}*.73)-t);float weft=sin((p.x+p.y)*${c.symmetry}+fbm(p*1.7)*${c.warp}*3.0);float v=warp+weft;float thread=smoothstep(.75-${c.soft},.75+${c.soft},abs(sin(v*3.14159)));vec3 col=shade(v*.17+p.x*.05-p.y*.04+t*.02);col*=.28+.62*thread;`;}
-function echoGarden(g){const c=common(g);return `${uv}p*=rot(${c.rotation});float t=u_time*u_motion*${c.speed};float v=0.0;for(int k=0;k<${c.layers};k++){float fk=float(k);vec2 center=.55*vec2(sin(fk*2.13+t*.31),cos(fk*1.71-t*.27));vec2 q=p-center;float petals=sin(atan(q.y,q.x)*${c.symmetry}+fk)+sin(length(q)*${c.density}-t*(1.0+fk*.08));float bloom=exp(-length(q)*(2.0+${c.depth}))*(.5+.5*petals);v+=bloom;}float mist=fbm(p*${c.scale}+vec2(t*.08,-t*.05));vec3 col=shade(v*.22+mist*.34+t*.01);col*=.18+v*.45+mist*.22;`;}
 
 /* Constructivist and hard-edge geometry -------------------------------- */
 
@@ -881,11 +908,305 @@ col+=shade(${f("contrast", 0.5, 0.85)})*trace*(.55+charge*.9);
 col+=shade(${f("turbulence", 0.85, 0.99)})*exp(-length(q)*${f("density", 12.0, 30.0)})*step(.8,h);`;
 }
 
+/* Line and lattice ------------------------------------------------------ */
+
+/** Projected wireframe solid: edges only, back edges falling away. */
+function wireframeSolid(g) {
+  const { f, v } = params(g);
+  const lattice = v === 2;
+  const size = f("scale", 0.7, 1.4);
+  const focal = f("depth", 2.4, 3.6);
+  const dist = f("drift", 3.0, 4.4);
+  const spin = `q.xz*=rot(t*.6+${f("rotation", -3.0, 3.0)});q.yz*=rot(t*.41);`;
+  return `${uv}float t=u_time*u_motion*${f("tempo", 0.06, 0.4)};
+float glow=0.0,nodes=0.0,depthAcc=0.0,weight=0.0;
+for(int i=0;i<8;i++){
+vec3 a=(vec3(float(i&1),float((i>>1)&1),float((i>>2)&1))*2.0-1.0)*${size};
+vec3 q=a;${spin}a=q;
+vec2 pa=a.xy*${focal}/(a.z+${dist});
+nodes+=exp(-length(p-pa)*${f("density", 30.0, 90.0)});
+for(int b=0;b<3;b++){
+int j=i^(1<<b);
+if(j<i)continue;
+vec3 c=(vec3(float(j&1),float((j>>1)&1),float((j>>2)&1))*2.0-1.0)*${size};
+q=c;${spin}c=q;
+vec2 pb=c.xy*${focal}/(c.z+${dist});
+float d=sdSeg(p,pa,pb);
+float behind=smoothstep(1.0,-1.0,(a.z+c.z)*.5);
+float line=exp(-d*${f("symmetry", 40.0, 130.0)})*(${f("softness", 0.25, 0.6)}+.65*behind);
+glow+=line;depthAcc+=(a.z+c.z)*.5*line;weight+=line;}}
+${lattice ? `glow+=exp(-abs(sdBox(p*rot(t*.2),vec2(${size}*1.7)))*${f("turbulence", 18.0, 60.0)})*.5;` : ""}
+vec3 col=shade(${f("palette", 0.02, 0.18)})*.5;
+col+=shade(${f("contrast", 0.5, 0.9)}+depthAcc/max(weight,1e-4)*.12)*clamp(glow,0.0,1.8);
+col+=shade(${f("turbulence", 0.85, 0.99)})*clamp(nodes,0.0,1.0)*.7;`;
+}
+
+/**
+ * Side-by-side eyes with lens distortion: a headset view. The three scene
+ * variants and the freely varying lens strength exist because a single fixed
+ * scene made every sample of this family read as the same pair of dark ovals.
+ */
+function stereoParallax(g) {
+  const { f, i, v } = params(g);
+  const scene = v === 1
+    // Receding bars: a corridor rather than a void.
+    ? `float fz=1.0/max(abs(e.x)+.12,1e-3);
+glow+=stripe(atan(e.y,abs(e.x)+.12)*${f("density", 2.0, 7.0)}+t*.5,.12)*exp(-fz*.05)*.9;
+glow+=stripe(fz*${f("turbulence", 0.4, 1.6)}-t*1.2,.08)*.7;`
+    : v === 2
+      // Dense field, weak lens: an open sky.
+      ? `for(int k=0;k<${i("complexity", 70, 150)};k++){float fk=float(k);
+vec3 q=vec3(hash11(fk)*2.0-1.0,hash11(fk+9.7)*2.0-1.0,fract(hash11(fk+3.1)+t*${f("drift", 0.05, 0.3)})*${f("depth", 2.4, 5.0)}+.3);
+vec2 sp=vec2(q.x-eye*${f("softness", 0.03, 0.13)},q.y)*${f("scale", 1.0, 2.2)}/q.z;
+glow+=exp(-length(e-sp)*(${f("density", 30.0, 90.0)}+q.z*10.0))*2.2/(.3+q.z);}`
+      : `for(int k=0;k<${i("complexity", 46, 96)};k++){float fk=float(k);
+vec3 q=vec3(hash11(fk)*2.0-1.0,hash11(fk+9.7)*2.0-1.0,fract(hash11(fk+3.1)+t*${f("drift", 0.05, 0.3)})*${f("depth", 2.4, 5.0)}+.35);
+q.xy*=rot(${f("rotation", -1.4, 1.4)}+t*.06);
+vec2 sp=vec2(q.x-eye*${f("softness", 0.03, 0.13)},q.y)*${f("scale", 1.0, 2.2)}/q.z;
+glow+=exp(-length(e-sp)*(${f("density", 16.0, 46.0)}+q.z*6.0))*1.6/(.35+q.z);}`;
+  const floorGrid = v === 2 ? "" : `float fy=e.y+${f("symmetry", 0.5, 0.95)};
+if(fy<0.0){
+float z=1.0/max(-fy,1e-3);
+grid=max(stripe(z*${f("turbulence", 0.3, 1.2)}-t*1.4,.05),stripe((e.x-eye*${f("softness", 0.03, 0.13)})*z*.7,.04));
+grid*=exp(-z*.09);}`;
+  return `${uv}float t=u_time*u_motion*${f("tempo", 0.1, 0.55)};
+float halfW=u_resolution.x/min(u_resolution.x,u_resolution.y);
+float eye=p.x<0.0?-1.0:1.0;
+vec2 e=vec2((p.x-eye*halfW*.5)/max(halfW*.5,1e-3),p.y);
+float r2=dot(e,e);
+e*=1.0+${f("turbulence", 0.06, 0.34)}*r2;
+float glow=0.0,grid=0.0;
+${scene}
+${floorGrid}
+vec3 col=shade(${f("palette", 0.02, 0.3)})*${f("contrast", 0.35, 0.9)};
+col+=shade(${f("symmetry", 0.45, 0.95)})*clamp(glow*1.8,0.0,2.4);
+col+=shade(${f("symmetry", 0.4, 0.85)})*grid*1.1;
+col*=mix(1.0,smoothstep(1.75,.2,length(e)),${f("turbulence", 0.25, 1.0)});
+col*=1.0-aastep(abs(p.x)-.003)*.85;`;
+}
+
+/* Synthetic period styles ----------------------------------------------- */
+
+/** Receding neon grid under a banded sun. */
+function gridHorizon(g) {
+  const { f } = params(g);
+  const hy = f("rotation", -0.3, 0.12);
+  return `${uv}float t=u_time*u_motion*${f("tempo", 0.1, 0.6)};
+float hy=${hy};
+vec3 col;
+if(p.y<hy){
+float z=1.0/max(hy-p.y,1e-3);
+float x=p.x*z;
+float grid=max(stripe(z*${f("density", 0.3, 1.4)}-t*2.0,${f("softness", 0.02, 0.09)}),stripe(x*${f("symmetry", 0.3, 1.5)},${f("softness", 0.02, 0.09)}));
+col=mix(shade(${f("palette", 0.02, 0.16)}),shade(${f("contrast", 0.55, 0.95)}),grid*exp(-z*${f("depth", 0.03, 0.13)}));
+}else{
+col=shade(${f("palette", 0.3, 0.8)}-(p.y-hy)*${f("turbulence", 0.15, 0.5)});
+vec2 sp=p-vec2(${f("drift", -0.7, 0.7)},hy+${f("scale", 0.16, 0.52)});
+float sun=aastep(length(sp)-${f("scale", 0.24, 0.5)})*${f("contrast", 0.0, 1.0)};
+sun*=1.0-step(0.0,-sp.y)*step(0.0,sin(sp.y*${f("density", 14.0, 44.0)}+t*.6))*.92;
+col=mix(col,shade(${f("drift", 0.82, 0.99)}),sun);
+col+=shade(.95)*step(.9975,hash21(floor(p*${f("density", 60.0, 180.0)})))*smoothstep(hy,hy+.5,p.y)*${f("turbulence", 0.0, 0.9)};
+float ridge=hy+.03+fbmL(vec2(p.x*${f("symmetry", 0.5, 1.8)}+t*.05,0.0))*${f("depth", 0.12, 0.4)};
+col=mix(col,shade(${f("palette", 0.02, 0.12)}),aastep(p.y-ridge));}`;
+}
+
+/** Memphis Milano: flat confetti primitives scattered on a bright ground. */
+function memphisPattern(g) {
+  const { f } = params(g);
+  return `${uv}p*=rot(${f("rotation", -1.4, 1.4)});float t=u_time*u_motion*${f("tempo", 0.05, 0.32)};
+vec2 gp=p*${f("density", 1.2, 3.8)}+vec2(t*.3,t*.17);
+vec2 id=floor(gp);vec2 q=fract(gp)-.5;
+float h=hash21(id);
+q*=rot(floor(hash21(id+2.1)*4.0)*1.5707963);
+float k=floor(hash21(id+7.3)*5.0);
+float d=k<1.0?length(q)-${f("scale", 0.18, 0.34)}
+:(k<2.0?abs(length(q)-${f("scale", 0.2, 0.36)})-${f("softness", 0.04, 0.1)}
+:(k<3.0?sdBox(q,vec2(${f("depth", 0.2, 0.4)},${f("softness", 0.04, 0.12)}))
+:(k<4.0?abs(q.y-sin(q.x*${f("symmetry", 6.0, 16.0)})*${f("turbulence", 0.06, 0.2)})-${f("softness", 0.03, 0.08)}
+:max(max(-(q.x+.36),-(q.y+.36)),(q.x+q.y)*.7071-.04))));
+vec3 col=shade(${f("palette", 0.82, 0.99)});
+col=mix(col,shade(${f("contrast", 0.1, 0.55)}+h*.42),aastep(d));
+col=mix(col,shade(${f("drift", 0.2, 0.6)}),step(.965,hash21(floor(p*${f("density", 30.0, 90.0)})))*.75);`;
+}
+
+/**
+ * The surface of a generative image model rendered procedurally: latent-grid
+ * interpolation, repeated contrast pushes standing in for denoising steps,
+ * checkerboard upsampling artefacts and residual noise. No model is involved,
+ * and none is consulted; this is an authored imitation of an appearance.
+ */
+function latentWash(g) {
+  const { f, i } = params(g);
+  return `${uv}p*=rot(${f("rotation", -1.4, 1.4)})*${f("scale", 0.6, 2.0)};float t=u_time*u_motion*${f("tempo", 0.03, 0.22)};
+vec2 lat=p*${f("density", 1.2, 4.0)}+t*.15;
+vec2 li=floor(lat),lf=fract(lat);
+lf=lf*lf*(3.0-2.0*lf);
+float img=mix(mix(hash21(li),hash21(li+vec2(1,0)),lf.x),mix(hash21(li+vec2(0,1)),hash21(li+vec2(1,1)),lf.x),lf.y);
+vec2 q=p;
+for(int k=0;k<${i("complexity", 2, 5)};k++){
+q+=vec2(fbmL(q*1.7+t*.1),fbmL(q*1.7+5.3-t*.1))*${f("turbulence", 0.1, 0.6)};
+img=mix(img,fbm(q*${f("symmetry", 1.4, 3.4)}+float(k)*2.7),.38);
+img=clamp((img-.5)*${f("contrast", 1.15, 1.7)}+.5,0.0,1.0);}
+float chk=mod(floor(gl_FragCoord.x/${f("depth", 3.0, 9.0)})+floor(gl_FragCoord.y/${f("depth", 3.0, 9.0)}),2.0);
+img+=(chk-.5)*${f("softness", 0.02, 0.13)};
+img+=(hash21(gl_FragCoord.xy+floor(t*8.0))-.5)*${f("drift", 0.02, 0.12)};
+vec3 col=shade(img*${f("symmetry", 0.8, 2.0)}+${f("palette", 0.0, 1.0)});`;
+}
+
+/* Volume and water ------------------------------------------------------ */
+
+/** Scanned volume: emission-absorption integration with a travelling slice. */
+function volumeTomogram(g) {
+  const { f, i } = params(g);
+  return `${uv}float t=u_time*u_motion*${f("tempo", 0.06, 0.4)};
+vec3 rd=normalize(vec3(p*rot(${f("rotation", -1.4, 1.4)}),${f("scale", 1.3, 2.4)}));
+float ca=t*${f("drift", 0.1, 0.5)};
+float trans=1.0,tacc=0.0,gacc=0.0,slice=0.0;
+float slicePos=sin(t*.5)*1.1;
+for(int k=0;k<${i("complexity", 26, 44)};k++){
+vec3 q=vec3(0.0,0.0,-2.6)+rd*(1.1+float(k)*${f("depth", 0.08, 0.17)});
+q.xz*=rot(ca);q.yz*=rot(ca*.55);
+if(dot(q,q)>2.4)continue;
+float dens=fbm3(q*${f("density", 1.1, 3.4)}+vec3(0.0,0.0,t*.08));
+dens=smoothstep(${f("turbulence", 0.3, 0.62)},${f("turbulence", 0.62, 0.95)},dens);
+float a=dens*${f("softness", 0.1, 0.3)}*trans;
+tacc+=(dens+q.y*.25)*a;gacc+=a;trans*=1.0-a*.9;
+slice+=dens*exp(-abs(q.z-slicePos)*${f("symmetry", 14.0, 50.0)})*trans;
+if(trans<.04)break;}
+vec3 col=shade(${f("palette", 0.02, 0.2)})*.35;
+col+=shade(${f("contrast", 0.35, 0.85)}+tacc/max(gacc,1e-4)*.3)*clamp(gacc*1.5,0.0,1.3);
+col+=shade(${f("drift", 0.8, 0.99)})*clamp(slice*${f("scale", 0.3, 0.9)},0.0,1.0);
+col*=mix(1.0,smoothstep(1.5,.45,length(p)),${f("symmetry", 0.15, 1.0)});`;
+}
+
+/** Light refracted through a moving surface: caustic net, depth and shafts. */
+function causticPool(g) {
+  const { f, i } = params(g);
+  const iterations = i("complexity", 3, 6);
+  // A bounded formulation: the caustic net is the zero set of a warped sum of
+  // waves, so every term stays in range instead of running away through a
+  // reciprocal.
+  return `${uv}p*=rot(${f("rotation", -1.4, 1.4)})*${f("scale", 0.7, 2.4)};float t=u_time*u_motion*${f("tempo", 0.2, 0.9)};
+vec2 z=p;
+for(int k=0;k<${iterations};k++){float fk=float(k);
+z+=vec2(sin(z.y*${f("softness", 1.6, 3.0)}+t*1.1+fk),cos(z.x*${f("drift", 1.5, 2.8)}-t*.9+fk))*${f("turbulence", 0.2, 0.55)};}
+float w=sin(z.x*${f("density", 3.5, 9.0)}+t)+sin(z.y*${f("density", 3.2, 8.2)}-t*1.2)+sin((z.x+z.y)*${f("density", 2.0, 5.2)}+t*.7);
+float w2=sin(z.x*${f("density", 7.0, 18.0)}-t*1.4)+sin(z.y*${f("density", 6.4, 16.4)}+t*.9);
+float net=pow(clamp(1.0-abs(w)*${f("symmetry", 0.5, 1.05)},0.0,1.0),${f("contrast", 4.0, 11.0)});
+net+=pow(clamp(1.0-abs(w2)*.85,0.0,1.0),${f("contrast", 6.0, 14.0)})*.45;
+float shafts=smoothstep(${f("scale", 0.3, 0.62)},1.0,fbmL(vec2(p.x*${f("symmetry", 1.0, 3.4)}+t*.2,p.y*.28)))*exp(-max(p.y,0.0)*${f("depth", 0.3, 1.1)});
+vec3 col=shade(${f("palette", 0.05, 0.4)}+clamp(.5-p.y*.35,0.0,1.0)*${f("turbulence", 0.15, 0.45)})*.55;
+col+=shade(${f("drift", 0.75, 0.98)})*clamp(net,0.0,1.8)*1.35;
+col+=shade(${f("drift", 0.7, 0.95)})*shafts*${f("softness", 0.15, 0.5)};`;
+}
+
+/* Rule-driven structure -------------------------------------------------- */
+
+/** Newton's method: basins of attraction, with a relaxation factor in motion. */
+function newtonBasins(g) {
+  const { f, i, v } = params(g);
+  const roots = v === 0 ? 3 : v === 1 ? 4 : 5;
+  const powerCode = roots === 3
+    ? "vec2 z2=cmul(z,z);vec2 zp=cmul(z2,z);vec2 dz=3.0*z2;"
+    : roots === 4
+      ? "vec2 z2=cmul(z,z);vec2 zp=cmul(z2,z2);vec2 dz=4.0*cmul(z2,z);"
+      : "vec2 z2=cmul(z,z);vec2 z4=cmul(z2,z2);vec2 zp=cmul(z4,z);vec2 dz=5.0*z4;";
+  const iterations = i("complexity", 12, 30);
+  return `${uv}p*=rot(${f("rotation", -1.4, 1.4)})*${f("scale", 0.8, 2.6)};float t=u_time*u_motion*${f("tempo", 0.05, 0.32)};
+vec2 z=p;
+float relax=1.0+${f("turbulence", 0.1, 0.55)}*sin(t*.6);
+int it=${iterations};
+for(int k=0;k<${iterations};k++){
+${powerCode}
+z-=relax*cdiv(zp-vec2(1.0,0.0),dz);
+if(dot(zp-vec2(1.0,0.0),zp-vec2(1.0,0.0))<1e-5){it=k;break;}}
+float best=1e6,rid=0.0;
+for(int r=0;r<${roots};r++){
+float a=TAU*float(r)/${roots}.0;
+float d=length(z-vec2(cos(a),sin(a)));
+if(d<best){best=d;rid=float(r);}}
+float speed=float(it)/${iterations}.0;
+vec3 col=shade(rid/${roots}.0+speed*${f("density", 0.3, 1.6)}+${f("palette", 0.0, 1.0)});
+col*=${f("softness", 0.2, 0.5)}+.85*(1.0-speed);
+col=mix(col,shade(${f("contrast", 0.6, 0.95)}),stripe(speed*${f("symmetry", 4.0, 16.0)},${f("depth", 0.05, 0.2)})*.5);`;
+}
+
+/**
+ * Elementary cellular automaton read in closed form. Rule 90 from a single
+ * live cell is the Sierpinski gasket, which a bitwise AND evaluates directly,
+ * so the whole evolution is available per fragment without a feedback buffer.
+ */
+function ruleAutomaton(g) {
+  const { f, v } = params(g);
+  const rule = v === 0
+    ? "int s=x&y;float on=s==0?1.0:0.0;float lvl=float(s&7)/7.0;"
+    : v === 1
+      ? "int s=x^y;float on=float(s&1);float lvl=float(s&15)/15.0;"
+      : "int s=(x&y)+(x^y);float on=float((s>>2)&1);float lvl=float(s&31)/31.0;";
+  return `${uv}p*=rot(${f("rotation", -0.5, 0.5)});float t=u_time*u_motion*${f("tempo", 0.3, 2.4)};
+vec2 gp=p*${f("density", 6.0, 34.0)};
+gp.y-=t*${f("drift", 1.0, 6.0)};
+vec2 cell=fract(gp);
+ivec2 c=ivec2(floor(gp))+ivec2(4096,4096);
+int x=c.x,y=c.y;
+${rule}
+float border=1.0-smoothstep(0.0,${f("softness", 0.02, 0.3)},min(min(cell.x,1.0-cell.x),min(cell.y,1.0-cell.y)));
+vec3 col=shade(${f("palette", 0.03, 0.2)});
+col=mix(col,shade(${f("contrast", 0.4, 0.9)}+lvl*${f("symmetry", 0.05, 0.4)}),on);
+col=mix(col,shade(${f("turbulence", 0.05, 0.35)}),border*${f("depth", 0.0, 0.55)});`;
+}
+
+/** Context-free substitution: one rule applied repeatedly to one primitive. */
+function grammarSpiral(g) {
+  const { f, i, v } = params(g);
+  const primitive = v === 0
+    ? `length(q)-${f("scale", 0.35, 0.62)}`
+    : v === 1
+      ? `sdBox(q,vec2(${f("scale", 0.32, 0.6)},${f("depth", 0.18, 0.5)}))`
+      : `abs(length(q)-${f("scale", 0.34, 0.6)})-${f("softness", 0.05, 0.18)}`;
+  return `${uv}p*=rot(${f("rotation", -1.4, 1.4)});float t=u_time*u_motion*${f("tempo", 0.03, 0.25)};
+vec2 q=p*${f("turbulence", 0.5, 1.5)};
+vec3 col=shade(${f("palette", 0.85, 0.99)});
+for(int k=0;k<${i("complexity", 8, 20)};k++){float fk=float(k);
+float d=${primitive};
+col=mix(col,shade(${f("contrast", 0.1, 0.6)}+fk*${f("density", 0.02, 0.11)}),aastep(d)*.94);
+q=rot(${f("symmetry", 0.15, 1.2)}+t*.35)*(q-vec2(${f("drift", 0.1, 0.75)}+sin(t*.7)*${f("turbulence", 0.02, 0.16)},0.0))*${f("depth", 1.08, 1.42)};}`;
+}
+
+/** A symmetric tree grown by folding space, with a travelling growth front. */
+function branchGrowth(g) {
+  const { f, i } = params(g);
+  const levels = i("complexity", 7, 11);
+  const shrink = f("softness", 1.24, 1.42);
+  // The fold mirrors into x >= 0, so the child frame has to rotate towards that
+  // half plane. Rotating the other way sends every branch into the half the
+  // fold never produces, leaving a bare trunk.
+  // Growth breathes between a stub and the full tree rather than resetting,
+  // so the structure is always substantially present.
+  return `${uv}p*=${f("scale", 0.8, 1.4)};float t=u_time*u_motion*${f("tempo", 0.05, 0.35)};
+float grow=mix(3.0,${levels + 1}.0,.5+.5*sin(t*${f("drift", 0.15, 0.7)}));
+vec2 q=p+vec2(0.0,${f("depth", 0.85, 1.05)});
+float d=1e5,k=1.0;
+float len=${f("density", 0.4, 0.62)};
+for(int i=0;i<${levels};i++){float fi=float(i);
+float seg=(sdSeg(q,vec2(0.0),vec2(0.0,len))-${f("turbulence", 0.03, 0.07)})/k;
+d=min(d,mix(1e5,seg,smoothstep(fi,fi+1.0,grow)));
+q.y-=len;
+q.x=abs(q.x);
+q=rot(-(${f("symmetry", 0.4, 0.85)}+sin(t*.4+fi*.3)*${f("contrast", 0.02, 0.18)}))*q;
+q*=${shrink};k*=${shrink};}
+float leaf=(length(q)-${f("rotation", 0.3, 0.9)})/k;
+vec3 col=shade(${f("palette", 0.03, 0.22)});
+col=mix(col,shade(${f("contrast", 0.35, 0.75)}),aastep(d));
+col=mix(col,shade(${f("drift", 0.6, 0.95)}),aastep(leaf)*smoothstep(${levels - 1}.0,${levels}.0,grow)*.85);
+col+=shade(${f("drift", 0.6, 0.95)})*exp(-abs(d)*${f("density", 40.0, 120.0)})*.3;`;
+}
+
 const BUILDERS = {
   "folded-flow": foldedFlow, "liquid-field": liquidField, "moire-orbit": moireOrbit,
   "cellular-drift": cellularDrift, "polar-vault": polarVault, "aurora-ribbons": auroraRibbons,
   "reaction-lace": reactionLace, "crystalline-lens": crystallineLens, "tidal-ink": tidalInk,
-  "magnetic-sand": magneticSand, "spectral-loom": spectralLoom, "echo-garden": echoGarden,
+  "magnetic-sand": magneticSand, "spectral-loom": spectralLoom,
   "richter-rhythm": richterRhythm, "eggeling-diagonal": eggelingDiagonal,
   "suprematist-drift": suprematistDrift, "bauhaus-tiles": bauhausTiles,
   "truchet-weave": truchetWeave, "op-stripes": opStripes,
@@ -899,6 +1220,12 @@ const BUILDERS = {
   "ripple-tank": rippleTank, "metaball-iso": metaballIso, "ink-marbling": inkMarbling,
   "contour-survey": contourSurvey, "phyllotaxis-swarm": phyllotaxisSwarm,
   "neon-circuit": neonCircuit,
+  "wireframe-solid": wireframeSolid, "stereo-parallax": stereoParallax,
+  "grid-horizon": gridHorizon, "memphis-pattern": memphisPattern,
+  "latent-wash": latentWash, "volume-tomogram": volumeTomogram,
+  "caustic-pool": causticPool, "newton-basins": newtonBasins,
+  "rule-automaton": ruleAutomaton, "grammar-spiral": grammarSpiral,
+  "branch-growth": branchGrowth,
 };
 
 export function compileGraph(graph) {

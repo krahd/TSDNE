@@ -25,7 +25,7 @@ export const FAMILY_GROUPS = Object.freeze({
   continuous: Object.freeze([
     "folded-flow", "liquid-field", "moire-orbit", "cellular-drift",
     "polar-vault", "aurora-ribbons", "reaction-lace", "crystalline-lens",
-    "tidal-ink", "magnetic-sand", "spectral-loom", "echo-garden",
+    "tidal-ink", "magnetic-sand", "spectral-loom",
   ]),
   geometric: Object.freeze([
     "richter-rhythm", "eggeling-diagonal", "suprematist-drift",
@@ -36,16 +36,24 @@ export const FAMILY_GROUPS = Object.freeze({
   ]),
   recursive: Object.freeze([
     "apollonian-foam", "orbit-trap-julia", "kifs-cathedral", "droste-spiral",
+    "newton-basins",
   ]),
   dimensional: Object.freeze([
     "corridor-flight", "terrain-flyover", "monolith-orbit", "cloud-drift",
+    "volume-tomogram", "wireframe-solid", "stereo-parallax",
   ]),
   biological: Object.freeze([
     "mitosis-plate", "venation-leaf", "diatom-plate", "neural-plexus",
   ]),
   physical: Object.freeze([
     "ripple-tank", "metaball-iso", "ink-marbling", "contour-survey",
-    "phyllotaxis-swarm", "neon-circuit",
+    "phyllotaxis-swarm", "neon-circuit", "caustic-pool",
+  ]),
+  period: Object.freeze([
+    "grid-horizon", "memphis-pattern", "latent-wash",
+  ]),
+  rule: Object.freeze([
+    "rule-automaton", "grammar-spiral", "branch-growth",
   ]),
 });
 

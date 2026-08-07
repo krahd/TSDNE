@@ -35,7 +35,7 @@ Frozen formulations:
 The current `main` branch provides:
 
 - immediate self-contained procedural generation;
-- thirty-nine structural families spanning continuous fields, constructivist and hard-edge geometry, reprographic surfaces, recursive and fractal systems, marched space with a moving camera, biological systems, and physical systems;
+- forty-nine structural families spanning continuous fields, constructivist and hard-edge geometry, reprographic surfaces, recursive and fractal systems, marched space with a moving camera, biological systems, physical systems, line and lattice projection, synthetic period styles, volume and water, and rule-driven structure;
 - three separable axes of variation: structural family, colour mode, and reprographic finish;
 - six colour modes and seven finish modes;
 - relaxed complexity enrichment that preserves sparse, quiet, and slow regions rather than forcing maximal density;
@@ -71,10 +71,10 @@ GitHub Actions verification passed for this revision, and the Pages deployment w
 
 The 7 August audit found no conceptual regression, but four implementation/research issues should be addressed before the 250-run curation study is used as evidence.
 
-1. **Family sampling bias.** `familySchedule()` rotates through the categorically ordered family list while candidate collection stops after 5/9 valid candidates. A pool can therefore sample a contiguous category neighbourhood rather than an unbiased cross-section of all 39 families.
-2. **Stale curation instrument.** `research/curation-instrument-250` remains based on the pre-expansion twelve-family generator and must be refreshed before collecting the planned 250 ratings.
+1. ~~**Family sampling bias.**~~ **Resolved.** `familySchedule()` draws a stratified schedule across the macro-category ledger. The ledger now covers all forty-nine families, including the eleven added in 0.3.0-alpha.1, and a test asserts it matches `FAMILY_NAMES` exactly.
+2. **Stale curation instrument.** `research/curation-instrument-250` remains based on the pre-expansion twelve-family generator and must be refreshed before collecting the planned 250 ratings. Still outstanding, and now further behind at forty-nine families.
 3. **No real GLSL compile matrix in CI.** Unit tests validate emitted source structurally but do not invoke a real WebGL2 compiler for every family/colour/finish combination.
-4. **Incomplete memory clear.** Clearing persistent anti-repetition memory resets perceptual traces and family history but currently leaves the session-only recent colour-mode list active.
+4. ~~**Incomplete memory clear.**~~ **Resolved in 0.3.0-alpha.1.** Clearing anti-repetition memory now also resets the session-only recent colour-mode list.
 
 A fifth documentation issue is also recorded: named visual references such as Richter, Eggeling, Suprematism, and Bauhaus should receive an explicit genealogy rather than remain unexplained style labels.
 

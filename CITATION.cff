@@ -2,7 +2,7 @@ cff-version: 1.2.0
 message: "Please cite the artwork and software using this metadata."
 title: "This Shader Does Not Exist"
 type: software
-version: "0.2.0-alpha.1"
+version: "0.3.0-alpha.1"
 authors:
   - family-names: Laurenzo
     given-names: Tomas

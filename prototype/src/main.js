@@ -43,7 +43,7 @@ const live = $("#live-region");
 
 // The prototype is served as static files with no build step, so the version is
 // declared here. Keep it in step with package.json and CITATION.cff on release.
-const APP_VERSION = "0.2.0-alpha.1";
+const APP_VERSION = "0.3.0-alpha.1";
 panelVersion.textContent = `v${APP_VERSION}`;
 
 const SAMPLE_TIMES = [0.73, 2.11, 4.47];

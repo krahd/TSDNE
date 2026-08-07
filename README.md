@@ -37,7 +37,7 @@ The runtime position is distinct from the development process. AI programming as
 
 Shader richness is treated as an artistic and engineering requirement rather than a technical-priority claim.
 
-The current generator contains **thirty-nine structural families** across continuous fields, constructivist and hard-edge geometry, reprographic systems, recursive/fractal systems, marched three-dimensional space, biological systems, and physical systems.
+The current generator contains **forty-nine structural families** across continuous fields, constructivist and hard-edge geometry, reprographic systems, recursive/fractal systems, marched three-dimensional space, biological systems, physical systems, line and lattice projection, synthetic period styles, volume and water, and rule-driven structure.
 
 Variation is separated into three axes:
 
@@ -93,7 +93,7 @@ The former WebLLM, model-mutation, and awakening implementation is preserved at:
 
 `archive/webllm-release-candidate-2026-08-04`
 
-The expanded 39-family generator was audited on 7 August 2026. The audit identifies sampling, curation-instrument, real-WebGL-validation, and state-clearing issues that should be resolved before the 250-run curation study is treated as evidence:
+The 39-family generator was audited on 7 August 2026 (the generator has since expanded to forty-nine families; audit items 1 and 4 are resolved). The audit identifies sampling, curation-instrument, real-WebGL-validation, and state-clearing issues that should be resolved before the 250-run curation study is treated as evidence:
 
 [`docs/AUDIT-2026-08-07.md`](docs/AUDIT-2026-08-07.md)
 
