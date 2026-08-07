@@ -87,15 +87,30 @@ They are not presented as certificates. TSDNE provides:
 
 When the visitor takes the code, a plain technical manifest accompanies it. The manifest explicitly describes itself as **not a certificate** and confers no title.
 
-## Status and audit
+## Production curation
+
+TSDNE's public visitors are not used to optimise the generator. Artistic curation is performed separately through an unlinked, browser-local audit surface that observes the **same production runtime** as the public artwork rather than reimplementing it.
+
+The audit records explicit artist judgements as **OK**, **not OK**, or **repetitive**. `repetitive` means that an output is acceptable in itself but too similar to a recent encounter. Ratings never alter generation online; they are analysed later to support explicit, inspectable revisions of the authored generator, selector, quality thresholds, or perceptual-distance system.
+
+The audit is documented in [`docs/CURATION-AUDIT.md`](docs/CURATION-AUDIT.md). It is production methodology, not visitor profiling or a population-preference study.
+
+## Status and verification
 
 The former WebLLM, model-mutation, and awakening implementation is preserved at:
 
 `archive/webllm-release-candidate-2026-08-04`
 
-The 39-family generator was audited on 7 August 2026 (the generator has since expanded to forty-nine families; audit items 1 and 4 are resolved). The audit identifies sampling, curation-instrument, real-WebGL-validation, and state-clearing issues that should be resolved before the 250-run curation study is treated as evidence:
+The current implementation centralises generation, validation, selection, anti-repetition, provenance, rendering, and audit telemetry in one production runtime. The public interface and private curation surface are adapters over that runtime.
 
-[`docs/AUDIT-2026-08-07.md`](docs/AUDIT-2026-08-07.md)
+Repository verification currently includes:
+
+- JavaScript syntax checks;
+- 37 unit and architectural-contract tests;
+- a real WebGL2 headless-browser compile/render smoke test across all forty-nine families under three variant conditions each (**147/147** conditions passing on the current CI revision);
+- verified GitHub Pages deployment.
+
+The historical 7 August generator audit and its resolution record remain in [`docs/AUDIT-2026-08-07.md`](docs/AUDIT-2026-08-07.md).
 
 ## Running locally
 
@@ -137,11 +152,12 @@ The browser performs generation and evaluation locally:
 2. WebGL2 compiles and renders them;
 3. fixed temporal samples produce compact perceptual descriptors;
 4. technical, flash, motion, luminance, and variance checks reject unsuitable candidates;
-5. a novelty tournament favours candidates distant from recent local traces while also considering family, colour mode, and visual articulation;
-6. early encounters apply stricter separation;
-7. only the selected shader is shown;
-8. its reconstructive information remains in active memory unless the visitor takes the code;
-9. only a non-reconstructive perceptual trace enters persistent local anti-repetition memory.
+5. a stratified schedule crosses visual macro-categories before returning to them;
+6. a novelty tournament favours candidates distant from recent local traces while also considering family, colour mode, and visual articulation;
+7. early encounters apply stricter separation;
+8. only the selected shader is shown;
+9. its reconstructive information remains in active memory unless the visitor takes the code;
+10. only a non-reconstructive perceptual trace enters persistent local anti-repetition memory.
 
 See [`docs/ARCHITECTURE.md`](docs/ARCHITECTURE.md).
 
