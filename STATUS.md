@@ -33,11 +33,15 @@ Frozen formulations:
 The current `main` branch provides:
 
 - immediate self-contained procedural generation;
-- twelve authored visual families;
+- thirty-nine authored visual families spanning continuous fields, constructivist
+  geometry, reprographic surfaces, recursive and fractal systems, marched space
+  with a moving camera, biological systems, and physical systems;
+- three independent axes of variation: structural family, colour mode, and
+  reprographic finish;
 - deterministic complexity enrichment;
 - local WebGL2 compilation and rendering;
 - temporal, luminance, variance, motion, saturation, and flashing checks;
-- a maximin candidate tournament balancing perceptual novelty, structural novelty, family separation, and visual complexity;
+- a maximin candidate tournament balancing perceptual novelty, structural novelty, family separation, colour separation, and visual complexity;
 - stricter separation across the first four encounters;
 - persistent local anti-repetition across reloads;
 - no stored seed, source, graph, parameters, frame, screenshot, source hash, account, identity, or inferred preference in the anti-repetition memory;

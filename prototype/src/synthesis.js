@@ -22,11 +22,16 @@ export function enrichGraph(graph) {
   const next = structuredClone(graph);
   const t = next.traits;
 
-  t.complexity = mix(0.68, 1, t.complexity);
-  t.density = mix(0.28, 1, t.density);
-  t.turbulence = mix(0.18, 1, t.turbulence);
-  t.depth = mix(0.24, 1, t.depth);
-  t.contrast = mix(0.18, 0.94, t.contrast);
+  // Lift the floor away from degenerate values without collapsing the range.
+  // An earlier revision pushed every trait towards the top of its span, which
+  // made every result busy and dense: articulation, but no contrast between
+  // one encounter and the next. Sparse, quiet and slow results are legitimate
+  // outcomes and are now reachable.
+  t.complexity = mix(0.42, 1, t.complexity);
+  t.density = mix(0.12, 1, t.density);
+  t.turbulence = mix(0.08, 1, t.turbulence);
+  t.depth = mix(0.14, 1, t.depth);
+  t.contrast = mix(0.1, 0.96, t.contrast);
 
   // Preserve quiet and sparse regions within complex programs. Complexity is
   // not treated as uniform maximal density.
@@ -34,7 +39,7 @@ export function enrichGraph(graph) {
   if (t.symmetry > 0.82) t.rotation = 1 - t.rotation;
   if (t.tempo > 0.86) t.tempo = 0.55 + (t.tempo - 0.86) * 0.45;
 
-  next.generator = "tsdne-procedural-v1";
+  next.generator = "tsdne-procedural-v2";
   return next;
 }
 
@@ -57,11 +62,15 @@ export function visualComplexityScore(candidate) {
   const saturationBalance = clamp01(1 - Math.abs(p.saturation - 0.28) / 0.72);
   const programDepth = clamp01((candidate.estimatedCost - 5) / 12);
 
+  // Edge energy is deliberately under-weighted relative to variance. A dithered
+  // or grained surface maximises per-pixel edge without adding any structure,
+  // and scoring it highly quietly turns one reprographic finish into the house
+  // style the rest of this work is trying to avoid.
   return (
-    variance * 0.24 +
-    edge * 0.24 +
+    variance * 0.28 +
+    edge * 0.17 +
     motion * 0.14 +
-    dynamicRange * 0.14 +
+    dynamicRange * 0.17 +
     saturationBalance * 0.1 +
     programDepth * 0.14
   );
@@ -85,6 +94,19 @@ export function familyDistance(candidate, recentFamilies) {
 }
 
 /**
+ * Separation on the colour axis. Structure and colour vary independently, so a
+ * run of unrelated structures rendered in the same ink still reads as a run of
+ * the same thing. Recent modes are held in memory for the session only and are
+ * never written to the local trace store.
+ */
+export function modeDistance(candidate, recentModes) {
+  if (!recentModes.length || !candidate.colorMode) return 1;
+  if (candidate.colorMode === recentModes.at(-1)) return 0;
+  const occurrences = recentModes.filter((mode) => mode === candidate.colorMode).length;
+  return clamp01(1 - occurrences / Math.max(2, recentModes.length));
+}
+
+/**
  * Selects a candidate by maximin perceptual distance, quality and temporary
  * family separation. This is sequence-level quality control, not a model of
  * the visitor. All traces are local, bounded and non-reconstructive.
@@ -93,24 +115,27 @@ export function scoreCandidate(
   candidate,
   traces,
   recentFamilies,
-  { earlyEncounter = false } = {},
+  { earlyEncounter = false, recentModes = [] } = {},
 ) {
   const novelty = nearestPerceptualDistance(candidate, traces);
   const complexity = visualComplexityScore(candidate);
   const family = familyDistance(candidate, recentFamilies);
+  const mode = modeDistance(candidate, recentModes);
 
   const weights = earlyEncounter
-    ? { novelty: 0.67, complexity: 0.2, family: 0.13 }
-    : { novelty: 0.56, complexity: 0.31, family: 0.13 };
+    ? { novelty: 0.54, complexity: 0.16, family: 0.2, mode: 0.1 }
+    : { novelty: 0.44, complexity: 0.24, family: 0.22, mode: 0.1 };
 
   return {
     score:
       novelty * weights.novelty +
       complexity * weights.complexity +
-      family * weights.family,
+      family * weights.family +
+      mode * weights.mode,
     novelty,
     complexity,
     family,
+    mode,
   };
 }
 
@@ -118,27 +143,30 @@ export function selectCandidate(
   candidates,
   traces,
   recentFamilies,
-  { earlyEncounter = false } = {},
+  { earlyEncounter = false, recentModes = [] } = {},
 ) {
   if (!candidates.length) throw new Error("No valid candidates were available.");
 
   const ranked = candidates
     .map((candidate) => ({
       candidate,
-      ...scoreCandidate(candidate, traces, recentFamilies, { earlyEncounter }),
+      ...scoreCandidate(candidate, traces, recentFamilies, { earlyEncounter, recentModes }),
     }))
     .sort((a, b) => b.score - a.score);
 
   return ranked[0];
 }
 
+/**
+ * Attempt order for the candidate pool. With a large family set the schedule
+ * walks the whole vocabulary rather than resampling a handful of neighbours,
+ * and starts at an unpredictable point so successive pools are not drawn from
+ * the same corner of the list.
+ */
 export function familySchedule(recentFamilies, count = FAMILY_NAMES.length) {
-  const latest = recentFamilies.at(-1);
-  const penultimate = recentFamilies.at(-2);
-  const available = FAMILY_NAMES.filter(
-    (family) => family !== latest && family !== penultimate,
-  );
-  const source = available.length >= 4 ? available : FAMILY_NAMES;
-  const offset = recentFamilies.length % source.length;
+  const recent = new Set(recentFamilies.slice(-6));
+  const available = FAMILY_NAMES.filter((family) => !recent.has(family));
+  const source = available.length >= 8 ? available : FAMILY_NAMES;
+  const offset = Math.floor(Math.random() * source.length);
   return Array.from({ length: count }, (_, index) => source[(offset + index) % source.length]);
 }

@@ -1,4 +1,4 @@
-import { familyMeta } from "./generator.js";
+import { COST_BUDGET, familyMeta } from "./generator.js";
 import { createRenderer } from "./webgl.js";
 import {
   compactPerception,
@@ -33,6 +33,8 @@ const useButton = $("#use");
 const aboutButton = $("#about");
 const pauseButton = $("#pause");
 const status = $("#status");
+const statusText = $("#status-text");
+const statusCount = $("#status-count");
 const panel = $("#panel");
 const panelTitle = $("#panel-title");
 const panelContent = $("#panel-content");
@@ -42,9 +44,12 @@ const SAMPLE_TIMES = [0.73, 2.11, 4.47];
 const FLASH_TIMES = Array.from({ length: 13 }, (_, index) => index / 12);
 const SAMPLE_SIZE = 64;
 const FLASH_SIZE = 32;
-const MAX_ATTEMPTS = 56;
+const MAX_ATTEMPTS = 48;
 const HISTORY_LIMIT = 500;
 const EARLY_ENCOUNTERS = 4;
+// Search runs in slices of roughly this length so the running shader keeps
+// animating and the activity indicator keeps turning while work continues.
+const FRAME_BUDGET_MS = 10;
 const motionQuery = matchMedia("(prefers-reduced-motion: reduce)");
 
 let settings = {
@@ -61,6 +66,8 @@ try {
 
 let recentTraces = await loadRecentTraces(HISTORY_LIMIT);
 let recentFamilies = recentTraces.slice(-8).map((trace) => trace.family);
+// Session-only: colour modes are never written to the local trace store.
+let recentModes = [];
 let activeIndex = 0;
 let current = null;
 let encounterNumber = 0;
@@ -80,9 +87,34 @@ function announce(message) {
   requestAnimationFrame(() => { live.textContent = message; });
 }
 
-function setStatus(message = "") {
-  status.textContent = message;
+/**
+ * The visible status line. `detail` carries the search counter and is hidden
+ * from assistive technology: the live region should announce that generation
+ * is under way once, not re-announce every increment.
+ */
+function setStatus(message = "", { busy = false, detail = "" } = {}) {
+  statusText.textContent = message;
+  statusCount.textContent = detail;
+  status.classList.toggle("busy", busy);
   status.hidden = !message;
+}
+
+/**
+ * Hand the main thread back long enough for one paint. Falls back to a timer
+ * so a backgrounded tab, where animation frames stop firing, still finishes
+ * whatever it started.
+ */
+function nextFrame() {
+  return new Promise((resolve) => {
+    let settled = false;
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      resolve();
+    };
+    requestAnimationFrame(done);
+    setTimeout(done, 50);
+  });
 }
 
 function applyRenderSettings() {
@@ -96,8 +128,14 @@ function applyRenderSettings() {
 }
 applyRenderSettings();
 
-async function validateCandidate(candidate) {
-  if (candidate.estimatedCost > 17) return null;
+/**
+ * Two stages, cheapest first. Most rejections are decided by the three-frame
+ * perceptual sample, so the thirteen-frame flash screen is only paid for by
+ * candidates that would otherwise be shown. Every candidate that reaches the
+ * screen has still passed the flash screen.
+ */
+function validateCandidate(candidate) {
+  if (candidate.estimatedCost > COST_BUDGET) return null;
 
   validator.setFragmentSource(candidate.source);
   const sampleSettings = {
@@ -106,13 +144,18 @@ async function validateCandidate(candidate) {
   };
   const frames = validator.sampleSequence(SAMPLE_TIMES, SAMPLE_SIZE, sampleSettings);
   const perception = sequenceDescriptor(frames, SAMPLE_SIZE);
+  const meta = familyMeta(candidate.family);
+  if (!qualityAssessment(perception, meta, { reducedMotion: settings.reducedMotion }).pass) {
+    return null;
+  }
+
   const flashFrames = validator.sampleSequence(FLASH_TIMES, FLASH_SIZE, sampleSettings);
   const flash = flashScreening(flashFrames, FLASH_SIZE, {
     fps: 12,
     changedAreaThreshold: 0.12,
     maxTransitionsPerSecond: 3,
   });
-  const quality = qualityAssessment(perception, familyMeta(candidate.family), {
+  const quality = qualityAssessment(perception, meta, {
     reducedMotion: settings.reducedMotion,
     flashScreen: flash,
   });
@@ -126,16 +169,24 @@ async function validateCandidate(candidate) {
   };
 }
 
-async function buildCandidatePool({ initial = false } = {}) {
-  const target = initial ? 8 : 14;
+async function buildCandidatePool({ initial = false, onProgress = () => {} } = {}) {
+  const target = initial ? 5 : 9;
   const schedule = familySchedule(recentFamilies, MAX_ATTEMPTS);
   const candidates = [];
+  let sliceStart = performance.now();
 
   for (let attempt = 0; attempt < MAX_ATTEMPTS && candidates.length < target; attempt += 1) {
+    if (performance.now() - sliceStart > FRAME_BUDGET_MS) {
+      await nextFrame();
+      sliceStart = performance.now();
+    }
     try {
       const candidate = generateComplexCandidate(undefined, schedule[attempt]);
-      const valid = await validateCandidate(candidate);
-      if (valid) candidates.push(valid);
+      const valid = validateCandidate(candidate);
+      if (valid) {
+        candidates.push(valid);
+        onProgress(candidates.length, target);
+      }
     } catch (error) {
       console.warn("Candidate rejected", error);
     }
@@ -145,10 +196,11 @@ async function buildCandidatePool({ initial = false } = {}) {
   return candidates;
 }
 
-async function generateSelectedCandidate({ initial = false } = {}) {
-  const candidates = await buildCandidatePool({ initial });
+async function generateSelectedCandidate({ initial = false, onProgress } = {}) {
+  const candidates = await buildCandidatePool({ initial, onProgress });
   const ranked = selectCandidate(candidates, recentTraces, recentFamilies, {
     earlyEncounter: encounterNumber < EARLY_ENCOUNTERS,
+    recentModes,
   });
   return attachInternalProvenance(ranked.candidate);
 }
@@ -162,6 +214,7 @@ async function remember(candidate) {
   recentTraces = recentTraces.slice(-HISTORY_LIMIT);
   recentFamilies.push(candidate.family);
   recentFamilies = recentFamilies.slice(-12);
+  if (candidate.colorMode) recentModes = [...recentModes, candidate.colorMode].slice(-8);
 }
 
 function showCandidate(candidate, { transitionMs = 900 } = {}) {
@@ -203,12 +256,33 @@ async function another({ initial = false } = {}) {
   if (generating) return;
   generating = true;
   anotherButton.disabled = true;
-  setStatus(initial ? "" : "making another possibility…");
+
+  const message = initial ? "composing the first shader…" : "searching for another shader…";
+  setStatus(message, { busy: true });
+  announce(initial ? "Composing the first shader." : "Searching for another shader.");
 
   try {
     let candidate = prefetched;
     prefetched = null;
-    if (!candidate) candidate = await generateSelectedCandidate({ initial });
+
+    // A background search already under way is worth more than a second one
+    // started alongside it: wait for it rather than competing with it.
+    if (!candidate && prefetching) {
+      await prefetching;
+      candidate = prefetched;
+      prefetched = null;
+    }
+
+    if (!candidate) {
+      candidate = await generateSelectedCandidate({
+        initial,
+        onProgress: (found, target) => setStatus(message, {
+          busy: true,
+          detail: `${found}/${target}`,
+        }),
+      });
+    }
+
     showCandidate(candidate, { transitionMs: initial ? 0 : 900 });
     void prefetch();
   } catch (error) {

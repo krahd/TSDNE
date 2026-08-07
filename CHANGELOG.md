@@ -1,5 +1,44 @@
 # Changelog
 
+## Unreleased
+
+### Visual range
+
+- Expanded the authored grammar from twelve to thirty-nine visual families,
+  adding constructivist geometry (Richter, Eggeling, Suprematist, Bauhaus),
+  reprographic surfaces (halftone, ordered dither, broadcast artefact),
+  recursive and fractal systems (Apollonian, Julia orbit traps, KIFS, Droste),
+  marched space with a moving camera (corridor, terrain, orbiting solid,
+  volumetric cloud), biological systems (mitosis, venation, diatoms, dendritic
+  networks), and physical systems (interference, iso-contours, marbling,
+  contour survey, phyllotaxis, circuit traces).
+- Separated colour from structure. Every family now expresses itself as a
+  scalar field and resolves colour through a generated `shade()` function, so
+  the same structure can arrive as a spectral field, a two-ink screen print, a
+  riso separation, a paper-and-ink drawing, a neon ground, or a tinted
+  monochrome.
+- Added a reprographic `finish()` stage: grain, posterisation, ordered
+  dithering, scanlines, vignette, and highlight bloom.
+- Relaxed complexity enrichment so sparse, quiet and slow results remain
+  reachable instead of forcing every result towards maximal density.
+- Added colour separation to candidate selection and widened the family
+  schedule across the whole vocabulary.
+- Under-weighted per-pixel edge energy in the complexity score, which was
+  quietly promoting dithered surfaces into a house style.
+
+### Feedback and responsiveness
+
+- Added an activity indicator with a search counter, so generation is visibly
+  under way rather than apparently stalled.
+- Ran candidate search in frame-budgeted slices, so the running shader keeps
+  animating and the indicator keeps turning while the search continues.
+- Ordered candidate validation cheapest-first, paying for the thirteen-frame
+  flash screen only for candidates that would otherwise be shown. Every shader
+  reaching the screen still passes the flash screen.
+- A foreground request now waits for a background search already under way
+  instead of starting a competing one.
+- Raised control contrast, which light-ground results made necessary.
+
 ## 0.2.0-alpha.1 — revised procedural artwork
 
 ### Concept

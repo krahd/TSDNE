@@ -32,7 +32,27 @@ one displayed shader
 
 ## Authored procedural grammar
 
-The generator contains several macro-families. Each family maps a deterministic trait vector and palette to a complete fragment shader.
+The generator varies along three independent axes.
+
+**Structure.** A macro-family determines what the image is made of: continuous
+fields, constructivist geometry, reprographic surfaces, recursive and fractal
+systems, marched space with a moving camera, biological systems, or physical
+systems.
+
+**Colour.** Each family expresses itself as a scalar field and resolves colour
+through a generated `shade()` function. Colour is therefore not a property of
+the family: the same structure can arrive as a spectral field, a two-ink screen
+print, a riso separation, a paper-and-ink drawing, a neon ground, or a tinted
+monochrome.
+
+**Finish.** A generated `finish()` function applies the reprographic surface —
+grain, posterisation, ordered dithering, scanlines, vignette, or highlight
+bloom.
+
+Because the axes are independent, the range of possible encounters is their
+product rather than a set of parameter variations within a single house style.
+Each family maps a deterministic trait vector and palette to a complete fragment
+shader.
 
 The generator is not claimed as a technically unprecedented shader system. Its responsibilities are:
 
@@ -90,7 +110,9 @@ For each valid candidate, the system estimates:
 
 - minimum perceptual distance from recent local traces;
 - visual complexity and articulation;
-- recent macro-family separation.
+- recent macro-family separation;
+- recent colour-mode separation, held in memory for the session only and never
+  written to the local trace store.
 
 A maximin-style tournament favours candidates that are distant from the closest prior encounter while still satisfying quality and complexity constraints.
 

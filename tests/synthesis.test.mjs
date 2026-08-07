@@ -3,6 +3,7 @@ import assert from "node:assert/strict";
 import {
   enrichGraph,
   familyDistance,
+  modeDistance,
   nearestPerceptualDistance,
   scoreCandidate,
   selectCandidate,
@@ -26,10 +27,26 @@ test("enrichment raises structural articulation without forcing every trait to o
     traits:{complexity:.1,density:.2,turbulence:.3,depth:.4,contrast:.5,softness:.6,symmetry:.7,rotation:.8,tempo:.9},
   };
   const enriched = enrichGraph(graph);
-  assert.equal(enriched.generator, "tsdne-procedural-v1");
-  assert.ok(enriched.traits.complexity >= .68);
+  assert.equal(enriched.generator, "tsdne-procedural-v2");
+  assert.ok(enriched.traits.complexity >= .42);
   assert.ok(enriched.traits.density > graph.traits.density);
   assert.ok(enriched.traits.complexity < 1);
+});
+
+test("enrichment leaves room for sparse and quiet results", () => {
+  const quiet = enrichGraph({ traits:{complexity:0,density:0,turbulence:0,depth:0,contrast:0,softness:.5,symmetry:.5,rotation:.5,tempo:.5} });
+  const busy = enrichGraph({ traits:{complexity:1,density:1,turbulence:1,depth:1,contrast:1,softness:.5,symmetry:.5,rotation:.5,tempo:.5} });
+  // The floor must not swallow the range: the quietest available result stays
+  // clearly separated from the busiest one.
+  assert.ok(busy.traits.density - quiet.traits.density > .8);
+  assert.ok(busy.traits.complexity - quiet.traits.complexity > .5);
+});
+
+test("colour separation is scored without recording anything about the visitor", () => {
+  const tinted = (mode) => ({ family:"a", colorMode:mode, perception:perception(1,1,1,1) });
+  assert.equal(modeDistance(tinted("ink"), ["riso","ink"]), 0);
+  assert.ok(modeDistance(tinted("neon"), ["riso","ink"]) > 0);
+  assert.equal(modeDistance(tinted("neon"), []), 1);
 });
 
 test("novelty is measured against non-reconstructive perceptual traces", () => {
