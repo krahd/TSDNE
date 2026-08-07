@@ -38,11 +38,13 @@
 
 ### Selection
 
-- Extended the macro-category ledger behind the stratified `familySchedule()`
-  to cover all forty-nine families. The ledger is asserted to match
-  `FAMILY_NAMES` exactly, so a family added without a category, or a category
-  naming a family that no longer exists, fails the test suite rather than
-  silently dropping out of the sampler or throwing at generation time.
+- Collapsed the four hand-maintained lists of the same families — the family
+  list, the per-family thresholds, the macro-category ledger behind the
+  stratified `familySchedule()`, and the builder map — into a single
+  `FAMILY_TABLE`, from which all four are derived. Adding a family to one list
+  and not the others previously either dropped it out of the sampler or threw
+  at generation time, which is exactly what the expansion to forty-nine
+  families did to the category ledger.
 - Clearing anti-repetition memory now also resets the session-only recent
   colour-mode list. This was audit item 4.
 

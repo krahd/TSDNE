@@ -1,69 +1,22 @@
 import {
+  FAMILY_GROUPS,
   FAMILY_NAMES,
   candidateFromGraph,
   createGraph,
+  familyCategory,
   randomSeed,
 } from "./generator.js";
+
+// The grammar and its macro-category ledger are defined together in
+// generator.js. Re-exported here because the schedule is the reason the
+// grouping exists.
+export { FAMILY_GROUPS, familyCategory };
 import { descriptorDistance } from "./perception.js";
 
 const clamp01 = (value) => Math.max(0, Math.min(1, value));
 
 function mix(a, b, amount) {
   return a + (b - a) * amount;
-}
-
-/**
- * The visual grammar is deliberately grouped here by macro-category. This is
- * not an ontology of the images; it is a sampling device. Candidate pools used
- * to walk the categorically ordered FAMILY_NAMES list from a random offset.
- * Because generation stops as soon as enough valid candidates have been found,
- * that procedure often compared neighbours from the same visual category. A
- * stratified schedule makes the candidate pool cross categories before it
- * returns to one, without turning the public artwork into a balanced study.
- */
-export const FAMILY_GROUPS = Object.freeze({
-  continuous: Object.freeze([
-    "folded-flow", "liquid-field", "moire-orbit", "cellular-drift",
-    "polar-vault", "aurora-ribbons", "reaction-lace", "crystalline-lens",
-    "tidal-ink", "magnetic-sand", "spectral-loom",
-  ]),
-  geometric: Object.freeze([
-    "richter-rhythm", "eggeling-diagonal", "suprematist-drift",
-    "bauhaus-tiles", "truchet-weave", "op-stripes",
-  ]),
-  reprographic: Object.freeze([
-    "halftone-press", "dither-plate", "crt-broadcast",
-  ]),
-  recursive: Object.freeze([
-    "apollonian-foam", "orbit-trap-julia", "kifs-cathedral", "droste-spiral",
-    "newton-basins",
-  ]),
-  dimensional: Object.freeze([
-    "corridor-flight", "terrain-flyover", "monolith-orbit", "cloud-drift",
-    "volume-tomogram", "wireframe-solid", "stereo-parallax",
-  ]),
-  biological: Object.freeze([
-    "mitosis-plate", "venation-leaf", "diatom-plate", "neural-plexus",
-  ]),
-  physical: Object.freeze([
-    "ripple-tank", "metaball-iso", "ink-marbling", "contour-survey",
-    "phyllotaxis-swarm", "neon-circuit", "caustic-pool",
-  ]),
-  period: Object.freeze([
-    "grid-horizon", "memphis-pattern", "latent-wash",
-  ]),
-  rule: Object.freeze([
-    "rule-automaton", "grammar-spiral", "branch-growth",
-  ]),
-});
-
-const FAMILY_TO_GROUP = new Map(
-  Object.entries(FAMILY_GROUPS).flatMap(([group, families]) =>
-    families.map((family) => [family, group])),
-);
-
-export function familyCategory(family) {
-  return FAMILY_TO_GROUP.get(family) || "unclassified";
 }
 
 function shuffle(values, rng = Math.random) {

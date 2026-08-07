@@ -54,6 +54,13 @@ product rather than a set of parameter variations within a single house style.
 Each family maps a deterministic trait vector and palette to a complete fragment
 shader.
 
+A family is declared once, in `FAMILY_TABLE`. Its name, cost and quality
+thresholds, macro-category and builder all live in that one entry, and the
+family list, threshold map, category ledger and builder map are derived from
+it. The category grouping is a sampling device rather than an ontology: pools
+stop as soon as they have enough candidates, so the schedule needs to know
+which families are near neighbours in order to cross categories.
+
 The generator is not claimed as a technically unprecedented shader system. Its responsibilities are:
 
 - produce materially different dynamic visual structures;

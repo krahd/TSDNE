@@ -55,68 +55,125 @@ vec3 safeColor(vec3 c){c=max(c,vec3(0.0));return mix(vec3(luma(c)),c,u_intensity
  * than from parameter jitter inside a single house style.
  */
 
-export const FAMILY_NAMES = [
+/**
+ * The single source of truth for the visual grammar.
+ *
+ * The family list, the per-family thresholds and the macro-category ledger were
+ * previously three hand-maintained lists of the same families. Adding a family
+ * to one and not the others either dropped it out of the sampler or threw at
+ * generation time, so all three are now derived from this table and cannot
+ * disagree.
+ *
+ * The grouping is a sampling device, not an ontology of the images: candidate
+ * pools stop early, so a stratified schedule needs to know which families are
+ * near neighbours in order to cross categories before returning to one.
+ *
+ * `build` refers to a function declared further down this file, which is legal
+ * because function declarations hoist. Keep the builders as declarations.
+ *
+ * cost        — relative fragment cost, gating what may reach the screen
+ * motionMin   — least inter-frame change accepted before the result reads as static
+ * varianceMin — least luminance variance accepted before the result reads as empty
+ */
+export const FAMILY_TABLE = Object.freeze({
   // Continuous fields
-  "folded-flow",
-  "liquid-field",
-  "moire-orbit",
-  "cellular-drift",
-  "polar-vault",
-  "aurora-ribbons",
-  "reaction-lace",
-  "crystalline-lens",
-  "tidal-ink",
-  "magnetic-sand",
-  "spectral-loom",
+  continuous: {
+    "folded-flow": { cost: 6, motionMin: 1.4, varianceMin: 120, build: foldedFlow },
+    "liquid-field": { cost: 7, motionMin: 0.9, varianceMin: 95, build: liquidField },
+    "moire-orbit": { cost: 7, motionMin: 1, varianceMin: 145, build: moireOrbit },
+    "cellular-drift": { cost: 8, motionMin: 0.8, varianceMin: 100, build: cellularDrift },
+    "polar-vault": { cost: 5, motionMin: 0.9, varianceMin: 90, build: polarVault },
+    "aurora-ribbons": { cost: 6, motionMin: 0.7, varianceMin: 75, build: auroraRibbons },
+    "reaction-lace": { cost: 8, motionMin: 1, varianceMin: 120, build: reactionLace },
+    "crystalline-lens": { cost: 6, motionMin: 0.7, varianceMin: 110, build: crystallineLens },
+    "tidal-ink": { cost: 7, motionMin: 0.55, varianceMin: 70, build: tidalInk },
+    "magnetic-sand": { cost: 8, motionMin: 0.8, varianceMin: 120, build: magneticSand },
+    "spectral-loom": { cost: 6, motionMin: 0.9, varianceMin: 110, build: spectralLoom },
+  },
   // Constructivist and hard-edge geometry
-  "richter-rhythm",
-  "eggeling-diagonal",
-  "suprematist-drift",
-  "bauhaus-tiles",
-  "truchet-weave",
-  "op-stripes",
-  // Reprographic
-  "halftone-press",
-  "dither-plate",
-  "crt-broadcast",
-  // Recursive and fractal
-  "apollonian-foam",
-  "orbit-trap-julia",
-  "kifs-cathedral",
-  "droste-spiral",
-  // Dimensional: marched space with a moving camera
-  "corridor-flight",
-  "terrain-flyover",
-  "monolith-orbit",
-  "cloud-drift",
-  // Biological
-  "mitosis-plate",
-  "venation-leaf",
-  "diatom-plate",
-  "neural-plexus",
+  geometric: {
+    "richter-rhythm": { cost: 7, motionMin: 0.6, varianceMin: 90, build: richterRhythm },
+    "eggeling-diagonal": { cost: 7, motionMin: 0.6, varianceMin: 110, build: eggelingDiagonal },
+    "suprematist-drift": { cost: 6, motionMin: 0.35, varianceMin: 80, build: suprematistDrift },
+    "bauhaus-tiles": { cost: 6, motionMin: 0.5, varianceMin: 110, build: bauhausTiles },
+    "truchet-weave": { cost: 6, motionMin: 0.6, varianceMin: 100, build: truchetWeave },
+    "op-stripes": { cost: 5, motionMin: 0.6, varianceMin: 120, build: opStripes },
+  },
+  // Reprographic surfaces
+  reprographic: {
+    "halftone-press": { cost: 7, motionMin: 0.5, varianceMin: 120, build: halftonePress },
+    "dither-plate": { cost: 6, motionMin: 0.5, varianceMin: 120, build: ditherPlate },
+    "crt-broadcast": { cost: 7, motionMin: 0.9, varianceMin: 90, build: crtBroadcast },
+  },
+  // Recursive and fractal systems
+  recursive: {
+    "apollonian-foam": { cost: 9, motionMin: 0.5, varianceMin: 90, build: apollonianFoam },
+    "orbit-trap-julia": { cost: 10, motionMin: 0.5, varianceMin: 80, build: orbitTrapJulia },
+    "kifs-cathedral": { cost: 8, motionMin: 0.6, varianceMin: 85, build: kifsCathedral },
+    "droste-spiral": { cost: 7, motionMin: 0.7, varianceMin: 95, build: drosteSpiral },
+    "newton-basins": { cost: 10, motionMin: 0.45, varianceMin: 80, build: newtonBasins },
+  },
+  // Marched space with a moving camera
+  dimensional: {
+    "corridor-flight": { cost: 12, motionMin: 0.9, varianceMin: 70, build: corridorFlight },
+    "terrain-flyover": { cost: 12, motionMin: 0.5, varianceMin: 60, build: terrainFlyover },
+    "monolith-orbit": { cost: 13, motionMin: 0.45, varianceMin: 60, build: monolithOrbit },
+    "cloud-drift": { cost: 12, motionMin: 0.4, varianceMin: 45, build: cloudDrift },
+    "volume-tomogram": { cost: 12, motionMin: 0.5, varianceMin: 55, build: volumeTomogram },
+    "wireframe-solid": { cost: 8, motionMin: 0.45, varianceMin: 38, build: wireframeSolid },
+    "stereo-parallax": { cost: 9, motionMin: 0.5, varianceMin: 55, build: stereoParallax },
+  },
+  // Biological systems
+  biological: {
+    "mitosis-plate": { cost: 9, motionMin: 0.4, varianceMin: 75, build: mitosisPlate },
+    "venation-leaf": { cost: 8, motionMin: 0.35, varianceMin: 70, build: venationLeaf },
+    "diatom-plate": { cost: 9, motionMin: 0.4, varianceMin: 70, build: diatomPlate },
+    "neural-plexus": { cost: 11, motionMin: 0.5, varianceMin: 55, build: neuralPlexus },
+  },
   // Physical systems
-  "ripple-tank",
-  "metaball-iso",
-  "ink-marbling",
-  "contour-survey",
-  "phyllotaxis-swarm",
-  "neon-circuit",
-  // Line and lattice
-  "wireframe-solid",
-  "stereo-parallax",
+  physical: {
+    "ripple-tank": { cost: 8, motionMin: 0.9, varianceMin: 90, build: rippleTank },
+    "metaball-iso": { cost: 7, motionMin: 0.6, varianceMin: 80, build: metaballIso },
+    "ink-marbling": { cost: 8, motionMin: 0.5, varianceMin: 95, build: inkMarbling },
+    "contour-survey": { cost: 8, motionMin: 0.4, varianceMin: 85, build: contourSurvey },
+    "phyllotaxis-swarm": { cost: 10, motionMin: 0.5, varianceMin: 70, build: phyllotaxisSwarm },
+    "neon-circuit": { cost: 7, motionMin: 0.5, varianceMin: 85, build: neonCircuit },
+    "caustic-pool": { cost: 9, motionMin: 0.8, varianceMin: 70, build: causticPool },
+  },
   // Synthetic period styles
-  "grid-horizon",
-  "memphis-pattern",
-  "latent-wash",
-  // Volume and water
-  "volume-tomogram",
-  "caustic-pool",
+  period: {
+    "grid-horizon": { cost: 7, motionMin: 0.6, varianceMin: 90, build: gridHorizon },
+    "memphis-pattern": { cost: 6, motionMin: 0.5, varianceMin: 110, build: memphisPattern },
+    "latent-wash": { cost: 9, motionMin: 0.5, varianceMin: 75, build: latentWash },
+  },
   // Rule-driven structure
-  "newton-basins",
-  "rule-automaton",
-  "grammar-spiral",
-  "branch-growth",
-];
+  rule: {
+    "rule-automaton": { cost: 5, motionMin: 0.6, varianceMin: 130, build: ruleAutomaton },
+    "grammar-spiral": { cost: 8, motionMin: 0.3, varianceMin: 90, build: grammarSpiral },
+    "branch-growth": { cost: 8, motionMin: 0.4, varianceMin: 70, build: branchGrowth },
+  },
+});
+
+export const FAMILY_GROUPS = Object.freeze(Object.fromEntries(
+  Object.entries(FAMILY_TABLE).map(([group, families]) => [group, Object.freeze(Object.keys(families))]),
+));
+
+export const FAMILY_NAMES = Object.values(FAMILY_GROUPS).flat();
+
+export const FAMILY_META = Object.fromEntries(
+  Object.values(FAMILY_TABLE).flatMap((families) =>
+    Object.entries(families).map(([name, { cost, motionMin, varianceMin }]) =>
+      [name, { cost, motionMin, varianceMin }])),
+);
+
+const FAMILY_TO_GROUP = new Map(
+  Object.entries(FAMILY_GROUPS).flatMap(([group, families]) =>
+    families.map((family) => [family, group])),
+);
+
+export function familyCategory(family) {
+  return FAMILY_TO_GROUP.get(family) || "unclassified";
+}
 
 export const TRAIT_KEYS = [
   "scale", "tempo", "density", "turbulence", "contrast", "palette",
@@ -124,62 +181,6 @@ export const TRAIT_KEYS = [
   "colorMode", "finish", "variant",
 ];
 
-/**
- * cost        — relative fragment cost, gating what may reach the screen
- * motionMin   — least inter-frame change accepted before the result reads as static
- * varianceMin — least luminance variance accepted before the result reads as empty
- */
-export const FAMILY_META = {
-  "folded-flow": { cost: 6, motionMin: 1.4, varianceMin: 120 },
-  "liquid-field": { cost: 7, motionMin: 0.9, varianceMin: 95 },
-  "moire-orbit": { cost: 7, motionMin: 1.0, varianceMin: 145 },
-  "cellular-drift": { cost: 8, motionMin: 0.8, varianceMin: 100 },
-  "polar-vault": { cost: 5, motionMin: 0.9, varianceMin: 90 },
-  "aurora-ribbons": { cost: 6, motionMin: 0.7, varianceMin: 75 },
-  "reaction-lace": { cost: 8, motionMin: 1.0, varianceMin: 120 },
-  "crystalline-lens": { cost: 6, motionMin: 0.7, varianceMin: 110 },
-  "tidal-ink": { cost: 7, motionMin: 0.55, varianceMin: 70 },
-  "magnetic-sand": { cost: 8, motionMin: 0.8, varianceMin: 120 },
-  "spectral-loom": { cost: 6, motionMin: 0.9, varianceMin: 110 },
-  "richter-rhythm": { cost: 7, motionMin: 0.6, varianceMin: 90 },
-  "eggeling-diagonal": { cost: 7, motionMin: 0.6, varianceMin: 110 },
-  "suprematist-drift": { cost: 6, motionMin: 0.35, varianceMin: 80 },
-  "bauhaus-tiles": { cost: 6, motionMin: 0.5, varianceMin: 110 },
-  "truchet-weave": { cost: 6, motionMin: 0.6, varianceMin: 100 },
-  "op-stripes": { cost: 5, motionMin: 0.6, varianceMin: 120 },
-  "halftone-press": { cost: 7, motionMin: 0.5, varianceMin: 120 },
-  "dither-plate": { cost: 6, motionMin: 0.5, varianceMin: 120 },
-  "crt-broadcast": { cost: 7, motionMin: 0.9, varianceMin: 90 },
-  "apollonian-foam": { cost: 9, motionMin: 0.5, varianceMin: 90 },
-  "orbit-trap-julia": { cost: 10, motionMin: 0.5, varianceMin: 80 },
-  "kifs-cathedral": { cost: 8, motionMin: 0.6, varianceMin: 85 },
-  "droste-spiral": { cost: 7, motionMin: 0.7, varianceMin: 95 },
-  "corridor-flight": { cost: 12, motionMin: 0.9, varianceMin: 70 },
-  "terrain-flyover": { cost: 12, motionMin: 0.5, varianceMin: 60 },
-  "monolith-orbit": { cost: 13, motionMin: 0.45, varianceMin: 60 },
-  "cloud-drift": { cost: 12, motionMin: 0.4, varianceMin: 45 },
-  "mitosis-plate": { cost: 9, motionMin: 0.4, varianceMin: 75 },
-  "venation-leaf": { cost: 8, motionMin: 0.35, varianceMin: 70 },
-  "diatom-plate": { cost: 9, motionMin: 0.4, varianceMin: 70 },
-  "neural-plexus": { cost: 11, motionMin: 0.5, varianceMin: 55 },
-  "ripple-tank": { cost: 8, motionMin: 0.9, varianceMin: 90 },
-  "metaball-iso": { cost: 7, motionMin: 0.6, varianceMin: 80 },
-  "ink-marbling": { cost: 8, motionMin: 0.5, varianceMin: 95 },
-  "contour-survey": { cost: 8, motionMin: 0.4, varianceMin: 85 },
-  "phyllotaxis-swarm": { cost: 10, motionMin: 0.5, varianceMin: 70 },
-  "neon-circuit": { cost: 7, motionMin: 0.5, varianceMin: 85 },
-  "wireframe-solid": { cost: 8, motionMin: 0.45, varianceMin: 38 },
-  "stereo-parallax": { cost: 9, motionMin: 0.5, varianceMin: 55 },
-  "grid-horizon": { cost: 7, motionMin: 0.6, varianceMin: 90 },
-  "memphis-pattern": { cost: 6, motionMin: 0.5, varianceMin: 110 },
-  "latent-wash": { cost: 9, motionMin: 0.5, varianceMin: 75 },
-  "volume-tomogram": { cost: 12, motionMin: 0.5, varianceMin: 55 },
-  "caustic-pool": { cost: 9, motionMin: 0.8, varianceMin: 70 },
-  "newton-basins": { cost: 10, motionMin: 0.45, varianceMin: 80 },
-  "rule-automaton": { cost: 5, motionMin: 0.6, varianceMin: 130 },
-  "grammar-spiral": { cost: 8, motionMin: 0.3, varianceMin: 90 },
-  "branch-growth": { cost: 8, motionMin: 0.4, varianceMin: 70 },
-};
 
 /** Ceiling on estimated fragment cost allowed to reach the screen. */
 export const COST_BUDGET = 17;
@@ -1202,31 +1203,10 @@ col=mix(col,shade(${f("drift", 0.6, 0.95)}),aastep(leaf)*smoothstep(${levels - 1
 col+=shade(${f("drift", 0.6, 0.95)})*exp(-abs(d)*${f("density", 40.0, 120.0)})*.3;`;
 }
 
-const BUILDERS = {
-  "folded-flow": foldedFlow, "liquid-field": liquidField, "moire-orbit": moireOrbit,
-  "cellular-drift": cellularDrift, "polar-vault": polarVault, "aurora-ribbons": auroraRibbons,
-  "reaction-lace": reactionLace, "crystalline-lens": crystallineLens, "tidal-ink": tidalInk,
-  "magnetic-sand": magneticSand, "spectral-loom": spectralLoom,
-  "richter-rhythm": richterRhythm, "eggeling-diagonal": eggelingDiagonal,
-  "suprematist-drift": suprematistDrift, "bauhaus-tiles": bauhausTiles,
-  "truchet-weave": truchetWeave, "op-stripes": opStripes,
-  "halftone-press": halftonePress, "dither-plate": ditherPlate, "crt-broadcast": crtBroadcast,
-  "apollonian-foam": apollonianFoam, "orbit-trap-julia": orbitTrapJulia,
-  "kifs-cathedral": kifsCathedral, "droste-spiral": drosteSpiral,
-  "corridor-flight": corridorFlight, "terrain-flyover": terrainFlyover,
-  "monolith-orbit": monolithOrbit, "cloud-drift": cloudDrift,
-  "mitosis-plate": mitosisPlate, "venation-leaf": venationLeaf,
-  "diatom-plate": diatomPlate, "neural-plexus": neuralPlexus,
-  "ripple-tank": rippleTank, "metaball-iso": metaballIso, "ink-marbling": inkMarbling,
-  "contour-survey": contourSurvey, "phyllotaxis-swarm": phyllotaxisSwarm,
-  "neon-circuit": neonCircuit,
-  "wireframe-solid": wireframeSolid, "stereo-parallax": stereoParallax,
-  "grid-horizon": gridHorizon, "memphis-pattern": memphisPattern,
-  "latent-wash": latentWash, "volume-tomogram": volumeTomogram,
-  "caustic-pool": causticPool, "newton-basins": newtonBasins,
-  "rule-automaton": ruleAutomaton, "grammar-spiral": grammarSpiral,
-  "branch-growth": branchGrowth,
-};
+const BUILDERS = Object.fromEntries(
+  Object.values(FAMILY_TABLE).flatMap((families) =>
+    Object.entries(families).map(([name, entry]) => [name, entry.build])),
+);
 
 export function compileGraph(graph) {
   const build = BUILDERS[graph.family];

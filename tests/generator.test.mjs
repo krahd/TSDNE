@@ -4,6 +4,8 @@ import {
   COLOR_MODES,
   COST_BUDGET,
   FAMILY_NAMES,
+  FAMILY_TABLE,
+  familyCategory,
   FINISHES,
   TRAIT_KEYS,
   compileGraph,
@@ -89,4 +91,23 @@ test("complex candidates contain no model lineage", () => {
   assert.equal(candidate.parentId ?? null, null);
   assert.equal(candidate.mutation ?? null, null);
   assert.match(candidate.source, /void main/);
+});
+
+test("the family table is the only place a family is declared", () => {
+  // Family list, thresholds, macro-category and builder were once four
+  // hand-maintained lists of the same families. They are derived from
+  // FAMILY_TABLE now, so this asserts the table itself is well formed.
+  const rows = Object.values(FAMILY_TABLE).flatMap((families) => Object.entries(families));
+  assert.equal(rows.length, FAMILY_NAMES.length);
+  assert.equal(new Set(rows.map(([name]) => name)).size, rows.length, "a family is listed twice");
+
+  for (const [name, entry] of rows) {
+    assert.equal(typeof entry.build, "function", `${name} has no builder`);
+    for (const key of ["cost", "motionMin", "varianceMin"]) {
+      assert.equal(typeof entry[key], "number", `${name} is missing ${key}`);
+    }
+    assert.ok(entry.cost > 0 && entry.cost <= COST_BUDGET, `${name} cost is out of range`);
+    assert.equal(familyCategory(name), Object.keys(FAMILY_TABLE)
+      .find((group) => name in FAMILY_TABLE[group]), `${name} category disagrees`);
+  }
 });
