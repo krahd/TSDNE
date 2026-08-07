@@ -2,13 +2,17 @@ import test from "node:test";
 import assert from "node:assert/strict";
 import {
   enrichGraph,
+  familyCategory,
   familyDistance,
+  familySchedule,
+  FAMILY_GROUPS,
   modeDistance,
   nearestPerceptualDistance,
   scoreCandidate,
   selectCandidate,
   visualComplexityScore,
 } from "../prototype/src/synthesis.js";
+import { FAMILY_NAMES } from "../prototype/src/generator.js";
 
 const perception = (mean, variance, edge, temporal, saturation = .25) => ({
   mean, variance, edge, temporal, saturation,
@@ -36,10 +40,26 @@ test("enrichment raises structural articulation without forcing every trait to o
 test("enrichment leaves room for sparse and quiet results", () => {
   const quiet = enrichGraph({ traits:{complexity:0,density:0,turbulence:0,depth:0,contrast:0,softness:.5,symmetry:.5,rotation:.5,tempo:.5} });
   const busy = enrichGraph({ traits:{complexity:1,density:1,turbulence:1,depth:1,contrast:1,softness:.5,symmetry:.5,rotation:.5,tempo:.5} });
-  // The floor must not swallow the range: the quietest available result stays
-  // clearly separated from the busiest one.
   assert.ok(busy.traits.density - quiet.traits.density > .8);
   assert.ok(busy.traits.complexity - quiet.traits.complexity > .5);
+});
+
+test("visual macro-category ledger covers every authored family exactly once", () => {
+  const grouped = Object.values(FAMILY_GROUPS).flat();
+  assert.deepEqual([...grouped].sort(), [...FAMILY_NAMES].sort());
+  assert.equal(new Set(grouped).size, FAMILY_NAMES.length);
+});
+
+test("public family schedule crosses macro-categories before returning to them", () => {
+  const schedule = familySchedule([], 14, () => 0.37);
+  const firstCycle = schedule.slice(0, Object.keys(FAMILY_GROUPS).length);
+  assert.equal(new Set(firstCycle.map(familyCategory)).size, Object.keys(FAMILY_GROUPS).length);
+});
+
+test("public family schedule excludes recent families while enough alternatives exist", () => {
+  const recent = FAMILY_NAMES.slice(0, 6);
+  const schedule = familySchedule(recent, 20, () => 0.61);
+  assert.equal(schedule.some((family) => recent.includes(family)), false);
 });
 
 test("colour separation is scored without recording anything about the visitor", () => {
