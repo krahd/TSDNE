@@ -79,6 +79,17 @@ runtime.on("encounter", () => {
   clearSearchReveal(); waitingForEncounter = false; searchStatusVisible = false;
   setStatus(""); announce("A new shader is present.");
 });
+// A new shader arrives playing, but not before it is the only one on screen.
+// "encounter" fires as the crossfade begins, and resuming there would set the
+// outgoing shader moving again and only then reveal the new one; the whole point
+// of pausing is that the shader being left behind stays where it was put. Search
+// and crossfade therefore both happen paused, and the new shader — held on its
+// first frame throughout — begins moving once it stands alone.
+runtime.on("encounter-settled", () => {
+  if (!settings.paused) return;
+  settings.paused = false; applyDocumentSettings(); runtime.setSettings(settings);
+  announce("Shader playing.");
+});
 runtime.on("generation-error", (error) => {
   console.error(error); setStatus(`generation error: ${error instanceof Error ? error.message : String(error)}`);
   announce("A generation error occurred. Another attempt remains available.");
@@ -218,10 +229,11 @@ function showInfoView(view = "about") {
   if (!panel.open) panel.showModal();
 }
 
-// Requesting another shader leaves the viewing state alone: a paused visitor
-// arrives at the new shader held on its first frame, and stays paused. This is
-// only coherent because validation samples at full motion regardless of the
-// setting, so generation itself does not depend on being unpaused.
+// Requesting another shader does not touch the viewing state here. Searching
+// happens paused, so the shader being relinquished stays where it was put; the
+// resume is deferred to "encounter-settled" above. This is only coherent because
+// validation samples at full motion regardless of the setting, so generation
+// itself does not depend on being unpaused.
 anotherButton.addEventListener("click", () => void runtime.another().catch(() => {}));
 useButton.addEventListener("click", showUse); aboutButton.addEventListener("click", () => showInfoView("about"));
 pauseButton.addEventListener("click", () => {

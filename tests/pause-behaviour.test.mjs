@@ -33,14 +33,46 @@ test("toggling pause does not write the settings key at all", () => {
   assert.doesNotMatch(toggle[0], /persistSettings\(\)/);
 });
 
-test("asking for another shader leaves the viewing state alone", () => {
-  // Requesting another shader is not a request to resume: a paused visitor
-  // arrives at the new shader held on its first frame and stays paused.
+test("the search itself runs paused, so nothing resumes when another is pressed", () => {
+  // Neither route may touch the viewing state: the resume belongs to
+  // "encounter-settled", once the new shader is the only one on screen.
   assert.match(mainSource, /anotherButton\.addEventListener\("click", \(\) => void runtime\.another\(\)\.catch\(\(\) => \{\}\)\)/);
   assert.match(mainSource, /=== "n"\) \{ event\.preventDefault\(\); void runtime\.another\(\)\.catch\(\(\) => \{\}\); \}/);
-  assert.doesNotMatch(mainSource, /resumeAndRequestAnother|setPaused\(false\)/);
   // Coherent only because generation does not depend on being unpaused.
   assert.match(runtimeSource, /VALIDATION_SAMPLE_SETTINGS = Object\.freeze\(\{ motion: 1, intensity: 1 \}\)/);
+});
+
+test("a new shader resumes only once it is alone on screen", () => {
+  // The defect this guards against is resuming on "encounter", which fires as
+  // the crossfade begins: the outgoing shader would start moving again and only
+  // then be replaced, which is precisely what pausing is meant to prevent.
+  const settled = mainSource.match(/runtime\.on\("encounter-settled", \(\) => \{[\s\S]*?\n\}\);/);
+  assert.ok(settled, "main resumes on encounter-settled");
+  assert.match(settled[0], /if \(!settings\.paused\) return;/);
+  assert.match(settled[0], /settings\.paused = false; applyDocumentSettings\(\); runtime\.setSettings\(settings\);/);
+
+  const encounter = mainSource.match(/runtime\.on\("encounter", \(\) => \{[\s\S]*?\n\}\);/);
+  assert.ok(encounter, "the encounter handler is still bound");
+  assert.doesNotMatch(encounter[0], /settings\.paused/, "resuming must not happen as the crossfade begins");
+});
+
+test("encounter-settled is emitted after the crossfade, not with it", () => {
+  // Zero for the first encounter and under reduced motion, where there is no
+  // crossfade to wait for, so the resume is not delayed for no reason.
+  assert.match(runtimeSource, /const duration = next !== previous && !settings\.reducedMotion \? transitionMs : 0;/);
+  assert.match(runtimeSource, /setTimeout\(\(\) => emitter\.emit\("encounter-settled", settling\), duration\)/);
+  // The emit order matters: the shader is present first, settled afterwards.
+  const showEncounter = runtimeSource.match(/function showEncounter\([\s\S]*?\n  \}/);
+  assert.ok(showEncounter, "showEncounter is still a declared function");
+  assert.ok(
+    showEncounter[0].indexOf('emit("encounter"') < showEncounter[0].indexOf('"encounter-settled"'),
+    "encounter is emitted before encounter-settled",
+  );
+  // A rapid second request must not leave the first timer pending.
+  assert.match(runtimeSource, /clearTimeout\(settleTimer\);\n    const settling/);
+  // And a stopped runtime must not emit into a cleared emitter.
+  const stop = runtimeSource.match(/function stop\(\) \{[\s\S]*?\n  \}/);
+  assert.match(stop[0], /clearTimeout\(settleTimer\)/);
 });
 
 test("a mid-session change of the system motion preference is followed", () => {
