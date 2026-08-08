@@ -7,8 +7,14 @@
 - Reworked the information dialog as a quieter editorial surface rather than a dense application panel.
 - Added a manuscript-derived **statement** alongside **about**, **privacy**, and **accessibility**, all rendered inside the same information window.
 - Moved the Tomas Laurenzo attribution to the information footer, on the same line as the application version.
-- Added one restrained ochre accent to headings, active information navigation, selected quotations, and the author link to break typographic monotony without introducing gradients, cards, or decorative product-UI styling.
+- Added one restrained phosphor-green accent to headings, active information navigation, selected quotations, and the author link to break typographic monotony without introducing gradients, cards, or decorative product-UI styling.
 - Added regression tests for the internal information views, attribution/footer placement, statement propositions, and restrained colour treatment.
+
+### Search feedback
+
+- Background prefetch is now visually silent. The search status appears on the initial encounter and only when an explicit request for **another** actually has to wait for a shader.
+- An empty quality-check cycle is no longer treated as an error. The production runtime records the rejected cycle, emits a retry event, and immediately begins another search cycle; the user sees a brief explanatory status only when they are actively waiting.
+- Kept this retry policy inside the single production runtime so `/curation/` observes exactly the same behaviour rather than implementing its own generation or recovery logic.
 
 ## 0.3.0-alpha.1 — expanded aesthetic range
 
