@@ -1,20 +1,34 @@
 # Changelog
 
-## Unreleased — runtime and local-memory corrections
+## 0.3.1-alpha.4 — runtime and local-memory corrections
 
 ### Changed
 
-- **Pause is momentary rather than a stored preference.** Asking for another
-  shader now resumes first, from the control and from the `n` shortcut alike:
-  requesting another shader is asking to watch one, and arriving at a new shader
-  held on a single frame reads as a failure to generate rather than as a paused
-  artwork. A reload likewise always begins playing. Pause is no longer written to
-  the persisted settings, and is forced off as they are read, so a stored value
-  from an earlier build does not outlive the load either. Reduced motion and
-  reduced intensity are unaffected and still persist, being preferences about how
-  the work is watched rather than momentary acts of attention.
+- **Pause is momentary rather than a stored preference.** A reload always begins
+  playing. Pause is no longer written to the persisted settings, and is forced off
+  as they are read, so a stored value from an earlier build does not outlive the
+  load either. Reduced motion and reduced intensity are unaffected and still
+  persist, being preferences about how the work is watched rather than momentary
+  acts of attention. Requesting another shader deliberately does *not* resume: a
+  paused visitor arrives at the new shader held on its first frame and stays
+  paused, which is coherent only because validation samples at full motion
+  regardless of the setting, so generation no longer depends on being unpaused.
+- Toggling pause no longer writes the settings key at all. Its presence is what
+  tells the motion media-query listener that the visitor has expressed a
+  preference of their own, and a momentary pause should not claim to be one.
 
 ### Fixed
+
+- **A mid-session change of the system reduced-motion preference is followed
+  again.** The information-panel work dropped the media-query listener, and the
+  preference is only read once at load, so turning reduced motion on had no effect
+  until a reload. It is still honoured only while the visitor has expressed no
+  preference of their own. The `resize` and `beforeunload` listeners dropped
+  alongside it were checked and deliberately left out: the display path already
+  calls the renderer's own resize on every frame, including while paused, so the
+  drawing buffer tracks its element unaided, and teardown at unload only cancels
+  work the browser is about to discard while costing back/forward cache
+  eligibility in some browsers.
 
 - **Pausing no longer disables generation.** Candidates were sampled at the
   visitor's own render settings, and every family gates its time terms as
