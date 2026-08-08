@@ -32,6 +32,7 @@ const DEFAULT_MAX_ATTEMPTS = 48;
 const DEFAULT_HISTORY_LIMIT = 500;
 const DEFAULT_EARLY_ENCOUNTERS = 4;
 const DEFAULT_FRAME_BUDGET_MS = 10;
+const NORMAL_REJECTION_STAGES = new Set(["cost", "quality", "flash-quality"]);
 
 const clone = (value) => value == null ? value : structuredClone(value);
 
@@ -305,8 +306,8 @@ export async function createTSDNERuntime({
       }
     }
 
-    if (!candidates.length) {
-      const error = new Error("No shader passed the local quality checks.");
+    if (!candidates.length && !attempts.some((item) => NORMAL_REJECTION_STAGES.has(item.stage))) {
+      const error = new Error("Shader generation could not produce a valid candidate.");
       error.audit = { target, attempts, generationKind };
       throw error;
     }
@@ -327,7 +328,35 @@ export async function createTSDNERuntime({
       recentModes: [...recentModes],
       recentTraces: clone(recentTraces.slice(-25)),
     };
-    const pool = await buildCandidatePool({ initial, generationKind });
+    const attempts = [];
+    const searchBatches = [];
+    let generationDurationMs = 0;
+    let pool = null;
+
+    do {
+      pool = await buildCandidatePool({ initial, generationKind });
+      const searchCycle = searchBatches.length + 1;
+      generationDurationMs += pool.generationDurationMs;
+      attempts.push(...pool.attempts.map((attempt) => ({ ...attempt, searchCycle })));
+      searchBatches.push({
+        searchCycle,
+        targetPoolSize: pool.target,
+        validPoolSize: pool.candidates.length,
+        attemptCount: pool.attempts.length,
+        generationDurationMs: pool.generationDurationMs,
+      });
+      if (!pool.candidates.length) {
+        emitter.emit("generation-retry", {
+          initial,
+          generationKind,
+          reason: "no-candidate-passed-quality-checks",
+          searchCycle,
+          attemptCount: pool.attempts.length,
+        });
+        await nextFrame();
+      }
+    } while (!pool.candidates.length);
+
     const context = {
       earlyEncounter: encounterNumber < earlyEncounters,
       recentModes,
@@ -362,12 +391,14 @@ export async function createTSDNERuntime({
         perceptionVersion: candidate.perception?.version || null,
         initial,
         generationKind,
+        searchCycles: searchBatches.length,
+        searchBatches,
         targetPoolSize: pool.target,
         validPoolSize: pool.candidates.length,
         maxAttempts,
-        generationDurationMs: pool.generationDurationMs,
+        generationDurationMs,
         historyBeforeSelection: historySnapshot,
-        attempts: pool.attempts,
+        attempts,
         rankedPool: ranked,
         selectedCandidateId: candidate.id,
         selectedRank: selected.rank,
