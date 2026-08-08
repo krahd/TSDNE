@@ -1,6 +1,6 @@
 # Changelog
 
-## 0.3.1-alpha.1 — information surface
+## 0.3.1-alpha.2 — information surface
 
 ### Information and authorship
 
