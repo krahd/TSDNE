@@ -17,16 +17,30 @@ const panelContent = $("#panel-content");
 const panelVersion = $("#panel-version");
 const live = $("#live-region");
 const motionQuery = matchMedia("(prefers-reduced-motion: reduce)");
+const NO_CANDIDATE_MESSAGE = "No shader passed the local quality checks.";
+const SEARCH_REVEAL_DELAY_MS = 140;
 
 panelVersion.textContent = `v${APP_VERSION}`;
 
 let settings = { paused: false, reducedMotion: motionQuery.matches, reducedIntensity: false };
+let waitingForEncounter = false;
+let searchStatusVisible = false;
+let searchRevealTimer = null;
 try { settings = { ...settings, ...JSON.parse(localStorage.getItem("tsdne-settings-v2") || "{}") }; } catch {}
 
-function persistSettings() { try { localStorage.setItem("tsdne-settings-v2", JSON.stringify(settings)); } catch {} }
+function persistSettings() { try { localStorage.setItem("tsdne-settings-v2", JSON.stringify(settings)); } catch {}
 function announce(message) { live.textContent = ""; requestAnimationFrame(() => { live.textContent = message; }); }
 function setStatus(message = "", { busy = false, detail = "" } = {}) {
   statusText.textContent = message; statusCount.textContent = detail; status.classList.toggle("busy", busy); status.hidden = !message;
+}
+function isNoCandidateError(error) { return error instanceof Error && error.message === NO_CANDIDATE_MESSAGE; }
+function clearSearchReveal() { clearTimeout(searchRevealTimer); searchRevealTimer = null; }
+function revealSearchStatus(initial = false) {
+  if (!waitingForEncounter) return;
+  searchStatusVisible = true;
+  const message = initial ? "composing the first shader…" : "searching for another shader…";
+  setStatus(message, { busy: true });
+  announce(initial ? "Composing the first shader." : "Searching for another shader.");
 }
 function applyDocumentSettings() {
   pauseButton.textContent = settings.paused ? "play" : "pause";
@@ -39,22 +53,50 @@ const runtime = await createTSDNERuntime({ canvases, settings });
 applyDocumentSettings();
 runtime.on("generation-start", ({ initial }) => {
   anotherButton.disabled = true;
-  const message = initial ? "composing the first shader…" : "searching for another shader…";
-  setStatus(message, { busy: true });
-  announce(initial ? "Composing the first shader." : "Searching for another shader.");
+  waitingForEncounter = true;
+  clearSearchReveal();
+  if (initial) revealSearchStatus(true);
+  else if (!searchStatusVisible) searchRevealTimer = setTimeout(() => revealSearchStatus(false), SEARCH_REVEAL_DELAY_MS);
 });
 runtime.on("generation-progress", ({ found, target }) => {
+  if (!waitingForEncounter || !searchStatusVisible) return;
   const message = runtime.encounterNumber ? "searching for another shader…" : "composing the first shader…";
   setStatus(message, { busy: true, detail: `${found}/${target}` });
 });
 runtime.on("generation-end", () => { anotherButton.disabled = false; });
-runtime.on("encounter", () => { setStatus(""); announce("A new shader is present."); });
+runtime.on("encounter", () => {
+  clearSearchReveal(); waitingForEncounter = false; searchStatusVisible = false;
+  setStatus(""); announce("A new shader is present.");
+});
 runtime.on("generation-error", (error) => {
+  if (isNoCandidateError(error)) return;
   console.error(error); setStatus(`generation error: ${error instanceof Error ? error.message : String(error)}`);
   announce("A generation error occurred. Another attempt remains available.");
 });
+runtime.on("prefetch-error", (error) => {
+  if (isNoCandidateError(error)) {
+    if (!waitingForEncounter) setTimeout(() => { if (!waitingForEncounter) void runtime.prefetch(); }, 180);
+    return;
+  }
+  console.warn("TSDNE background prefetch failed", error);
+});
 runtime.on("context-lost", () => announce("The graphics context was interrupted."));
 runtime.on("context-restored", (error) => { if (error) { console.error(error); announce("The graphics context could not be restored."); } });
+
+async function requestAnother(options = {}) {
+  try {
+    return await runtime.another(options);
+  } catch (error) {
+    if (!isNoCandidateError(error)) throw error;
+    waitingForEncounter = true;
+    searchStatusVisible = true;
+    clearSearchReveal();
+    setStatus("none passed the local quality checks; searching again…", { busy: true });
+    announce("No shader passed the local quality checks. Searching again.");
+    await new Promise((resolve) => setTimeout(resolve, 60));
+    return requestAnother(options);
+  }
+}
 
 function showUse() {
   const current = runtime.currentEncounter()?.candidate;
@@ -149,7 +191,7 @@ function accessibilityMarkup() {
       <h3>Keyboard</h3>
       <p><kbd>N</kbd> another, <kbd>U</kbd> take the code, <kbd>Space</kbd> pause/play, <kbd>A</kbd> about.</p>
       <h3>Progress</h3>
-      <p>While a new shader is being searched for, a status line reports that generation is under way. Under <code>prefers-reduced-motion</code>, the turning indicator becomes a slow fade. The search counter is hidden from assistive technology so that progress is announced once rather than on every increment.</p>
+      <p>A status line appears while the first shader is composed, or when an explicit request for <em>another</em> has to wait because no prepared shader is ready. Background search remains silent. If a search cycle produces no shader that passes the local quality checks, TSDNE reports that outcome and continues searching automatically. Under <code>prefers-reduced-motion</code>, the turning indicator becomes a slow fade.</p>
       <h3>Motion and light</h3>
       <p>The application respects <code>prefers-reduced-motion</code>. Candidate shaders undergo automated large-area luminance-change screening, although this is not clinical certification.</p>
       ${settingsControls()}
@@ -184,7 +226,7 @@ function showInfoView(view = "about") {
   if (!panel.open) panel.showModal();
 }
 
-anotherButton.addEventListener("click", () => void runtime.another().catch(() => {}));
+anotherButton.addEventListener("click", () => void requestAnother().catch(() => {}));
 useButton.addEventListener("click", showUse); aboutButton.addEventListener("click", () => showInfoView("about"));
 pauseButton.addEventListener("click", () => {
   settings.paused = !settings.paused; persistSettings(); applyDocumentSettings(); runtime.setSettings(settings);
@@ -192,10 +234,14 @@ pauseButton.addEventListener("click", () => {
 });
 window.addEventListener("keydown", (event) => {
   if (panel.open || event.target.matches("textarea,input,select")) return;
-  if (event.key.toLowerCase() === "n") { event.preventDefault(); void runtime.another().catch(() => {}); }
+  if (event.key.toLowerCase() === "n") { event.preventDefault(); void requestAnother().catch(() => {}); }
   else if (event.key.toLowerCase() === "u") { event.preventDefault(); showUse(); }
   else if (event.key.toLowerCase() === "a") { event.preventDefault(); showInfoView("about"); }
   else if (event.code === "Space") { event.preventDefault(); pauseButton.click(); }
 });
 
-await runtime.start();
+try { await runtime.start(); }
+catch (error) {
+  if (isNoCandidateError(error)) await requestAnother({ initial: true });
+  else throw error;
+}
