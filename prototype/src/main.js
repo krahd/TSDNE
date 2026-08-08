@@ -17,7 +17,6 @@ const panelContent = $("#panel-content");
 const panelVersion = $("#panel-version");
 const live = $("#live-region");
 const motionQuery = matchMedia("(prefers-reduced-motion: reduce)");
-const NO_CANDIDATE_MESSAGE = "No shader passed the local quality checks.";
 const SEARCH_REVEAL_DELAY_MS = 140;
 
 panelVersion.textContent = `v${APP_VERSION}`;
@@ -33,7 +32,6 @@ function announce(message) { live.textContent = ""; requestAnimationFrame(() => 
 function setStatus(message = "", { busy = false, detail = "" } = {}) {
   statusText.textContent = message; statusCount.textContent = detail; status.classList.toggle("busy", busy); status.hidden = !message;
 }
-function isNoCandidateError(error) { return error instanceof Error && error.message === NO_CANDIDATE_MESSAGE; }
 function clearSearchReveal() { clearTimeout(searchRevealTimer); searchRevealTimer = null; }
 function revealSearchStatus(initial = false) {
   if (!waitingForEncounter) return;
@@ -63,40 +61,24 @@ runtime.on("generation-progress", ({ found, target }) => {
   const message = runtime.encounterNumber ? "searching for another shader…" : "composing the first shader…";
   setStatus(message, { busy: true, detail: `${found}/${target}` });
 });
+runtime.on("generation-retry", () => {
+  if (!waitingForEncounter) return;
+  clearSearchReveal(); searchStatusVisible = true;
+  setStatus("none passed the local quality checks; searching again…", { busy: true });
+  announce("No shader passed the local quality checks. Searching again.");
+});
 runtime.on("generation-end", () => { anotherButton.disabled = false; });
 runtime.on("encounter", () => {
   clearSearchReveal(); waitingForEncounter = false; searchStatusVisible = false;
   setStatus(""); announce("A new shader is present.");
 });
 runtime.on("generation-error", (error) => {
-  if (isNoCandidateError(error)) return;
   console.error(error); setStatus(`generation error: ${error instanceof Error ? error.message : String(error)}`);
   announce("A generation error occurred. Another attempt remains available.");
 });
-runtime.on("prefetch-error", (error) => {
-  if (isNoCandidateError(error)) {
-    if (!waitingForEncounter) setTimeout(() => { if (!waitingForEncounter) void runtime.prefetch(); }, 180);
-    return;
-  }
-  console.warn("TSDNE background prefetch failed", error);
-});
+runtime.on("prefetch-error", (error) => console.warn("TSDNE background prefetch failed", error));
 runtime.on("context-lost", () => announce("The graphics context was interrupted."));
 runtime.on("context-restored", (error) => { if (error) { console.error(error); announce("The graphics context could not be restored."); } });
-
-async function requestAnother(options = {}) {
-  try {
-    return await runtime.another(options);
-  } catch (error) {
-    if (!isNoCandidateError(error)) throw error;
-    waitingForEncounter = true;
-    searchStatusVisible = true;
-    clearSearchReveal();
-    setStatus("none passed the local quality checks; searching again…", { busy: true });
-    announce("No shader passed the local quality checks. Searching again.");
-    await new Promise((resolve) => setTimeout(resolve, 60));
-    return requestAnother(options);
-  }
-}
 
 function showUse() {
   const current = runtime.currentEncounter()?.candidate;
@@ -226,7 +208,7 @@ function showInfoView(view = "about") {
   if (!panel.open) panel.showModal();
 }
 
-anotherButton.addEventListener("click", () => void requestAnother().catch(() => {}));
+anotherButton.addEventListener("click", () => void runtime.another().catch(() => {}));
 useButton.addEventListener("click", showUse); aboutButton.addEventListener("click", () => showInfoView("about"));
 pauseButton.addEventListener("click", () => {
   settings.paused = !settings.paused; persistSettings(); applyDocumentSettings(); runtime.setSettings(settings);
@@ -234,14 +216,10 @@ pauseButton.addEventListener("click", () => {
 });
 window.addEventListener("keydown", (event) => {
   if (panel.open || event.target.matches("textarea,input,select")) return;
-  if (event.key.toLowerCase() === "n") { event.preventDefault(); void requestAnother().catch(() => {}); }
+  if (event.key.toLowerCase() === "n") { event.preventDefault(); void runtime.another().catch(() => {}); }
   else if (event.key.toLowerCase() === "u") { event.preventDefault(); showUse(); }
   else if (event.key.toLowerCase() === "a") { event.preventDefault(); showInfoView("about"); }
   else if (event.code === "Space") { event.preventDefault(); pauseButton.click(); }
 });
 
-try { await runtime.start(); }
-catch (error) {
-  if (isNoCandidateError(error)) await requestAnother({ initial: true });
-  else throw error;
-}
+await runtime.start();
