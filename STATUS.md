@@ -1,8 +1,9 @@
 # TSDNE status
 
-**Date:** 7 August 2026  
+**Date:** 8 August 2026  
 **Repository:** `krahd/TSDNE`  
 **Primary branch:** `main`  
+**Current application version:** `0.3.1-alpha.3`  
 **Preserved predecessor:** `archive/webllm-release-candidate-2026-08-04`
 
 ## Current definition
@@ -25,7 +26,6 @@
 - Hashing remains implicit and operational.
 - Persistent anti-repetition memory stores only bounded, non-reconstructive perceptual traces.
 - Public visitors are not used as behavioural training data.
-- AI-assisted development is disclosed separately from the no-model runtime claim.
 
 ## Current production system
 
@@ -47,9 +47,23 @@ The production runtime provides:
 - frame-budgeted background generation and prefetch;
 - static deployment without model or runtime-package dependencies.
 
+## Runtime and local-memory stability
+
+The runtime corrections merged on 8 August materially improve the reliability of the realised encounter:
+
+- validation is now independent of the visitor's pause/reduced-motion viewing state, preventing a paused session from making every candidate fail as `too-static`;
+- pause and reduced-motion settings use a continuous per-display motion clock instead of collapsing or jumping effective shader time;
+- repeated empty search cycles are bounded and produce a diagnostic error rather than an unbounded search loop;
+- clearing local anti-repetition memory invalidates generation already in flight, so an old prefetched result cannot immediately reintroduce state selected against the erased history;
+- perceptual-repeat comparison no longer assumes a structural vector that persistent traces deliberately do not contain;
+- curation fallback-storage failures are surfaced instead of silently losing ratings;
+- background prefetch failures are observed by both public and curation adapters.
+
+These are implementation corrections, not changes to the artistic proposition. They make the existing proposition more faithfully realised.
+
 ## Shared runtime and external curation audit
 
-Generation, validation, selection, anti-repetition, provenance and rendering are now centralised in `prototype/src/runtime.js`.
+Generation, validation, selection, anti-repetition, provenance and rendering are centralised in `prototype/src/runtime.js`.
 
 The public adapter (`prototype/src/main.js`) and the private curation adapter (`prototype/src/curation.js`) both call that same runtime. Contract tests prohibit the curation adapter from importing or reimplementing generator, selector, perception, history, WebGL or provenance mechanics.
 
@@ -100,13 +114,15 @@ The analysis separates intrinsic failure (`not OK`) from sequence failure (`repe
 Repository verification includes:
 
 - Node syntax checks for all runtime, curation and analysis modules;
-- unit/contract tests;
+- unit/contract tests, including runtime search-cycle, motion-clock, perceptual-distance and curation-storage regressions;
 - an architectural test ensuring curation remains an observer of the shared production runtime;
 - a headless Chrome WebGL2 diagnostic that compiles and renders three variant conditions for every current structural family, while cycling through colour and finish regimes;
+- a production-runtime first-encounter diagnostic exercised under multiple viewing settings;
+- diagnostics that assert on completion state created by the running page rather than grepping success strings embedded in source;
 - GitHub Pages verification before deployment;
 - a deployed `build.json` manifest so curation exports can record the exact Git commit that produced them.
 
-The browser diagnostic is a CI smoke/compile test, not a substitute for cross-device visual curation or photosensitive-safety review.
+The browser diagnostics are CI smoke/runtime tests, not substitutes for cross-device visual curation or photosensitive-safety review.
 
 ## Preserved work
 
