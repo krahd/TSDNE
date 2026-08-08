@@ -2,9 +2,9 @@
 
 ## Goal
 
-Produce a complete, public-release candidate of *This Shader Does Not Exist* in which the artwork, interface, software architecture, documentation, and first paper all enact the same proposition:
+Produce a complete, public-release candidate of *This Shader Does Not Exist* in which the artwork, interface, software architecture, documentation, and first paper enact the same proposition:
 
-> A singular computational encounter can be personal without behavioural personalisation, identifiable without title, reproducible without collectibility, and freely circulating without manufactured scarcity.
+> TSDNE does not abolish scarcity, memory, provenance, or selection. It changes where they occur: scarcity moves from the object to the encounter; memory to a bounded non-reconstructive trace; provenance away from title; and selection away from behavioural inference and into the authored apparatus.
 
 The public artwork must not be a shader editor, prompt interface, recommender, evolutionary design tool, or model demonstration.
 
@@ -21,7 +21,9 @@ The public artwork must not be a shader editor, prompt interface, recommender, e
 9. **TSDNE retains provenance but abolishes title.**
 10. **The shader can be identified, copied, and reconstructed, but not claimed.**
 11. A bounded local anti-repetition memory stores only non-reconstructive perceptual traces.
-12. Shader richness is achieved through authored procedural grammars, computational search, perceptual validation, and curation rather than a language model.
+12. The local history affects subsequent sequence selection without constructing a visitor-preference representation: **TSDNE adapts the sequence, not the visitor.**
+13. Shader richness is achieved through authored procedural grammars, computational search, perceptual validation, and curation rather than a language model.
+14. The source remains non-scarce while the encounter is deliberately scarce at the interface level.
 
 ## Software acceptance criteria
 
@@ -40,14 +42,15 @@ The revised version is complete when:
 - privacy is true by architecture rather than policy alone;
 - reduced-motion, reduced-intensity, pause, keyboard operation, and flash screening remain supported;
 - all source is static-hostable and preservation does not depend on a model host;
-- automated tests cover provenance, anti-repetition traces, novelty selection, exports, and deterministic generation.
+- automated tests cover provenance, anti-repetition traces, novelty selection, exports, deterministic generation, runtime search exhaustion, pause/motion continuity, and curation-storage failure.
 
 ## Writing acceptance criteria
 
 The repository and paper must consistently distinguish:
 
 - singular encounter from unique object;
-- individualisation from personalisation;
+- sequence adaptation from visitor modelling;
+- encounter scarcity from commodity scarcity;
 - provenance from title;
 - technical identity from ownership;
 - interface loss from global destruction;
@@ -56,6 +59,8 @@ The repository and paper must consistently distinguish:
 - generative computation from foundation-model AI.
 
 No public-facing text may describe the shader as collectible, owned, minted, claimed, certified, rare, guaranteed unique, or permanently destroyed.
+
+No public-facing text should claim that TSDNE abolishes scarcity. The work deliberately restricts encounter-level access while refusing to turn reproducible shaders into scarce property.
 
 ## Preserved predecessor
 
