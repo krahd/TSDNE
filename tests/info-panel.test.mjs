@@ -8,8 +8,10 @@ const styles = fs.readFileSync(new URL("../prototype/styles.css", import.meta.ur
 test("about keeps privacy and accessibility inside the artwork dialog", () => {
   assert.match(mainSource, /function privacyMarkup\(\)/);
   assert.match(mainSource, /function accessibilityMarkup\(\)/);
-  assert.match(mainSource, /data-info-view="privacy"/);
-  assert.match(mainSource, /data-info-view="accessibility"/);
+  assert.match(mainSource, /\["privacy", "privacy"\]/);
+  assert.match(mainSource, /\["accessibility", "accessibility"\]/);
+  assert.match(mainSource, /querySelectorAll\("\[data-info-view\]"\)/);
+  assert.match(mainSource, /showInfoView\(event\.currentTarget\.dataset\.infoView\)/);
   assert.doesNotMatch(mainSource, /href="\.\/privacy\.html"/);
   assert.doesNotMatch(mainSource, /href="\.\/accessibility\.html"/);
 });
