@@ -26,8 +26,15 @@ let waitingForEncounter = false;
 let searchStatusVisible = false;
 let searchRevealTimer = null;
 try { settings = { ...settings, ...JSON.parse(localStorage.getItem("tsdne-settings-v2") || "{}") }; } catch {}
+// Pause is a momentary act of attention, not a preference: the artwork always
+// begins playing. Forcing it here rather than only omitting it below also
+// discards a stored true written by an earlier build.
+settings.paused = false;
 
-function persistSettings() { try { localStorage.setItem("tsdne-settings-v2", JSON.stringify(settings)); } catch {} }
+function persistSettings() {
+  const { paused, ...preferences } = settings;
+  try { localStorage.setItem("tsdne-settings-v2", JSON.stringify(preferences)); } catch {}
+}
 function announce(message) { live.textContent = ""; requestAnimationFrame(() => { live.textContent = message; }); }
 function setStatus(message = "", { busy = false, detail = "" } = {}) {
   statusText.textContent = message; statusCount.textContent = detail; status.classList.toggle("busy", busy); status.hidden = !message;
@@ -211,15 +218,30 @@ function showInfoView(view = "about") {
   if (!panel.open) panel.showModal();
 }
 
-anotherButton.addEventListener("click", () => void runtime.another().catch(() => {}));
+function setPaused(paused) {
+  if (settings.paused === paused) return false;
+  settings.paused = paused;
+  persistSettings(); applyDocumentSettings(); runtime.setSettings(settings);
+  return true;
+}
+
+// Asking for another shader is asking to watch one, so it resumes first: a new
+// shader arriving held on a single frame reads as a failure to generate. The
+// unpausing is announced separately because the control's label changes with it.
+function resumeAndRequestAnother() {
+  if (setPaused(false)) announce("Shader playing.");
+  return runtime.another().catch(() => {});
+}
+
+anotherButton.addEventListener("click", () => void resumeAndRequestAnother());
 useButton.addEventListener("click", showUse); aboutButton.addEventListener("click", () => showInfoView("about"));
 pauseButton.addEventListener("click", () => {
-  settings.paused = !settings.paused; persistSettings(); applyDocumentSettings(); runtime.setSettings(settings);
+  setPaused(!settings.paused);
   announce(settings.paused ? "Shader paused." : "Shader playing.");
 });
 window.addEventListener("keydown", (event) => {
   if (panel.open || event.target.matches("textarea,input,select")) return;
-  if (event.key.toLowerCase() === "n") { event.preventDefault(); void runtime.another().catch(() => {}); }
+  if (event.key.toLowerCase() === "n") { event.preventDefault(); void resumeAndRequestAnother(); }
   else if (event.key.toLowerCase() === "u") { event.preventDefault(); showUse(); }
   else if (event.key.toLowerCase() === "a") { event.preventDefault(); showInfoView("about"); }
   else if (event.code === "Space") { event.preventDefault(); pauseButton.click(); }

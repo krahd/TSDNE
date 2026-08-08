@@ -2,6 +2,18 @@
 
 ## Unreleased — runtime and local-memory corrections
 
+### Changed
+
+- **Pause is momentary rather than a stored preference.** Asking for another
+  shader now resumes first, from the control and from the `n` shortcut alike:
+  requesting another shader is asking to watch one, and arriving at a new shader
+  held on a single frame reads as a failure to generate rather than as a paused
+  artwork. A reload likewise always begins playing. Pause is no longer written to
+  the persisted settings, and is forced off as they are read, so a stored value
+  from an earlier build does not outlive the load either. Reduced motion and
+  reduced intensity are unaffected and still persist, being preferences about how
+  the work is watched rather than momentary acts of attention.
+
 ### Fixed
 
 - **Pausing no longer disables generation.** Candidates were sampled at the
