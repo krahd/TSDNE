@@ -2,13 +2,13 @@ cff-version: 1.2.0
 message: "Please cite the artwork and software using this metadata."
 title: "This Shader Does Not Exist"
 type: software
-version: "0.3.0-alpha.1"
+version: "0.3.1-alpha.3"
 authors:
   - family-names: Laurenzo
     given-names: Tomas
     orcid: "https://orcid.org/0000-0002-9021-8792"
 repository-code: "https://github.com/krahd/TSDNE"
-abstract: "A self-contained procedural browser artwork about serendipity, relinquishment, non-extractive individualisation, provenance without title, and free circulation."
+abstract: "A self-contained procedural browser artwork that relocates scarcity to the encounter, retains provenance without title, adapts sequences without modelling visitor preference, and permits free executable circulation."
 license: GPL-3.0-or-later
 date-released: 2026-08-04
 keywords:
