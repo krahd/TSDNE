@@ -10,22 +10,29 @@ The shader generator is the material apparatus. The encounter is the work.
 
 ## Central proposition
 
-Contemporary computational culture often treats individualisation as inseparable from extraction. Platforms produce different experiences by observing, classifying, predicting, and monetising people. TSDNE asks whether computational difference may instead become personally meaningful through an event and a decision.
+Contemporary computational culture often treats individualisation as inseparable from extraction. Platforms produce different experiences by observing, classifying, predicting, and monetising people. TSDNE instead produces difference while refusing to infer what the visitor wants.
 
-The work therefore distinguishes:
+The work does not abolish scarcity, memory, provenance, or selection. It relocates them:
+
+- scarcity from the reproducible object to the encounter;
+- memory from recoverable object history to a bounded perceptual trace;
+- provenance from ownership/title to computational and cultural relation;
+- selection from behavioural inference about the visitor to responsibility for the authored generator.
+
+The resulting distinctions include:
 
 - personal from personalised;
 - individualised from profiled;
-- singular encounter from unique commodity;
+- encounter scarcity from commodity scarcity;
 - provenance from title;
 - reproducibility from collectibility;
 - ephemerality from destruction;
 - circulation from acquisition;
-- memory of difference from behavioural history.
+- memory of difference from preference history.
 
 The central research question is:
 
-> Can a computational object become personal without being owned, individualised without profiling, identifiable without title, and singular without being scarce?
+> How can a computational artwork produce difference without inference, preserve provenance without title, circulate executable form without exclusive ownership, and make an encounter scarce without making the object scarce?
 
 ## Interaction
 
@@ -47,7 +54,7 @@ Relinquishment is irreversible only at the interface level. The software does no
 
 **take the code** exports executable source and adapters. This does not confer title or exclusive possession. The shader may be copied, changed, studied, included in other work, or redistributed.
 
-The work’s gift is not scarcity. It is permission and material continuity.
+Taking therefore preserves and extends the executable object rather than consuming a scarce asset. The loss produced by TSDNE occurs when the visitor moves on, not when the code is copied.
 
 ## Provenance without title
 
@@ -75,7 +82,7 @@ The shader “does not exist” does not mean:
 - that a visitor owns its first instantiation;
 - that relinquishment destroys all possible reconstruction.
 
-It means that the shader was not waiting as an inventory item. It becomes available as an executed event within the encounter.
+It means that the shader was not waiting as an inventory item. It becomes available as an executed event within the encounter, and after relinquishment it is no longer available through that encounter even though computational reconstruction remains possible.
 
 The work thereby claims a place in contemporary generative culture without accepting that generativity is synonymous with a language or diffusion model.
 
@@ -100,10 +107,10 @@ Removing the LLM does not justify visually shallow output. The shader space must
 
 Complexity is produced through:
 
-- several authored shader families;
+- an authored grammar spanning materially different structural families;
+- independent structural, colour, and finish axes;
 - layered mathematical fields;
 - recursive and iterative transformations;
-- procedural palettes;
 - deterministic high-dimensional traits;
 - local rendering and perceptual measurement;
 - technical and safety constraints;
@@ -120,11 +127,9 @@ Obvious recurrence would make the claim of abundance unconvincing. TSDNE therefo
 
 The memory records compact visual and temporal descriptors. It excludes the information required to reconstruct a relinquished shader.
 
-This produces an anti-archive:
-
 > The system remembers enough not to repeat, but not enough to restore.
 
-The mechanism is not personalisation. It never interprets the visitor’s action. Every displayed shader enters the same repulsion field whether it was loved, disliked, ignored, or relinquished out of curiosity.
+This state genuinely changes what may be selected next, but it adapts the sequence rather than the visitor. Every displayed shader enters the same repulsion field whether it was loved, disliked, ignored, or relinquished out of curiosity. No preference representation is constructed.
 
 ## Refusals
 
@@ -141,11 +146,13 @@ TSDNE refuses:
 - ownership;
 - title;
 - certification;
-- artificial scarcity;
+- proprietary and collectible scarcity;
 - public provenance markets;
 - global uniqueness claims;
 - exclusive circulation;
 - compulsory preservation.
+
+It does **not** refuse scarcity altogether. It deliberately restricts encounter-level access while leaving the executable object reproducible and non-exclusive.
 
 The accumulation of refusals is not a reduced feature list. It is the work’s interaction design and political form.
 
@@ -155,5 +162,5 @@ The accumulation of refusals is not a reduced feature list. It is the work’s i
 - a public source repository;
 - exhibition documentation;
 - a practice-led journal article;
-- a reusable account of local anti-repetition without profiling;
-- a critical articulation of provenance without title and personal relation without property.
+- a reusable account of local anti-repetition without preference modelling;
+- a critical articulation of encounter scarcity without object scarcity, provenance without title, and executable circulation without property.
