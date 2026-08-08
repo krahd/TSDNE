@@ -55,6 +55,34 @@ const NORMAL_REJECTION_STAGES = new Set([
  */
 const VALIDATION_SAMPLE_SETTINGS = Object.freeze({ motion: 1, intensity: 1 });
 
+/** Largest effective step taken in one frame, in seconds. See advanceShaderClock. */
+export const MAX_CLOCK_STEP_SECONDS = 0.1;
+
+/** Effective shader seconds elapsed per real second, for a set of viewing settings. */
+export function shaderMotionRate({ paused = false, reducedMotion = false } = {}) {
+  return paused ? 0 : reducedMotion ? 0.12 : 1;
+}
+
+/**
+ * Advances a shader clock by real time scaled by the current rate.
+ *
+ * Every family spends motion as u_time*u_motion, so u_motion scales absolute
+ * time rather than the rate of time. Passing the rate to the shader therefore
+ * rewrote history on every change of setting: dropping it to 0 to pause did not
+ * hold the current moment, it collapsed effective time to zero and snapped the
+ * shader back to its first frame, and reduced motion jumped backwards to 12% of
+ * elapsed time. Integrating the rate here instead keeps effective time
+ * continuous and monotonic, so a rate change only affects what happens next.
+ *
+ * The step is capped so that returning to a backgrounded tab, where
+ * requestAnimationFrame stops firing, resumes where the shader left off rather
+ * than lurching forward by the whole time away.
+ */
+export function advanceShaderClock(clock, deltaSeconds, rate) {
+  const step = Math.min(Math.max(0, deltaSeconds) || 0, MAX_CLOCK_STEP_SECONDS);
+  return clock + step * rate;
+}
+
 const clone = (value) => value == null ? value : structuredClone(value);
 
 function errorMessage(error) {
@@ -177,13 +205,30 @@ export async function createTSDNERuntime({
   let historyEpoch = 0;
   let animationFrame = null;
   let running = false;
-  const rendererStarts = [performance.now(), performance.now()];
+  // Effective shader seconds per display, integrated in advanceClocks() rather
+  // than derived from a start timestamp. See renderSettings().
+  const rendererClocks = [0, 0];
+  let lastFrameAt = performance.now();
 
   function renderSettings() {
-    return {
-      motion: settings.paused ? 0 : settings.reducedMotion ? 0.12 : 1,
-      intensity: settings.reducedIntensity ? 0.58 : 1,
-    };
+    // u_motion stays at 1 for display. Every family spends it as u_time*u_motion,
+    // so it scales absolute time rather than the rate of time: dropping it to 0
+    // to pause did not hold the current moment, it collapsed effective time to
+    // zero and snapped the shader back to its first frame. Reduced motion jumped
+    // backwards to 12% of elapsed time for the same reason. The rate is
+    // integrated into the clock instead, which keeps effective time continuous
+    // and monotonic across any change of setting.
+    return { motion: 1, intensity: settings.reducedIntensity ? 0.58 : 1 };
+  }
+
+  function advanceClocks(now) {
+    const delta = (now - lastFrameAt) / 1000;
+    const rate = shaderMotionRate(settings);
+    lastFrameAt = now;
+    if (rate === 0) return;
+    for (let index = 0; index < rendererClocks.length; index += 1) {
+      rendererClocks[index] = advanceShaderClock(rendererClocks[index], delta, rate);
+    }
   }
 
   function applySettings() {
@@ -443,7 +488,7 @@ export async function createTSDNERuntime({
     const previous = activeIndex;
     const next = current ? 1 - activeIndex : activeIndex;
     renderers[next].setFragmentSource(candidate.source);
-    rendererStarts[next] = performance.now();
+    rendererClocks[next] = 0;
 
     if (next !== previous) {
       const duration = settings.reducedMotion ? 0 : transitionMs;
@@ -506,13 +551,15 @@ export async function createTSDNERuntime({
 
   function animate(now) {
     if (!running) return;
-    for (let index = 0; index < renderers.length; index += 1) renderers[index].render((now - rendererStarts[index]) / 1000);
+    advanceClocks(now);
+    for (let index = 0; index < renderers.length; index += 1) renderers[index].render(rendererClocks[index]);
     animationFrame = requestAnimationFrame(animate);
   }
 
   async function start() {
     if (running) return currentEncounter();
     running = true;
+    lastFrameAt = performance.now();
     animationFrame = requestAnimationFrame(animate);
     return another({ initial: true });
   }
@@ -556,8 +603,8 @@ export async function createTSDNERuntime({
   function captureThumbnail(size = 256) {
     if (!current || !globalThis.document?.createElement) return null;
     try {
-      const elapsed = (performance.now() - rendererStarts[activeIndex]) / 1000;
-      renderers[activeIndex].render(elapsed);
+      // Redraws the exact moment on screen, including while paused.
+      renderers[activeIndex].render(rendererClocks[activeIndex]);
       const image = document.createElement("canvas");
       image.width = size;
       image.height = size;
