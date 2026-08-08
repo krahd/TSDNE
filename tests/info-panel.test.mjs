@@ -31,8 +31,8 @@ test("about credits Tomas Laurenzo on the same footer line as the version", () =
   assert.match(styles, /\.panel-credit a\{[^}]*color:var\(--accent\)/);
 });
 
-test("information dialog uses restrained editorial treatment with a single muted accent", () => {
-  assert.match(styles, /--accent:#c9b978/);
+test("information dialog uses restrained editorial treatment with a muted phosphor-green accent", () => {
+  assert.match(styles, /--accent:#78977d/);
   assert.match(styles, /#panel\{[^}]*border-radius:2px/);
   assert.match(styles, /#panel::backdrop\{[^}]*backdrop-filter:none/);
   assert.match(styles, /\.panel-reading\{[^}]*max-width:58ch/);
