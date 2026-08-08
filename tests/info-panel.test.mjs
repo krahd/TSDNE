@@ -16,6 +16,12 @@ test("about keeps privacy and accessibility inside the artwork dialog", () => {
   assert.doesNotMatch(mainSource, /href="\.\/accessibility\.html"/);
 });
 
+test("about credits Tomas Laurenzo without turning attribution into interface chrome", () => {
+  assert.match(mainSource, /TSDNE is a project by <a href="https:\/\/laurenzo\.net\/">Tomas Laurenzo<\/a>\./);
+  assert.match(styles, /\.panel-credit\{[^}]*font-size:\.66rem/);
+  assert.match(styles, /\.panel-credit a\{[^}]*text-decoration:none/);
+});
+
 test("information dialog uses restrained editorial treatment rather than card or glass UI", () => {
   assert.match(styles, /#panel\{[^}]*border-radius:2px/);
   assert.match(styles, /#panel::backdrop\{[^}]*backdrop-filter:none/);
