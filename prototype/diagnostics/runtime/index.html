@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="robots" content="noindex,nofollow,noarchive">
+  <title>TSDNE runtime first-encounter diagnostic</title>
+</head>
+<body>
+<canvas id="a" width="64" height="64"></canvas>
+<canvas id="b" width="64" height="64"></canvas>
+<pre id="result">running</pre>
+<script type="module">
+import { createTSDNERuntime } from "../../src/runtime.js";
+
+const output = document.querySelector("#result");
+const runtime = await createTSDNERuntime({
+  canvases: [document.querySelector("#a"), document.querySelector("#b")],
+  settings: { paused: false, reducedMotion: false, reducedIntensity: false },
+});
+const retries = [];
+let generationError = null;
+runtime.on("generation-retry", (event) => retries.push(event));
+runtime.on("generation-error", (error) => { generationError = error; });
+
+try {
+  const encounter = await Promise.race([
+    runtime.start(),
+    new Promise((_, reject) => setTimeout(() => reject(new Error("first encounter timed out after 45000 ms")), 45000)),
+  ]);
+  if (!encounter?.candidate) throw new Error("runtime.start() returned without a candidate");
+  document.documentElement.dataset.tsdneRuntime = "pass";
+  output.textContent = `TSDNE_RUNTIME_FIRST_ENCOUNTER_PASS\n${JSON.stringify({
+    family: encounter.candidate.family,
+    searchCycles: encounter.audit?.searchCycles,
+    validPoolSize: encounter.audit?.validPoolSize,
+    retries: retries.length,
+  }, null, 2)}`;
+} catch (error) {
+  document.documentElement.dataset.tsdneRuntime = "fail";
+  output.textContent = `TSDNE_RUNTIME_FIRST_ENCOUNTER_FAIL\n${JSON.stringify({
+    error: error instanceof Error ? error.message : String(error),
+    retries,
+    generationError: generationError ? (generationError instanceof Error ? generationError.message : String(generationError)) : null,
+    audit: generationError?.audit || null,
+  }, null, 2)}`;
+} finally {
+  runtime.stop();
+}
+</script>
+</body>
+</html>
