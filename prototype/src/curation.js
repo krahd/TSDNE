@@ -19,7 +19,6 @@ const status = $("#curation-status");
 const commentPanel = $("#comment-panel");
 const commentInput = $("#comment-input");
 const commentHint = $("#comment-hint");
-const NO_CANDIDATE_MESSAGE = "No shader passed the local quality checks.";
 const SEARCH_REVEAL_DELAY_MS = 140;
 
 let records = await loadRecords();
@@ -67,7 +66,6 @@ sessions = await loadSessions();
 function updateCount() { count.textContent = `${records.length} rated`; }
 updateCount();
 function setStatus(message = "") { status.textContent = message; status.hidden = !message; }
-function isNoCandidateError(error) { return error instanceof Error && error.message === NO_CANDIDATE_MESSAGE; }
 function clearSearchReveal() { clearTimeout(searchRevealTimer); searchRevealTimer = null; }
 function revealSearchStatus() {
   if (!waitingForEncounter) return;
@@ -95,35 +93,17 @@ runtime.on("generation-progress", ({ found, target }) => {
   if (!waitingForEncounter || !searchStatusVisible) return;
   setStatus(`composing… ${found}/${target}`);
 });
-runtime.on("generation-error", (error) => {
-  if (isNoCandidateError(error)) return;
-  setStatus(`generation error: ${error instanceof Error ? error.message : String(error)}`);
+runtime.on("generation-retry", () => {
+  if (!waitingForEncounter) return;
+  clearSearchReveal(); searchStatusVisible = true;
+  setStatus("none passed the local quality checks; searching again…");
 });
-runtime.on("prefetch-error", (error) => {
-  if (isNoCandidateError(error)) {
-    if (!waitingForEncounter) setTimeout(() => { if (!waitingForEncounter) void runtime.prefetch(); }, 180);
-    return;
-  }
-  console.warn("TSDNE curation background prefetch failed", error);
-});
+runtime.on("generation-error", (error) => setStatus(`generation error: ${error instanceof Error ? error.message : String(error)}`));
+runtime.on("prefetch-error", (error) => console.warn("TSDNE curation background prefetch failed", error));
 runtime.on("encounter", () => {
   clearSearchReveal(); waitingForEncounter = false; searchStatusVisible = false;
   currentShownAt = performance.now(); ratingLocked = false; setStatus("");
 });
-
-async function requestAnother(options = {}) {
-  try {
-    return await runtime.another(options);
-  } catch (error) {
-    if (!isNoCandidateError(error)) throw error;
-    waitingForEncounter = true;
-    searchStatusVisible = true;
-    clearSearchReveal();
-    setStatus("none passed the local quality checks; searching again…");
-    await new Promise((resolve) => setTimeout(resolve, 60));
-    return requestAnother(options);
-  }
-}
 
 async function rate(rating) {
   if (ratingLocked || commentPanel.open) return;
@@ -146,7 +126,7 @@ async function rate(rating) {
   lastRecord = record;
   updateCount();
   setStatus(rating === "ok" ? "OK" : rating === "not-ok" ? "not OK" : "repetitive");
-  try { await requestAnother(); }
+  try { await runtime.another(); }
   catch (error) { ratingLocked = false; setStatus(`generation error: ${error instanceof Error ? error.message : String(error)}`); }
 }
 
@@ -203,8 +183,4 @@ $("#comment-cancel").addEventListener("click", () => commentPanel.close());
 window.addEventListener("resize", () => runtime.resize());
 window.addEventListener("beforeunload", () => runtime.stop());
 
-try { await runtime.start(); }
-catch (error) {
-  if (isNoCandidateError(error)) await requestAnother({ initial: true });
-  else throw error;
-}
+await runtime.start();
