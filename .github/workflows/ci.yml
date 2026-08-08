@@ -41,7 +41,11 @@ jobs:
             --dump-dom \
             http://127.0.0.1:4173/diagnostics/compile/ > /tmp/tsdne-compile.html
           cat /tmp/tsdne-compile.html
-          grep -q 'TSDNE_WEBGL_COMPILE_PASS' /tmp/tsdne-compile.html
+          # Assert on the attribute the script sets at the end of a successful
+          # run, not on the marker text: the marker is a literal inside the
+          # inline script, so --dump-dom echoes it back whether or not the page
+          # ever finished, and grepping for it can never fail.
+          grep -q 'data-tsdne-compile="pass"' /tmp/tsdne-compile.html
       - name: Produce the first encounter through the production runtime
         shell: bash
         run: |
@@ -66,4 +70,7 @@ jobs:
             --dump-dom \
             http://127.0.0.1:4174/diagnostics/runtime/ > /tmp/tsdne-runtime.html
           cat /tmp/tsdne-runtime.html
-          grep -q 'TSDNE_RUNTIME_FIRST_ENCOUNTER_PASS' /tmp/tsdne-runtime.html
+          # Same reason as the compile step: assert on the attribute, which the
+          # page source never contains literally. This step passed for several
+          # commits while the page was in fact dumped still reading "running".
+          grep -q 'data-tsdne-runtime="pass"' /tmp/tsdne-runtime.html

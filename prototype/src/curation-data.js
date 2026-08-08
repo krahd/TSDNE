@@ -35,8 +35,24 @@ function loadFallback(key) {
   try { return JSON.parse(localStorage.getItem(key) || "[]"); } catch { return []; }
 }
 
+/**
+ * Writes the fallback store, propagating failure.
+ *
+ * This path is only taken where IndexedDB is unavailable. Curation records carry
+ * a full generation audit and a thumbnail, so they exhaust the localStorage
+ * quota after very few ratings. Swallowing the quota error here made saveRecord
+ * report success for a rating that had been dropped, which silently loses
+ * research data; the caller has to decide what to do about it instead.
+ */
 function saveFallback(key, value) {
-  try { localStorage.setItem(key, JSON.stringify(value)); } catch {}
+  try {
+    localStorage.setItem(key, JSON.stringify(value));
+  } catch (error) {
+    throw new Error(
+      `Could not write the local curation fallback store (${key}). The browser rejected the write, most likely because the localStorage quota is exhausted: ${error instanceof Error ? error.message : String(error)}`,
+      { cause: error },
+    );
+  }
 }
 
 export function createId(prefix = "id") {
@@ -81,7 +97,15 @@ export async function startSession({ build = null, environment = null } = {}) {
   };
   const db = await openDB();
   if (!db) {
-    saveFallback(FALLBACK_SESSIONS, [...prior, session]);
+    // Session rows are convenience metadata: every record carries its own build
+    // and environment snapshot, so losing one does not invalidate any rating.
+    // Failing to open the instrument at all would be the worse outcome, so this
+    // is reported rather than propagated. saveRecord() stays strict.
+    try {
+      saveFallback(FALLBACK_SESSIONS, [...prior, session]);
+    } catch (error) {
+      console.warn("TSDNE curation: could not persist the session row.", error);
+    }
     return session;
   }
   await new Promise((resolve) => {

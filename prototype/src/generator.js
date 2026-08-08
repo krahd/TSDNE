@@ -1235,7 +1235,10 @@ export function graphSignature(graph) { return JSON.stringify(canonicalGraph(gra
 export function graphFeatureVector(graph) {
   return [FAMILY_NAMES.indexOf(graph.family) / (FAMILY_NAMES.length - 1), ...TRAIT_KEYS.map(k => graph.traits[k]), ...graph.palette.a, ...graph.palette.b, ...graph.palette.c, ...graph.palette.d];
 }
-export function estimateCost(graph) { return FAMILY_META[graph.family].cost + Math.round(graph.traits.complexity * 4); }
+/* Uses the guarded accessor so that an unrecognised family surfaces as
+   compileGraph()'s explicit "Unknown shader family" error rather than as a
+   property-of-undefined TypeError thrown earlier in candidateFromGraph(). */
+export function estimateCost(graph) { return familyMeta(graph.family).cost + Math.round(graph.traits.complexity * 4); }
 
 export function candidateFromGraph(graph, metadata = {}) {
   const seed = metadata.seed || graph.seed || randomSeed();

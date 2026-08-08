@@ -1,5 +1,95 @@
 # Changelog
 
+## Unreleased — runtime and local-memory corrections
+
+### Fixed
+
+- **Pausing no longer disables generation.** Candidates were sampled at the
+  visitor's own render settings, and every family gates its time terms as
+  `u_time*u_motion`. With the artwork paused, motion is 0, so every sampled
+  frame came back identical and all forty-nine families were rejected as
+  `too-static`. Because the setting is persisted, pausing and reloading left the
+  artwork permanently unable to produce a shader — and once an empty quality
+  cycle became a normal retry, that same condition became an unbounded search
+  loop rather than a visible error. Validation now always samples at full motion
+  and full intensity: whether a shader is fit to appear is a property of the
+  shader, not of how it happens to be watched. The motion floor consequently
+  applies to every candidate, including under reduced motion, where it was
+  previously skipped altogether.
+- **Pausing holds the current moment.** Pause was expressed as `u_motion = 0`,
+  but the uniform scales absolute time rather than the rate of time, so zeroing
+  it collapsed effective time and displayed the shader's *first* frame instead of
+  freezing what was on screen. Reduced motion jumped backwards to 12% of elapsed
+  time for the same reason. The rate is now integrated into a per-display clock
+  and `u_motion` stays at 1, so effective time is continuous and monotonic and a
+  change of setting only affects what happens next. Returning to a backgrounded
+  tab now resumes where the shader left off instead of lurching forward.
+- **An exhausted shader search reports instead of looping forever.** An empty
+  quality cycle is a normal outcome and still retries, but the retry had no
+  ceiling, so a *systematic* rejection — every family failing one check at once,
+  as `too-static` did while validation inherited the viewer's motion setting —
+  became an unbounded silent loop rather than a reported failure, and in a
+  background prefetch it never surfaced at all. Consecutive empty cycles are now
+  bounded by `maxSearchCycles` (default 6, and each cycle already validates
+  `maxAttempts` candidates). Past the ceiling the runtime raises an error that
+  names its own dominant cause and carries the full audit, so a real fault is
+  diagnosable instead of appearing as a hang.
+- **Clearing the local anti-repetition memory is no longer undone.** A prefetch
+  already in flight would install its candidate afterwards, so the next shader
+  was still the one selected against the traces the visitor had just erased.
+  Clearing now invalidates any generation that was already under way.
+- **A repeat is recognised against a stored perceptual trace.** `nearestDistance`
+  blended a structural term that stored traces deliberately do not carry, which
+  pinned every comparison to a floor of 0.28 — above the `isTooSimilar`
+  threshold — so a shader compared against its own trace was never a repeat. The
+  structural axis now participates only where both sides have one.
+- **A curation rating that cannot be stored is reported.** On the localStorage
+  fallback path, taken where IndexedDB is unavailable, a quota failure was
+  swallowed and `saveRecord` still reported success, silently losing research
+  data. Failures now surface in the instrument and do not advance to the next
+  shader. Session rows stay best-effort, since every record carries its own
+  build and environment snapshot.
+- Background prefetch failures are now observed by both adapters, which is how
+  the pause defect stayed invisible until the visitor pressed **another**.
+- An unrecognised family reports which family is unknown instead of throwing a
+  property-of-undefined `TypeError` from `estimateCost`.
+- Removed a redundant timer in the crossfade that could only ever re-assign a
+  value already set synchronously.
+
+### Testing
+
+- Extended the `diagnostics/runtime/` first-encounter smoke test to run under
+  each viewing setting rather than only the default, and to assert that the
+  encounter carries a real temporal reading — which is only reachable when
+  validation samples at full motion, so it is what distinguishes a fixed paused
+  runtime from a broken one. Kept its timeout race, since an unbounded search
+  presents as a hang rather than an error, and reports both. It now drives
+  `another({ initial: true })` under an effectively unbounded frame budget
+  instead of `start()`: the render loop and the frame-budget yields spent the
+  headless virtual-time budget without adding coverage, and running two settings
+  through `start()` did not finish at all. No Node test can reach this path.
+- The motion clock is exported as `shaderMotionRate()` and `advanceShaderClock()`
+  so pause, reduced motion, and tab-backgrounding behaviour are covered by
+  ordinary Node tests.
+- **The WebGL diagnostics now actually assert.** Both CI steps grepped the
+  dumped DOM for their own success marker, but that marker is a literal inside
+  each page's inline script, so `--dump-dom` echoed it back whether or not the
+  page ever finished and the check could not fail. They now assert on the
+  `data-tsdne-compile` / `data-tsdne-runtime` attribute the script sets only on
+  completion, which never appears in the page source.
+- **The runtime diagnostic can now finish.** It had been passing vacuously while
+  the page was in fact dumped still reading `running`: the runtime awaits
+  `loadRecentTraces()`, and under `--virtual-time-budget` the virtual clock races
+  to exhaustion without waiting on IndexedDB, so `createTSDNERuntime()` never
+  resolved. The page now removes `indexedDB` and takes the synchronous
+  localStorage fallback, which completes in about four seconds. Generation is
+  what this page is for; the storage path is covered by Node tests.
+- Added `tests/runtime-search-cycles.test.mjs`, which drives the real runtime —
+  `buildCandidatePool`, `validateCandidate`, `qualityAssessment` and the search
+  loop — against a fake WebGL2 context. It confirms that a systematically
+  rejected search raises a named error after the ceiling, that an unlucky cycle
+  is still only a retry, and it hangs if the ceiling is removed.
+
 ## 0.3.1-alpha.3 — first-encounter recovery
 
 ### Runtime

@@ -161,7 +161,18 @@ export function qualityAssessment(descriptor,meta,{reducedMotion=false,flashScre
   return {pass:reasons.length===0,reasons,flashScreen};
 }
 
-export function nearestDistance(candidate,records){let nearest=1,nearestId=null;for(const record of records){const visual=descriptorDistance(candidate.perception,record.perception);const structural=structuralDistance(candidate.structuralVector,record.structuralVector);const combined=visual*.72+structural*.28;if(combined<nearest){nearest=combined;nearestId=record.id;}}return{distance:nearest,id:nearestId};}
+/**
+ * Nearest record on the perceptual axis, blended with the structural axis only
+ * when both sides actually carry a structural vector.
+ *
+ * Stored anti-repetition traces are deliberately non-reconstructive and hold no
+ * structural vector, so structuralDistance() returned its 1 guard for every
+ * comparison. That pinned the combined score to a floor of 0.28 — above the
+ * default isTooSimilar threshold — and a shader compared against its own stored
+ * trace reported a distance of 0.28 rather than 0. The structural term now
+ * participates only where it has something to measure.
+ */
+export function nearestDistance(candidate,records){let nearest=1,nearestId=null;for(const record of records){const visual=descriptorDistance(candidate.perception,record.perception);const structured=Array.isArray(candidate.structuralVector)&&Array.isArray(record.structuralVector);const combined=structured?visual*.72+structuralDistance(candidate.structuralVector,record.structuralVector)*.28:visual;if(combined<nearest){nearest=combined;nearestId=record.id;}}return{distance:nearest,id:nearestId};}
 export function isTooSimilar(candidate,records,{threshold=.105}={}){const nearest=nearestDistance(candidate,records);return{tooSimilar:nearest.distance<threshold,...nearest};}
 
 export function compactPerception(d){return{version:d.version,size:d.size,mean:+d.mean.toFixed(3),variance:+d.variance.toFixed(3),edge:+d.edge.toFixed(3),saturation:+d.saturation.toFixed(4),temporal:+d.temporal.toFixed(3),maxTemporal:+d.maxTemporal.toFixed(3),largeChangeRatio:+d.largeChangeRatio.toFixed(4),frames:d.frames.map(f=>({mean:+f.mean.toFixed(3),variance:+f.variance.toFixed(3),edge:+f.edge.toFixed(3),saturation:+f.saturation.toFixed(4),luminanceHistogram:f.luminanceHistogram.map(v=>+v.toFixed(5)),colorHistogram:{r:f.colorHistogram.r.map(v=>+v.toFixed(5)),g:f.colorHistogram.g.map(v=>+v.toFixed(5)),b:f.colorHistogram.b.map(v=>+v.toFixed(5))},hash:f.hash}))};}

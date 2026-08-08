@@ -10,6 +10,7 @@ import {
   TRAIT_KEYS,
   compileGraph,
   createGraph,
+  candidateFromGraph,
   estimateCost,
   generateCandidate,
 } from "../prototype/src/generator.js";
@@ -110,4 +111,14 @@ test("the family table is the only place a family is declared", () => {
     assert.equal(familyCategory(name), Object.keys(FAMILY_TABLE)
       .find((group) => name in FAMILY_TABLE[group]), `${name} category disagrees`);
   }
+});
+
+test("an unrecognised family reports which family is unknown", () => {
+  // estimateCost() indexed the family metadata unguarded and is evaluated before
+  // compileGraph() in candidateFromGraph(), so an unrecognised family surfaced as
+  // a property-of-undefined TypeError instead of naming the offending family.
+  const graph = createGraph([1, 2, 3, 4], "no-such-family");
+  assert.equal(typeof estimateCost(graph), "number");
+  assert.throws(() => compileGraph(graph), /Unknown shader family: no-such-family/);
+  assert.throws(() => candidateFromGraph(graph, { seed: graph.seed }), /Unknown shader family: no-such-family/);
 });
