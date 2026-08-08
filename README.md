@@ -31,8 +31,6 @@ The public artwork uses explicit procedural systems, WebGL2, deterministic seeds
 
 This is a deliberate artistic and infrastructural decision. The title enters the cultural field of generative-AI “does not exist” projects while refusing the assumption that contemporary generativity must depend on a foundation model, scraped runtime corpus, remote model host, or high-memory model runtime.
 
-The runtime position is distinct from the development process. AI programming assistants have contributed to software and documentation under Tomas Laurenzo's direction and review; this is documented in [`docs/AI-USE-STATEMENT.md`](docs/AI-USE-STATEMENT.md).
-
 ## Visual grammar
 
 Shader richness is treated as an artistic and engineering requirement rather than a technical-priority claim.
@@ -106,8 +104,9 @@ The current implementation centralises generation, validation, selection, anti-r
 Repository verification currently includes:
 
 - JavaScript syntax checks;
-- 37 unit and architectural-contract tests;
+- unit and architectural-contract tests;
 - a real WebGL2 headless-browser compile/render smoke test across all forty-nine families under three variant conditions each (**147/147** conditions passing on the current CI revision);
+- a production-runtime first-encounter diagnostic;
 - verified GitHub Pages deployment.
 
 The historical 7 August generator audit and its resolution record remain in [`docs/AUDIT-2026-08-07.md`](docs/AUDIT-2026-08-07.md).
@@ -201,10 +200,9 @@ See:
 - [`docs/GENEALOGY.md`](docs/GENEALOGY.md)
 - [`docs/RESEARCH-PLAN.md`](docs/RESEARCH-PLAN.md)
 - [`docs/CURATION-AUDIT.md`](docs/CURATION-AUDIT.md)
-- [`docs/AI-USE-STATEMENT.md`](docs/AI-USE-STATEMENT.md)
 
 ## Authorship and development
 
 Concept and artistic direction: Tomas Laurenzo.
 
-Software, procedural grammar, and documentation are developed under Tomas Laurenzo's direction, with AI programming assistance disclosed in the repository history and [`docs/AI-USE-STATEMENT.md`](docs/AI-USE-STATEMENT.md). Artistic selection, acceptance of committed code, project claims, licensing, and responsibility remain with Tomas Laurenzo.
+Software, procedural grammar, documentation, artistic selection, accepted code, project claims, licensing, and responsibility remain under Tomas Laurenzo's direction.
