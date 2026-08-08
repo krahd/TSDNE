@@ -108,6 +108,7 @@ function aboutMarkup() {
       <blockquote><p>TSDNE retains provenance but abolishes title.</p><p>The shader can be identified, copied, and reconstructed, but not claimed.</p></blockquote>
       ${settingsControls()}
       <p class="panel-keys"><span>keyboard</span> <kbd>N</kbd> another · <kbd>U</kbd> take the code · <kbd>Space</kbd> pause · <kbd>A</kbd> about</p>
+      <p class="panel-credit">TSDNE is a project by <a href="https://laurenzo.net/">Tomas Laurenzo</a>.</p>
     </div>`;
 }
 
@@ -180,9 +181,5 @@ window.addEventListener("keydown", (event) => {
   else if (event.key.toLowerCase() === "a") { event.preventDefault(); showInfoView("about"); }
   else if (event.code === "Space") { event.preventDefault(); pauseButton.click(); }
 });
-window.addEventListener("resize", () => runtime.resize());
-motionQuery.addEventListener?.("change", (event) => {
-  if (!localStorage.getItem("tsdne-settings-v2")) { settings.reducedMotion = event.matches; applyDocumentSettings(); runtime.setSettings(settings); }
-});
-window.addEventListener("beforeunload", () => runtime.stop());
+
 await runtime.start();
