@@ -11,7 +11,7 @@ test("about keeps privacy and accessibility inside the artwork dialog", () => {
   assert.match(mainSource, /\["privacy", "privacy"\]/);
   assert.match(mainSource, /\["accessibility", "accessibility"\]/);
   assert.match(mainSource, /querySelectorAll\("\[data-info-view\]"\)/);
-  assert.match(mainSource, /showInfoView\(event\.currentTarget\.dataset\.infoView\)/);
+  assert.match(mainSource, /showInfoView\(button\.dataset\.infoView\)/);
   assert.doesNotMatch(mainSource, /href="\.\/privacy\.html"/);
   assert.doesNotMatch(mainSource, /href="\.\/accessibility\.html"/);
 });
