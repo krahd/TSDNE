@@ -24,6 +24,16 @@
   and `u_motion` stays at 1, so effective time is continuous and monotonic and a
   change of setting only affects what happens next. Returning to a backgrounded
   tab now resumes where the shader left off instead of lurching forward.
+- **An exhausted shader search reports instead of looping forever.** An empty
+  quality cycle is a normal outcome and still retries, but the retry had no
+  ceiling, so a *systematic* rejection — every family failing one check at once,
+  as `too-static` did while validation inherited the viewer's motion setting —
+  became an unbounded silent loop rather than a reported failure, and in a
+  background prefetch it never surfaced at all. Consecutive empty cycles are now
+  bounded by `maxSearchCycles` (default 6, and each cycle already validates
+  `maxAttempts` candidates). Past the ceiling the runtime raises an error that
+  names its own dominant cause and carries the full audit, so a real fault is
+  diagnosable instead of appearing as a hang.
 - **Clearing the local anti-repetition memory is no longer undone.** A prefetch
   already in flight would install its candidate afterwards, so the next shader
   was still the one selected against the traces the visitor had just erased.
@@ -48,13 +58,24 @@
 
 ### Testing
 
-- Added `diagnostics/runtime/`, driven in CI, which runs the production runtime
-  under each viewing setting in real WebGL2 and asserts that a paused runtime
-  still produces an encounter carrying a real temporal signal. No Node test can
-  reach this path.
+- Extended the `diagnostics/runtime/` first-encounter smoke test to run under
+  each viewing setting rather than only the default, and to assert that the
+  encounter carries a real temporal reading — which is only reachable when
+  validation samples at full motion, so it is what distinguishes a fixed paused
+  runtime from a broken one. Kept its timeout race, since an unbounded search
+  presents as a hang rather than an error, and reports both. It now drives
+  `another({ initial: true })` under an effectively unbounded frame budget
+  instead of `start()`: the render loop and the frame-budget yields spent the
+  headless virtual-time budget without adding coverage, and running two settings
+  through `start()` did not finish at all. No Node test can reach this path.
 - The motion clock is exported as `shaderMotionRate()` and `advanceShaderClock()`
   so pause, reduced motion, and tab-backgrounding behaviour are covered by
   ordinary Node tests.
+- Added `tests/runtime-search-cycles.test.mjs`, which drives the real runtime —
+  `buildCandidatePool`, `validateCandidate`, `qualityAssessment` and the search
+  loop — against a fake WebGL2 context. It confirms that a systematically
+  rejected search raises a named error after the ceiling, that an unlucky cycle
+  is still only a retry, and it hangs if the ceiling is removed.
 
 ## 0.3.1-alpha.3 — first-encounter recovery
 

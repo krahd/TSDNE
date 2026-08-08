@@ -43,6 +43,20 @@ const NORMAL_REJECTION_STAGES = new Set([
 ]);
 
 /**
+ * Ceiling on consecutive search cycles that yield nothing.
+ *
+ * An empty quality cycle is a normal outcome — a whole pool can be unlucky — so
+ * the runtime retries rather than failing. But each cycle already generates and
+ * validates maxAttempts candidates, so a run of entirely empty cycles is not bad
+ * luck, it is a systematic rejection: every family failing one check at once, as
+ * happened when validation inherited the viewer's motion setting and `too-static`
+ * rejected all forty-nine. Retrying that forever is an unbounded, silent loop —
+ * invisible in a background prefetch, which only reports on rejection. Past this
+ * ceiling the condition is surfaced as an error carrying the full audit.
+ */
+const DEFAULT_MAX_SEARCH_CYCLES = 6;
+
+/**
  * Candidates are always sampled at full motion and full intensity.
  *
  * Validation asks whether a shader is fit to appear at all, which is a property
@@ -87,6 +101,26 @@ const clone = (value) => value == null ? value : structuredClone(value);
 
 function errorMessage(error) {
   return error instanceof Error ? error.message : String(error);
+}
+
+/**
+ * Ranks why candidates were rejected, so an exhausted search names its own cause
+ * instead of reporting only that it failed. A single dominant `stage:reason` is
+ * the signature of a systematic rejection rather than an unlucky pool.
+ */
+export function rejectionSummary(attempts, limit = 3) {
+  const counts = new Map();
+  for (const attempt of attempts || []) {
+    if (attempt?.accepted) continue;
+    const stage = attempt?.stage || "unknown";
+    for (const reason of attempt?.reasons?.length ? attempt.reasons : ["unspecified"]) {
+      const key = `${stage}:${reason}`;
+      counts.set(key, (counts.get(key) || 0) + 1);
+    }
+  }
+  if (!counts.size) return "No rejection reasons were recorded.";
+  const ranked = [...counts.entries()].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+  return `Most common: ${ranked.slice(0, limit).map(([key, count]) => `${key} (${count})`).join(", ")}.`;
 }
 
 function serialiseRejectionCandidate(candidate) {
@@ -164,6 +198,7 @@ export async function createTSDNERuntime({
   settings: initialSettings = {},
   historyLimit = DEFAULT_HISTORY_LIMIT,
   maxAttempts = DEFAULT_MAX_ATTEMPTS,
+  maxSearchCycles = DEFAULT_MAX_SEARCH_CYCLES,
   earlyEncounters = DEFAULT_EARLY_ENCOUNTERS,
   frameBudgetMs = DEFAULT_FRAME_BUDGET_MS,
 } = {}) {
@@ -410,6 +445,15 @@ export async function createTSDNERuntime({
         generationDurationMs: pool.generationDurationMs,
       });
       if (!pool.candidates.length) {
+        if (searchCycle >= maxSearchCycles) {
+          // Deliberately not the old single-cycle wording: a single empty cycle
+          // remains a retry, and search-status.test.mjs guards that.
+          const error = new Error(
+            `Shader search exhausted ${searchCycle} cycles without a valid candidate (${attempts.length} rejected). ${rejectionSummary(attempts)}`,
+          );
+          error.audit = { target: pool.target, attempts, searchBatches, generationKind };
+          throw error;
+        }
         emitter.emit("generation-retry", {
           initial,
           generationKind,
@@ -460,6 +504,7 @@ export async function createTSDNERuntime({
         targetPoolSize: pool.target,
         validPoolSize: pool.candidates.length,
         maxAttempts,
+        maxSearchCycles,
         generationDurationMs,
         historyBeforeSelection: historySnapshot,
         attempts,
