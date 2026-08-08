@@ -32,7 +32,15 @@ const DEFAULT_MAX_ATTEMPTS = 48;
 const DEFAULT_HISTORY_LIMIT = 500;
 const DEFAULT_EARLY_ENCOUNTERS = 4;
 const DEFAULT_FRAME_BUDGET_MS = 10;
-const NORMAL_REJECTION_STAGES = new Set(["cost", "quality", "flash-quality"]);
+const NORMAL_REJECTION_STAGES = new Set([
+  "cost",
+  "compile-link",
+  "sample",
+  "quality",
+  "flash-quality",
+  "validation",
+  "generation",
+]);
 
 const clone = (value) => value == null ? value : structuredClone(value);
 
