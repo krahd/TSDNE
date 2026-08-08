@@ -3,7 +3,7 @@
 **Date:** 8 August 2026  
 **Repository:** `krahd/TSDNE`  
 **Primary branch:** `main`  
-**Current application version:** `0.3.1-alpha.3`  
+**Current application version:** `0.3.1-alpha.4`  
 **Preserved predecessor:** `archive/webllm-release-candidate-2026-08-04`
 
 ## Current definition

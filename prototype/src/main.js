@@ -26,8 +26,15 @@ let waitingForEncounter = false;
 let searchStatusVisible = false;
 let searchRevealTimer = null;
 try { settings = { ...settings, ...JSON.parse(localStorage.getItem("tsdne-settings-v2") || "{}") }; } catch {}
+// Pause is a momentary act of attention, not a preference: the artwork always
+// begins playing. Forcing it here rather than only omitting it below also
+// discards a stored true written by an earlier build.
+settings.paused = false;
 
-function persistSettings() { try { localStorage.setItem("tsdne-settings-v2", JSON.stringify(settings)); } catch {} }
+function persistSettings() {
+  const { paused, ...preferences } = settings;
+  try { localStorage.setItem("tsdne-settings-v2", JSON.stringify(preferences)); } catch {}
+}
 function announce(message) { live.textContent = ""; requestAnimationFrame(() => { live.textContent = message; }); }
 function setStatus(message = "", { busy = false, detail = "" } = {}) {
   statusText.textContent = message; statusCount.textContent = detail; status.classList.toggle("busy", busy); status.hidden = !message;
@@ -211,10 +218,17 @@ function showInfoView(view = "about") {
   if (!panel.open) panel.showModal();
 }
 
+// Requesting another shader leaves the viewing state alone: a paused visitor
+// arrives at the new shader held on its first frame, and stays paused. This is
+// only coherent because validation samples at full motion regardless of the
+// setting, so generation itself does not depend on being unpaused.
 anotherButton.addEventListener("click", () => void runtime.another().catch(() => {}));
 useButton.addEventListener("click", showUse); aboutButton.addEventListener("click", () => showInfoView("about"));
 pauseButton.addEventListener("click", () => {
-  settings.paused = !settings.paused; persistSettings(); applyDocumentSettings(); runtime.setSettings(settings);
+  // Deliberately not persisted: pause is momentary, and writing here would also
+  // create the settings key, which is what tells the media-query listener below
+  // that the visitor has expressed a preference of their own.
+  settings.paused = !settings.paused; applyDocumentSettings(); runtime.setSettings(settings);
   announce(settings.paused ? "Shader paused." : "Shader playing.");
 });
 window.addEventListener("keydown", (event) => {
@@ -223,6 +237,23 @@ window.addEventListener("keydown", (event) => {
   else if (event.key.toLowerCase() === "u") { event.preventDefault(); showUse(); }
   else if (event.key.toLowerCase() === "a") { event.preventDefault(); showInfoView("about"); }
   else if (event.code === "Space") { event.preventDefault(); pauseButton.click(); }
+});
+
+// Restored after the information-panel work dropped it: the system preference is
+// read once at load, so without this a visitor turning reduced motion on mid
+// session was not followed until they reloaded.
+//
+// The window "resize" and "beforeunload" listeners dropped alongside it are
+// deliberately not restored. render() already calls the renderer's own resize on
+// every frame, including while paused, so the drawing buffer tracks the element
+// without help; and stop() at unload only cancels work the browser is about to
+// discard anyway, while a beforeunload listener makes the page ineligible for the
+// back/forward cache in some browsers.
+motionQuery.addEventListener?.("change", (event) => {
+  // Only while the visitor has expressed no preference of their own. The stored
+  // settings no longer carry pause, so the key's presence means a deliberate
+  // choice about motion or intensity rather than an incidental pause.
+  if (!localStorage.getItem("tsdne-settings-v2")) { settings.reducedMotion = event.matches; applyDocumentSettings(); runtime.setSettings(settings); }
 });
 
 await runtime.start();
