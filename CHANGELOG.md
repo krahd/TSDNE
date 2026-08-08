@@ -1,5 +1,15 @@
 # Changelog
 
+## 0.3.1-alpha.1 — information surface
+
+### Information and authorship
+
+- Reworked the information dialog as a quieter editorial surface rather than a dense application panel.
+- Added a manuscript-derived **statement** alongside **about**, **privacy**, and **accessibility**, all rendered inside the same information window.
+- Moved the Tomas Laurenzo attribution to the information footer, on the same line as the application version.
+- Added one restrained ochre accent to headings, active information navigation, selected quotations, and the author link to break typographic monotony without introducing gradients, cards, or decorative product-UI styling.
+- Added regression tests for the internal information views, attribution/footer placement, statement propositions, and restrained colour treatment.
+
 ## 0.3.0-alpha.1 — expanded aesthetic range
 
 ### Visual range
