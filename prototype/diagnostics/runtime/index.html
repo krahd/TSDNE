@@ -4,47 +4,114 @@
   <meta charset="utf-8">
   <meta name="robots" content="noindex,nofollow,noarchive">
   <title>TSDNE runtime first-encounter diagnostic</title>
+  <style>
+    html,body{margin:0;background:#000;color:#fff;font-family:ui-monospace,monospace}
+    .stage,.shader-layer{position:fixed;inset:0;width:100%;height:100%}
+    .shader-layer{display:block;opacity:0}
+    .shader-layer.active{opacity:1}
+    #result{position:fixed;z-index:2;inset:0;margin:0;padding:1rem;background:rgb(0 0 0/.85);white-space:pre-wrap}
+  </style>
 </head>
 <body>
-<canvas id="a" width="64" height="64"></canvas>
-<canvas id="b" width="64" height="64"></canvas>
+<main class="stage">
+  <canvas id="stage-a" class="shader-layer active" aria-hidden="false"></canvas>
+  <canvas id="stage-b" class="shader-layer" aria-hidden="true"></canvas>
+</main>
 <pre id="result">running</pre>
 <script type="module">
 import { createTSDNERuntime } from "../../src/runtime.js";
 
-const output = document.querySelector("#result");
-const runtime = await createTSDNERuntime({
-  canvases: [document.querySelector("#a"), document.querySelector("#b")],
-  settings: { paused: false, reducedMotion: false, reducedIntensity: false },
-});
-const retries = [];
-let generationError = null;
-runtime.on("generation-retry", (event) => retries.push(event));
-runtime.on("generation-error", (error) => { generationError = error; });
+/*
+ * Drives the real production runtime to a first encounter under each viewing
+ * setting. Only a real WebGL2 run reaches this path.
+ *
+ * Every family gates its time terms as u_time*u_motion, so sampling candidates
+ * at the viewer's own motion value made validation depend on the viewer: with
+ * the artwork paused (motion 0) every sampled frame came back identical and all
+ * forty-nine families were rejected as too-static. That left "another" — and a
+ * reload, because the setting is persisted — unable to produce anything, and
+ * once an empty quality cycle became a normal retry it became an unbounded
+ * search loop rather than a visible error.
+ *
+ * Each scenario therefore races a timeout: a hang is a distinct failure from an
+ * error, and both must be reported rather than waited on. another() is called
+ * directly rather than start(), with an effectively infinite frame budget, so
+ * neither the render loop nor the frame-budget yields burn the headless
+ * virtual-time budget without adding coverage.
+ */
 
-try {
-  const encounter = await Promise.race([
-    runtime.start(),
-    new Promise((_, reject) => setTimeout(() => reject(new Error("first encounter timed out after 45000 ms")), 45000)),
-  ]);
-  if (!encounter?.candidate) throw new Error("runtime.start() returned without a candidate");
-  document.documentElement.dataset.tsdneRuntime = "pass";
-  output.textContent = `TSDNE_RUNTIME_FIRST_ENCOUNTER_PASS\n${JSON.stringify({
-    family: encounter.candidate.family,
-    searchCycles: encounter.audit?.searchCycles,
-    validPoolSize: encounter.audit?.validPoolSize,
-    retries: retries.length,
-  }, null, 2)}`;
-} catch (error) {
+const TIMEOUT_MS = 30000;
+const output = document.querySelector("#result");
+const canvases = [document.querySelector("#stage-a"), document.querySelector("#stage-b")];
+const failures = [];
+const notes = [];
+
+const scenarios = [
+  { name: "paused", settings: { paused: true, reducedMotion: false, reducedIntensity: false } },
+  { name: "default", settings: { paused: false, reducedMotion: false, reducedIntensity: false } },
+];
+
+for (const scenario of scenarios) {
+  let runtime = null;
+  const retries = [];
+  let generationError = null;
+  try {
+    runtime = await createTSDNERuntime({
+      canvases,
+      settings: scenario.settings,
+      frameBudgetMs: Number.MAX_SAFE_INTEGER,
+    });
+    runtime.on("generation-retry", (event) => retries.push(event));
+    runtime.on("generation-error", (error) => { generationError = error; });
+
+    const encounter = await Promise.race([
+      runtime.another({ initial: true }),
+      new Promise((_, reject) => setTimeout(
+        () => reject(new Error(`first encounter timed out after ${TIMEOUT_MS} ms`)), TIMEOUT_MS,
+      )),
+    ]);
+
+    if (!encounter?.candidate?.source) throw new Error("another() returned without a candidate");
+
+    // Validation samples at full motion regardless of the viewing setting, so a
+    // real temporal signal must be recorded even while the artwork is paused.
+    const temporal = encounter.candidate.perception?.temporal;
+    if (!(temporal > 0)) {
+      throw new Error(`validation recorded no motion (temporal=${temporal}); candidates were sampled at the viewer's motion setting`);
+    }
+
+    notes.push({
+      scenario: scenario.name,
+      family: encounter.candidate.family,
+      temporal,
+      searchCycles: encounter.audit?.searchCycles,
+      maxSearchCycles: encounter.audit?.maxSearchCycles,
+      validPoolSize: encounter.audit?.validPoolSize,
+      retries: retries.length,
+    });
+  } catch (error) {
+    failures.push({
+      scenario: scenario.name,
+      error: error instanceof Error ? error.message : String(error),
+      retries,
+      generationError: generationError
+        ? (generationError instanceof Error ? generationError.message : String(generationError))
+        : null,
+      audit: generationError?.audit || null,
+    });
+  } finally {
+    // Releases the three WebGL2 contexts and makes the background prefetch that
+    // another() kicked off fail fast instead of rasterising a whole second pool.
+    try { runtime?.stop(); } catch {}
+  }
+}
+
+if (failures.length) {
   document.documentElement.dataset.tsdneRuntime = "fail";
-  output.textContent = `TSDNE_RUNTIME_FIRST_ENCOUNTER_FAIL\n${JSON.stringify({
-    error: error instanceof Error ? error.message : String(error),
-    retries,
-    generationError: generationError ? (generationError instanceof Error ? generationError.message : String(generationError)) : null,
-    audit: generationError?.audit || null,
-  }, null, 2)}`;
-} finally {
-  runtime.stop();
+  output.textContent = `TSDNE_RUNTIME_FIRST_ENCOUNTER_FAIL ${failures.length}/${scenarios.length}\n${JSON.stringify(failures, null, 2)}`;
+} else {
+  document.documentElement.dataset.tsdneRuntime = "pass";
+  output.textContent = `TSDNE_RUNTIME_FIRST_ENCOUNTER_PASS ${notes.length}/${scenarios.length}\n${JSON.stringify(notes, null, 2)}`;
 }
 </script>
 </body>

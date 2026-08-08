@@ -42,6 +42,19 @@ const NORMAL_REJECTION_STAGES = new Set([
   "generation",
 ]);
 
+/**
+ * Candidates are always sampled at full motion and full intensity.
+ *
+ * Validation asks whether a shader is fit to appear at all, which is a property
+ * of the shader rather than of how it happens to be watched right now. Sampling
+ * at the viewer's own render settings made the answer depend on the viewer: with
+ * the artwork paused, motion is 0, every family gates its time terms as
+ * u_time*u_motion, so every sampled frame came back identical and all forty-nine
+ * families were rejected as too-static. Holding these constant also means an
+ * audit record means the same thing for every visitor.
+ */
+const VALIDATION_SAMPLE_SETTINGS = Object.freeze({ motion: 1, intensity: 1 });
+
 const clone = (value) => value == null ? value : structuredClone(value);
 
 function errorMessage(error) {
@@ -158,7 +171,10 @@ export async function createTSDNERuntime({
   let prefetched = null;
   let prefetching = null;
   let generating = false;
-  let transitionTimer = null;
+  // Bumped whenever the local history is cleared, so a prefetch that was
+  // already in flight cannot install a candidate it selected against traces
+  // the visitor has since asked to forget.
+  let historyEpoch = 0;
   let animationFrame = null;
   let running = false;
   const rendererStarts = [performance.now(), performance.now()];
@@ -197,7 +213,7 @@ export async function createTSDNERuntime({
       };
     }
 
-    const sampleSettings = renderSettings();
+    const sampleSettings = VALIDATION_SAMPLE_SETTINGS;
     let frames;
     try {
       frames = validator.sampleSequence(SAMPLE_TIMES, SAMPLE_SIZE, sampleSettings);
@@ -212,9 +228,7 @@ export async function createTSDNERuntime({
 
     const perception = sequenceDescriptor(frames, SAMPLE_SIZE);
     const meta = familyMeta(candidate.family);
-    const firstQuality = qualityAssessment(perception, meta, {
-      reducedMotion: settings.reducedMotion,
-    });
+    const firstQuality = qualityAssessment(perception, meta);
     if (!firstQuality.pass) {
       return {
         accepted: false,
@@ -231,10 +245,7 @@ export async function createTSDNERuntime({
       changedAreaThreshold: 0.12,
       maxTransitionsPerSecond: 3,
     });
-    const quality = qualityAssessment(perception, meta, {
-      reducedMotion: settings.reducedMotion,
-      flashScreen: flash,
-    });
+    const quality = qualityAssessment(perception, meta, { flashScreen: flash });
     if (!quality.pass) {
       return {
         accepted: false,
@@ -424,7 +435,6 @@ export async function createTSDNERuntime({
   }
 
   function showEncounter(result, { transitionMs = 900 } = {}) {
-    clearTimeout(transitionTimer);
     const candidate = {
       ...result.candidate,
       category: familyCategory(result.candidate.family),
@@ -443,7 +453,6 @@ export async function createTSDNERuntime({
       canvases[previous].classList.remove("active");
       canvases[next].setAttribute("aria-hidden", "false");
       canvases[previous].setAttribute("aria-hidden", "true");
-      transitionTimer = setTimeout(() => { activeIndex = next; }, duration);
     }
 
     activeIndex = next;
@@ -461,8 +470,9 @@ export async function createTSDNERuntime({
 
   async function prefetch() {
     if (prefetched || prefetching) return prefetching;
+    const epoch = historyEpoch;
     prefetching = generateSelectedCandidate({ generationKind: "prefetch" })
-      .then((result) => { prefetched = result; })
+      .then((result) => { if (epoch === historyEpoch) prefetched = result; })
       .catch((error) => emitter.emit("prefetch-error", error))
       .finally(() => { prefetching = null; });
     return prefetching;
@@ -509,7 +519,6 @@ export async function createTSDNERuntime({
 
   function stop() {
     running = false;
-    clearTimeout(transitionTimer);
     cancelAnimationFrame(animationFrame);
     renderers.forEach((renderer) => renderer.destroy());
     validator.destroy();
@@ -524,6 +533,7 @@ export async function createTSDNERuntime({
 
   async function clearLocalHistory() {
     await clearHistory();
+    historyEpoch += 1;
     recentTraces = [];
     recentFamilies = [];
     recentModes = [];

@@ -76,6 +76,9 @@ runtime.on("generation-error", (error) => {
   console.error(error); setStatus(`generation error: ${error instanceof Error ? error.message : String(error)}`);
   announce("A generation error occurred. Another attempt remains available.");
 });
+// Recoverable — the next shader is generated on demand instead — but leaving
+// these unobserved is how a total generation failure stayed invisible until the
+// visitor pressed "another".
 runtime.on("prefetch-error", (error) => console.warn("TSDNE background prefetch failed", error));
 runtime.on("context-lost", () => announce("The graphics context was interrupted."));
 runtime.on("context-restored", (error) => { if (error) { console.error(error); announce("The graphics context could not be restored."); } });

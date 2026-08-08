@@ -1,5 +1,61 @@
 # Changelog
 
+## Unreleased — runtime and local-memory corrections
+
+### Fixed
+
+- **Pausing no longer disables generation.** Candidates were sampled at the
+  visitor's own render settings, and every family gates its time terms as
+  `u_time*u_motion`. With the artwork paused, motion is 0, so every sampled
+  frame came back identical and all forty-nine families were rejected as
+  `too-static`. Because the setting is persisted, pausing and reloading left the
+  artwork permanently unable to produce a shader — and once an empty quality
+  cycle became a normal retry, that same condition became an unbounded search
+  loop rather than a visible error. Validation now always samples at full motion
+  and full intensity: whether a shader is fit to appear is a property of the
+  shader, not of how it happens to be watched. The motion floor consequently
+  applies to every candidate, including under reduced motion, where it was
+  previously skipped altogether.
+- **Pausing holds the current moment.** Pause was expressed as `u_motion = 0`,
+  but the uniform scales absolute time rather than the rate of time, so zeroing
+  it collapsed effective time and displayed the shader's *first* frame instead of
+  freezing what was on screen. Reduced motion jumped backwards to 12% of elapsed
+  time for the same reason. The rate is now integrated into a per-display clock
+  and `u_motion` stays at 1, so effective time is continuous and monotonic and a
+  change of setting only affects what happens next. Returning to a backgrounded
+  tab now resumes where the shader left off instead of lurching forward.
+- **Clearing the local anti-repetition memory is no longer undone.** A prefetch
+  already in flight would install its candidate afterwards, so the next shader
+  was still the one selected against the traces the visitor had just erased.
+  Clearing now invalidates any generation that was already under way.
+- **A repeat is recognised against a stored perceptual trace.** `nearestDistance`
+  blended a structural term that stored traces deliberately do not carry, which
+  pinned every comparison to a floor of 0.28 — above the `isTooSimilar`
+  threshold — so a shader compared against its own trace was never a repeat. The
+  structural axis now participates only where both sides have one.
+- **A curation rating that cannot be stored is reported.** On the localStorage
+  fallback path, taken where IndexedDB is unavailable, a quota failure was
+  swallowed and `saveRecord` still reported success, silently losing research
+  data. Failures now surface in the instrument and do not advance to the next
+  shader. Session rows stay best-effort, since every record carries its own
+  build and environment snapshot.
+- Background prefetch failures are now observed by both adapters, which is how
+  the pause defect stayed invisible until the visitor pressed **another**.
+- An unrecognised family reports which family is unknown instead of throwing a
+  property-of-undefined `TypeError` from `estimateCost`.
+- Removed a redundant timer in the crossfade that could only ever re-assign a
+  value already set synchronously.
+
+### Testing
+
+- Added `diagnostics/runtime/`, driven in CI, which runs the production runtime
+  under each viewing setting in real WebGL2 and asserts that a paused runtime
+  still produces an encounter carrying a real temporal signal. No Node test can
+  reach this path.
+- The motion clock is exported as `shaderMotionRate()` and `advanceShaderClock()`
+  so pause, reduced motion, and tab-backgrounding behaviour are covered by
+  ordinary Node tests.
+
 ## 0.3.1-alpha.3 — first-encounter recovery
 
 ### Runtime

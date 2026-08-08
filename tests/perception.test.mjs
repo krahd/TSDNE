@@ -1,12 +1,15 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {
+  compactPerception,
   descriptorDistance,
   flashScreening,
   isTooSimilar,
+  nearestDistance,
   qualityAssessment,
   sequenceDescriptor,
 } from "../prototype/src/perception.js";
+import { sanitiseTrace } from "../prototype/src/history.js";
 
 const frame=(size,value,shift=0)=>{
   const pixels=new Uint8Array(size*size*4);
@@ -40,6 +43,28 @@ test("nearest-history comparison rejects duplicates",()=>{
   const candidate={id:"a",perception:p,structuralVector:[.1,.2]};
   const records=[{id:"b",perception:p,structuralVector:[.1,.2]}];
   assert.equal(isTooSimilar(candidate,records).tooSimilar,true);
+});
+
+// Regression: the stored anti-repetition trace is non-reconstructive and carries
+// no structural vector. Blending in an absent structural axis floored the
+// combined distance at 0.28 — above the default threshold — so a shader compared
+// against its own stored trace was never recognised as a repeat.
+test("a shader is recognised as a repeat of its own stored perceptual trace",()=>{
+  const size=16,p=sequenceDescriptor([frame(size,30,5),frame(size,60,5)],size);
+  const trace=sanitiseTrace({family:"folded-flow",perception:compactPerception(p)});
+  assert.ok(!("structuralVector" in trace),"stored traces must stay non-reconstructive");
+  const candidate={id:"a",perception:compactPerception(p),structuralVector:[.1,.2,.3]};
+  const nearest=nearestDistance(candidate,[trace]);
+  assert.equal(nearest.distance,0);
+  assert.equal(isTooSimilar(candidate,[trace]).tooSimilar,true);
+});
+
+test("the structural axis still contributes when both sides carry a vector",()=>{
+  const size=16,p=sequenceDescriptor([frame(size,30,5),frame(size,60,5)],size);
+  const candidate={id:"a",perception:p,structuralVector:[0,0,0]};
+  const records=[{id:"b",perception:p,structuralVector:[1,1,1]}];
+  assert.equal(nearestDistance(candidate,records).distance,.28);
+  assert.equal(isTooSimilar(candidate,records).tooSimilar,false);
 });
 
 test("quality assessment reports flat frames",()=>{

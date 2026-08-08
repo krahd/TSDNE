@@ -121,7 +121,17 @@ async function rate(rating) {
     build,
     thumbnailDataURL: runtime.captureThumbnail(256),
   });
-  await saveRecord(record);
+  // A rating that could not be stored must not be reported as collected, and
+  // must not advance to the next shader: the judgement would be lost silently
+  // and the shader it referred to would be gone.
+  try {
+    await saveRecord(record);
+  } catch (error) {
+    ratingLocked = false;
+    setStatus(`rating NOT saved: ${error instanceof Error ? error.message : String(error)}`);
+    console.error(error);
+    return;
+  }
   records.push(record);
   lastRecord = record;
   updateCount();
@@ -140,7 +150,13 @@ function openComment() {
 
 async function saveComment() {
   if (!lastRecord) return;
-  lastRecord = await updateComment(lastRecord.recordId, commentInput.value);
+  try {
+    lastRecord = await updateComment(lastRecord.recordId, commentInput.value);
+  } catch (error) {
+    setStatus(`comment NOT saved: ${error instanceof Error ? error.message : String(error)}`);
+    console.error(error);
+    return;
+  }
   const index = records.findIndex((item) => item.recordId === lastRecord.recordId);
   if (index >= 0) records[index] = lastRecord;
   commentPanel.close();
