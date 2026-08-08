@@ -19,11 +19,13 @@ TSDNE does not ask the visitor to design a shader or navigate an optimisation sp
 
 The work produces a singular encounter without claiming a scarce or unique object. A shader may be computationally reproducible and still be unavailable after it is relinquished through the interface. This is interface-produced loss over a reproducible substrate, not simulated destruction.
 
-## Personal without personalisation
+## The sequence, not the visitor
 
-The artwork creates individual difference without identifying or modelling the visitor. It does not collect personal information, infer taste, maintain an account, build a recommendation profile, or optimise towards predicted engagement.
+The artwork does not identify or model the visitor. It does not collect personal information, infer taste, maintain an account, build a recommendation profile, or optimise towards predicted engagement.
 
-The encounter may become personal because of attention, decision, attachment, regret, or continuation. It is not personalised because the system has classified the visitor.
+It does, however, adapt the sequence. A bounded local history of what this browser has already been shown pushes later selections away from recently occupied perceptual regions. The system remembers its own recent presentations, not what the visitor supposedly liked about them.
+
+Whether an encounter becomes personally meaningful remains an open experiential question rather than something inferred from the interface.
 
 ## Generativity without a runtime language model
 
@@ -81,7 +83,7 @@ They are not presented as certificates. TSDNE provides:
 - no authenticity theatre;
 - no global uniqueness claim;
 - no ownership or transfer record;
-- no artificial scarcity.
+- no proprietary or collectible scarcity claim.
 
 When the visitor takes the code, a plain technical manifest accompanies it. The manifest explicitly describes itself as **not a certificate** and confers no title.
 
@@ -186,7 +188,7 @@ See [`GENERATED-SHADERS-LICENSE.md`](GENERATED-SHADERS-LICENSE.md).
 
 ## Research and writing
 
-The first paper is practice-led and HCI-adjacent. Its central claim is not a new shader-generation algorithm. It examines how computational systems may stage personally meaningful difference while refusing behavioural personalisation, proprietary title, certification, accumulation, and manufactured scarcity.
+The first paper is practice-led and HCI-adjacent. Its central claim is not a new shader-generation algorithm. It examines how the work relocates scarcity, memory, provenance, and selection while producing difference without behavioural inference.
 
 Paper manuscripts, paper-specific audits, source ledgers, venue strategy, and writing-register material are maintained canonically in:
 
