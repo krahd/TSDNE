@@ -28,7 +28,7 @@ let searchStatusVisible = false;
 let searchRevealTimer = null;
 try { settings = { ...settings, ...JSON.parse(localStorage.getItem("tsdne-settings-v2") || "{}") }; } catch {}
 
-function persistSettings() { try { localStorage.setItem("tsdne-settings-v2", JSON.stringify(settings)); } catch {}
+function persistSettings() { try { localStorage.setItem("tsdne-settings-v2", JSON.stringify(settings)); } catch {} }
 function announce(message) { live.textContent = ""; requestAnimationFrame(() => { live.textContent = message; }); }
 function setStatus(message = "", { busy = false, detail = "" } = {}) {
   statusText.textContent = message; statusCount.textContent = detail; status.classList.toggle("busy", busy); status.hidden = !message;
