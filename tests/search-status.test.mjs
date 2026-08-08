@@ -21,7 +21,7 @@ test("public search status appears only when an explicit request is actually wai
   assert.match(mainSource, /waitingForEncounter = false; searchStatusVisible = false/);
 });
 
-test("an empty quality-check cycle is a runtime retry, not an error", () => {
+test("an empty local-check cycle is a runtime retry, not an error", () => {
   assert.match(runtimeSource, /do \{[\s\S]*buildCandidatePool/);
   assert.match(runtimeSource, /emitter\.emit\("generation-retry"/);
   assert.match(runtimeSource, /reason: "no-candidate-passed-quality-checks"/);
@@ -31,6 +31,13 @@ test("an empty quality-check cycle is a runtime retry, not an error", () => {
   assert.match(curationSource, /runtime\.on\("generation-retry"/);
   assert.doesNotMatch(mainSource, /function requestAnother/);
   assert.doesNotMatch(curationSource, /function requestAnother/);
+});
+
+test("candidate-level compiler and sampling failures are rejected and searched past", () => {
+  for (const stage of ["cost", "compile-link", "sample", "quality", "flash-quality", "validation", "generation"]) {
+    assert.match(runtimeSource, new RegExp(`NORMAL_REJECTION_STAGES[\\s\\S]*\\"${stage}\\"`));
+  }
+  assert.match(runtimeSource, /if \(!candidates\.length && !attempts\.some\(\(item\) => NORMAL_REJECTION_STAGES\.has\(item\.stage\)\)\)/);
 });
 
 test("curation remains a passive observer of runtime search behaviour", () => {
