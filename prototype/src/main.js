@@ -80,6 +80,7 @@ function showUse() {
 function infoNavigation(active) {
   const items = [
     ["about", "about"],
+    ["statement", "statement"],
     ["privacy", "privacy"],
     ["accessibility", "accessibility"],
   ];
@@ -108,8 +109,23 @@ function aboutMarkup() {
       <blockquote><p>TSDNE retains provenance but abolishes title.</p><p>The shader can be identified, copied, and reconstructed, but not claimed.</p></blockquote>
       ${settingsControls()}
       <p class="panel-keys"><span>keyboard</span> <kbd>N</kbd> another · <kbd>U</kbd> take the code · <kbd>Space</kbd> pause · <kbd>A</kbd> about</p>
-      <p class="panel-credit">TSDNE is a project by <a href="https://laurenzo.net/">Tomas Laurenzo</a>.</p>
     </div>`;
+}
+
+function statementMarkup() {
+  return `
+    <article class="panel-reading info-document statement-document">
+      <h2>Statement</h2>
+      <p><em>This Shader Does Not Exist</em> begins with an ordinary computational fact: there can always be another. Software can reproduce, vary, and generate without exhausting a prior inventory. Most contemporary interfaces organise this abundance through catalogues, recommendations, histories, favourites, profiles, and predictions. TSDNE does something narrower.</p>
+      <p>One shader is present. Asking for <em>another</em> withdraws it and replaces it with an unknown one. The action has consequences, but the system does not decide what the action means. It is not stored as dislike, converted into preference, or used to construct a model of the visitor. TSDNE produces difference without inference.</p>
+      <p>The loss is deliberately incomplete. A shader is executable software: it can be copied, reconstructed, modified, and run elsewhere. <em>take the code</em> makes this explicit. What disappears is not a supposedly unique digital object but access to a particular encounter through the artwork. The source is reproducible; the encounter is not recoverable through the interface.</p>
+      <p>The browser remembers recent visual territory only to discourage obvious repetition. This memory is local and lossy: enough to make recurrence less likely, not enough to restore what was relinquished. Preventing recurrence absolutely would require a global registry, an archive, and a stronger machinery of identification. TSDNE refuses that solution. The shader may return. It should not return because the system has learned that you like it.</p>
+      <p>The system nevertheless retains provenance. Seeds, programs, versions, and hashes can establish computational relations. They do not become certificates, editions, rarity scores, ownership records, or title. <strong>TSDNE retains provenance but abolishes title.</strong> The shader can be identified, copied, and reconstructed, but not claimed.</p>
+      <p>The title deliberately occupies a phrase now associated with generative AI while the public artwork uses an authored procedural generator rather than a learned generative model. This is not a claim of technological purity. AI tools have participated in the work's development, and every procedural grammar carries cultural and technical histories. The relevant question is not whether computation is present, but where it is placed, what it is allowed to know, and what relations that knowledge produces.</p>
+      <p>The generator is therefore not neutral. Its randomness is constrained; its visual language is authored and curated; its selection rules embody decisions made before the visitor arrives. The dice are loaded. Refusing behavioural personalisation does not remove authorship or power. It makes responsibility for the generator harder to outsource to the visitor's supposed preferences.</p>
+      <p>TSDNE separates operations that networked interfaces routinely collapse: action from preference, memory from retrieval, provenance from title, reproducibility from collectibility, and computational difference from knowledge about a person.</p>
+      <p class="statement-close">The shader can be reconstructed. The visitor should not have to be.</p>
+    </article>`;
 }
 
 function privacyMarkup() {
@@ -156,10 +172,10 @@ function bindSettingsControls() {
 }
 
 function showInfoView(view = "about") {
-  const validView = ["about", "privacy", "accessibility"].includes(view) ? view : "about";
+  const validView = ["about", "statement", "privacy", "accessibility"].includes(view) ? view : "about";
   panel.dataset.view = validView;
   panelTitle.textContent = "This Shader Does Not Exist";
-  const body = validView === "privacy" ? privacyMarkup() : validView === "accessibility" ? accessibilityMarkup() : aboutMarkup();
+  const body = validView === "statement" ? statementMarkup() : validView === "privacy" ? privacyMarkup() : validView === "accessibility" ? accessibilityMarkup() : aboutMarkup();
   panelContent.innerHTML = `${infoNavigation(validView)}${body}`;
   panelContent.querySelectorAll("[data-info-view]").forEach((button) => {
     button.addEventListener("click", () => showInfoView(button.dataset.infoView));
