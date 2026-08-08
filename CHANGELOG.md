@@ -71,6 +71,19 @@
 - The motion clock is exported as `shaderMotionRate()` and `advanceShaderClock()`
   so pause, reduced motion, and tab-backgrounding behaviour are covered by
   ordinary Node tests.
+- **The WebGL diagnostics now actually assert.** Both CI steps grepped the
+  dumped DOM for their own success marker, but that marker is a literal inside
+  each page's inline script, so `--dump-dom` echoed it back whether or not the
+  page ever finished and the check could not fail. They now assert on the
+  `data-tsdne-compile` / `data-tsdne-runtime` attribute the script sets only on
+  completion, which never appears in the page source.
+- **The runtime diagnostic can now finish.** It had been passing vacuously while
+  the page was in fact dumped still reading `running`: the runtime awaits
+  `loadRecentTraces()`, and under `--virtual-time-budget` the virtual clock races
+  to exhaustion without waiting on IndexedDB, so `createTSDNERuntime()` never
+  resolved. The page now removes `indexedDB` and takes the synchronous
+  localStorage fallback, which completes in about four seconds. Generation is
+  what this page is for; the storage path is covered by Node tests.
 - Added `tests/runtime-search-cycles.test.mjs`, which drives the real runtime —
   `buildCandidatePool`, `validateCandidate`, `qualityAssessment` and the search
   loop — against a fake WebGL2 context. It confirms that a systematically
