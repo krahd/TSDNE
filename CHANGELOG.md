@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.3.1-alpha.3 — first-encounter recovery
+
+### Runtime
+
+- Fixed a regression where a search batch containing only candidate-level compile/link, sampling, validation, or generation failures could be promoted into a fatal artwork error.
+- Candidate-level failures are now treated as rejected candidates and searched past, just like cost and visual-quality failures.
+- Added a production-runtime smoke diagnostic that executes the real `runtime.start()` path and requires an actual first encounter, rather than only compiling hand-picked shader examples.
+- Added the first-encounter smoke to CI alongside the 147-condition WebGL family compile/render matrix.
+
 ## 0.3.1-alpha.2 — information surface
 
 ### Information and authorship
