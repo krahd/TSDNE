@@ -4,7 +4,7 @@
 
 This document situates *This Shader Does Not Exist* without attempting a priority claim. Its originality does not reside in inventing browser shaders, seeded procedural generation, novelty search, cryptographic hashing, code export, or anti-repetition. Each component has substantial precedent.
 
-The work’s contribution is the conjunction of these mechanisms into an encounter that refuses profiling, recommendation, certification, title, artificial scarcity, and exclusive possession.
+The work’s contribution lies in how these mechanisms are arranged: scarcity is moved from the reproducible object to the encounter; memory is reduced to a non-reconstructive local trace; provenance is retained without becoming title; and sequence selection occurs without behavioural inference about the visitor.
 
 ## Procedural and generative art
 
@@ -16,7 +16,7 @@ The generator must be artistically strong, but technical novelty in shader synth
 
 ## Browser shader systems
 
-ShaderToy, GLSL Sandbox, The Book of Shaders, numerous creative-coding libraries, and independent projects such as LUMEN establish a mature space of browser-native fragment-shader generation, sharing, looping, and export.
+ShaderToy, GLSL Sandbox, The Book of Shaders, numerous creative-coding libraries, and independent projects establish a mature space of browser-native fragment-shader generation, sharing, looping, and export.
 
 TSDNE should not compete by adding more controls, modes, prompts, or output formats. Its differentiation depends on refusing the catalogue and editor structures that normally organise such systems.
 
@@ -24,7 +24,7 @@ A visitor does not search a shader space. A shader appears.
 
 ## Interactive evolutionary and co-creative systems
 
-Interactive evolutionary computation, quality-diversity systems, ShaderGPT, AIShader, *AI Co-Artist*, and the user’s own *Demokritos* demonstrate that model-assisted or evolutionary shader exploration is occupied territory.
+Interactive evolutionary computation, quality-diversity systems, ShaderGPT, AIShader, *AI Co-Artist*, and Laurenzo's own *Demokritos* demonstrate that model-assisted or evolutionary shader exploration is occupied territory.
 
 TSDNE deliberately withdraws from this trajectory. It does not ask the visitor to select preferred descendants, steer a lineage, describe an intention, or collaborate visibly with an AI agent.
 
@@ -34,7 +34,7 @@ The archived WebLLM branch preserves experiments in that direction, but the publ
 
 The title enters the cultural field established by projects such as *This Person Does Not Exist* and its many successors. In that field, “does not exist” commonly signifies a plausible synthetic object generated from a learned distribution.
 
-TSDNE reclaims the phrase differently. The shader was not waiting as a catalogue item. It becomes available through execution. The title refers to potentiality and event rather than proof of uniqueness.
+TSDNE reclaims the phrase differently. The shader was not waiting as a catalogue item. It becomes available through execution and later disappears from the interface even though computational reconstruction remains possible. The title refers to availability and event rather than proof of uniqueness.
 
 The refusal of an LLM or diffusion model is therefore constitutive. The work occupies an AI-coded phrase while demonstrating that generativity, automation, and synthetic abundance do not belong exclusively to foundation models.
 
@@ -51,7 +51,7 @@ TSDNE separates serendipity from recommendation:
 - dwell time is not read as approval;
 - every displayed shader enters the same anti-repetition mechanism.
 
-The work’s individualisation is produced by stochastic and procedural difference, not by a model of the visitor.
+The sequence is nevertheless adaptive. Recent local exposure repels subsequent selections from already occupied perceptual regions. TSDNE adapts the sequence, not the visitor.
 
 ## Anti-repetition and novelty search
 
@@ -67,11 +67,9 @@ Software normally uses history to restore, recommend, rank, or accumulate. TSDNE
 
 It stores lossy perceptual traces that can repel future outputs from already occupied visual regions. It does not preserve the program, seed, graph, or rendered image.
 
-This creates an anti-archive:
-
 > The system remembers enough not to repeat, but not enough to restore.
 
-The mechanism is materially different from a gallery history, browser back button, saved collection, or recommendation profile.
+This is an encounter-level anti-archive rather than an absence of archives altogether. Git history, active runtime state, deliberately exported code, and technical provenance all preserve other kinds of memory.
 
 ## Cryptographic identity, NFTs, and provenance markets
 
@@ -87,13 +85,21 @@ The software internally computes hashes. The normal encounter displays none. A t
 
 The work therefore does not deny provenance. It refuses the ceremony that turns provenance into property.
 
-## Anti-copyright and free culture
+## Scarcity in the encounter
+
+TSDNE does not stand outside scarcity. It deliberately produces scarcity at the level of interface access: one shader is present now, and **another** removes that encounter from retrieval.
+
+What it refuses is the conversion of reproducibility into proprietary or collectible scarcity. **take the code** does not deplete the displayed object or issue a unique asset; it duplicates executable material. The source is non-scarce while the encounter is scarce.
+
+This distinction is central. It prevents the project from claiming the affective force of irreversibility while pretending no scarcity has been manufactured.
+
+## Free culture and executable circulation
 
 TSDNE’s gesture is not the transfer of a scarce asset. It is the release of executable material for continued use.
 
 The application is free software under GPL-3.0-or-later. Generated output is offered under a CC0 waiver to the extent waivable rights exist. The wording remains careful because copyright status and third-party rights cannot be resolved by rhetoric alone.
 
-The political proposition is that a relation may matter without exclusion. Copying does not diminish the encounter.
+The political proposition is that a relation may matter without exclusive possession. Copying does not diminish the encounter already experienced.
 
 This connects TSDNE to free-software, copyleft, anti-copyright, remix, and media-appropriation traditions, while maintaining the distinction between the authored generator and its generated outputs.
 
@@ -142,11 +148,13 @@ No isolated mechanism establishes TSDNE’s originality. The work is defined by 
 - no LLM runtime;
 - no ownership;
 - no certificate;
-- no scarcity claim;
+- no proprietary or collectible scarcity claim;
+- deliberate encounter-level scarcity;
 - no public registry;
 - no global uniqueness claim;
 - no prohibition against copying;
 - reconstructive export only through deliberate continuation;
-- local memory that preserves difference but not objects.
+- local memory that preserves difference but not objects;
+- sequence adaptation without visitor-preference modelling.
 
 The resulting proposition is not “a better shader explorer.” It is an encounter with computational possibility organised against the dominant logics of extraction and possession.
