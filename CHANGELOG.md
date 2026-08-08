@@ -1,5 +1,34 @@
 # Changelog
 
+## 0.3.1-alpha.5 — arriving from pause
+
+### Changed
+
+- **A new shader arrives playing, once it is the only one on screen.** This
+  supersedes the previous release's decision to keep the artwork paused across a
+  request for another shader. Pause still pauses, and the search still runs
+  paused, so the shader being relinquished stays exactly where it was put; but the
+  replacement — held on its first frame throughout the crossfade — begins moving
+  as it comes to stand alone.
+- The resume is deliberately *not* taken on `encounter`, which fires as the
+  crossfade begins and while the outgoing shader is still on screen: resuming
+  there would set the shader being left behind moving again and only then reveal
+  its replacement, which is the opposite of what pausing is for. The runtime now
+  emits `encounter-settled` once the crossfade has finished, and the resume waits
+  for that. The delay is zero where there is no crossfade to wait for — the first
+  encounter, and under reduced motion — so nothing is held back needlessly.
+
+### Testing
+
+- Added `tests/encounter-settled.test.mjs`, which drives the real runtime against
+  a fake WebGL2 context and reads the shader clock straight out of `uniform1f`, so
+  it measures motion rather than describing it. It confirms that the outgoing
+  shader's clock does not advance for a single frame between the crossfade
+  beginning and ending, that the arriving shader waits on frame one throughout,
+  that it plays afterwards, and that a pending settle does not fire into a stopped
+  runtime. Verified against both failure modes: resuming on `encounter`, and
+  emitting `encounter-settled` without waiting for the crossfade.
+
 ## 0.3.1-alpha.4 — runtime and local-memory corrections
 
 ### Changed

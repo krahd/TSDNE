@@ -240,6 +240,8 @@ export async function createTSDNERuntime({
   let historyEpoch = 0;
   let animationFrame = null;
   let running = false;
+  // Pends between an encounter appearing and its crossfade finishing.
+  let settleTimer = null;
   // Effective shader seconds per display, integrated in advanceClocks() rather
   // than derived from a start timestamp. See renderSettings().
   const rendererClocks = [0, 0];
@@ -535,8 +537,8 @@ export async function createTSDNERuntime({
     renderers[next].setFragmentSource(candidate.source);
     rendererClocks[next] = 0;
 
+    const duration = next !== previous && !settings.reducedMotion ? transitionMs : 0;
     if (next !== previous) {
-      const duration = settings.reducedMotion ? 0 : transitionMs;
       canvases[next].style.transitionDuration = `${duration}ms`;
       canvases[previous].style.transitionDuration = `${duration}ms`;
       canvases[next].classList.add("active");
@@ -555,6 +557,13 @@ export async function createTSDNERuntime({
       shownAtPerformanceMs: performance.now(),
     };
     emitter.emit("encounter", currentEncounter());
+    // "encounter" fires as the crossfade begins, while the outgoing shader is
+    // still on screen. Anything that should only happen once the new shader is
+    // the only one visible — resuming from pause, above all, since resuming any
+    // earlier sets the outgoing shader moving as it fades — waits for this.
+    clearTimeout(settleTimer);
+    const settling = currentEncounter();
+    settleTimer = setTimeout(() => emitter.emit("encounter-settled", settling), duration);
     return current;
   }
 
@@ -612,6 +621,8 @@ export async function createTSDNERuntime({
   function stop() {
     running = false;
     cancelAnimationFrame(animationFrame);
+    // Would otherwise emit into a cleared emitter, or resume a stopped runtime.
+    clearTimeout(settleTimer);
     renderers.forEach((renderer) => renderer.destroy());
     validator.destroy();
     emitter.clear();
