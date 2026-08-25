@@ -1,0 +1,7 @@
+{
+  "implementationCommit": "6088c9103348815f9c055ff0fa83695b8b20abd9",
+  "appVersion": "0.3.1-alpha.5",
+  "captureKind": "actual public artwork runtime",
+  "browser": "Google Chrome 151.0.7922.137 ",
+  "runner": "GitHub Actions ubuntu-latest / SwiftShader"
+}

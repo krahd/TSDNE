@@ -1,0 +1,286 @@
+{
+  "implementationCommit": "6088c9103348815f9c055ff0fa83695b8b20abd9",
+  "appVersion": "0.3.1-alpha.5",
+  "generatedAt": "2026-08-25T21:26:15.242Z",
+  "captures": [
+    {
+      "ordinal": 1,
+      "encounterNumber": 1,
+      "seed": [
+        1177975070,
+        2878365942,
+        623611982,
+        2918414072
+      ],
+      "family": "richter-rhythm",
+      "category": "geometric",
+      "colorMode": "duotone",
+      "finish": "clean",
+      "variant": 0.42326370952650905,
+      "generatorVersion": "tsdne-procedural-v2",
+      "runtimeVersion": "tsdne-runtime-v1",
+      "selectorVersion": "tsdne-selector-v3",
+      "perceptionVersion": "tsdne-perception-v2",
+      "selectedRank": 1,
+      "selectedScore": {
+        "score": 0.9340339271699795,
+        "novelty": 1,
+        "complexity": 0.5877120448123708,
+        "family": 1,
+        "mode": 1
+      },
+      "appVersion": "0.3.1-alpha.5",
+      "implementationCommit": "6088c9103348815f9c055ff0fa83695b8b20abd9",
+      "shownAt": "2026-08-25T21:26:02.042Z",
+      "file": "paper-figures/figure-2-outputs/01.webp"
+    },
+    {
+      "ordinal": 2,
+      "encounterNumber": 2,
+      "seed": [
+        2974176594,
+        1557398464,
+        3304861136,
+        336148146
+      ],
+      "family": "latent-wash",
+      "category": "period",
+      "colorMode": "ink",
+      "finish": "grain",
+      "variant": 0.1223006839863956,
+      "generatorVersion": "tsdne-procedural-v2",
+      "runtimeVersion": "tsdne-runtime-v1",
+      "selectorVersion": "tsdne-selector-v3",
+      "perceptionVersion": "tsdne-perception-v2",
+      "selectedRank": 1,
+      "selectedScore": {
+        "score": 0.6459428216859204,
+        "novelty": 0.41114221156129077,
+        "complexity": 0.7745376715176462,
+        "family": 1,
+        "mode": 1
+      },
+      "appVersion": "0.3.1-alpha.5",
+      "implementationCommit": "6088c9103348815f9c055ff0fa83695b8b20abd9",
+      "shownAt": "2026-08-25T21:26:03.242Z",
+      "file": "paper-figures/figure-2-outputs/02.webp"
+    },
+    {
+      "ordinal": 3,
+      "encounterNumber": 3,
+      "seed": [
+        3580198178,
+        1540509794,
+        3004772107,
+        2282971896
+      ],
+      "family": "grammar-spiral",
+      "category": "rule",
+      "colorMode": "riso",
+      "finish": "bloom",
+      "variant": 0.26138332090340555,
+      "generatorVersion": "tsdne-procedural-v2",
+      "runtimeVersion": "tsdne-runtime-v1",
+      "selectorVersion": "tsdne-selector-v3",
+      "perceptionVersion": "tsdne-perception-v2",
+      "selectedRank": 1,
+      "selectedScore": {
+        "score": 0.5752948624181724,
+        "novelty": 0.4202518605092178,
+        "complexity": 0.30224286089496716,
+        "family": 1,
+        "mode": 1
+      },
+      "appVersion": "0.3.1-alpha.5",
+      "implementationCommit": "6088c9103348815f9c055ff0fa83695b8b20abd9",
+      "shownAt": "2026-08-25T21:26:04.742Z",
+      "file": "paper-figures/figure-2-outputs/03.webp"
+    },
+    {
+      "ordinal": 4,
+      "encounterNumber": 4,
+      "seed": [
+        2118687020,
+        2720880151,
+        4051754391,
+        3918869215
+      ],
+      "family": "bauhaus-tiles",
+      "category": "geometric",
+      "colorMode": "spectral",
+      "finish": "clean",
+      "variant": 0.2506474177353084,
+      "generatorVersion": "tsdne-procedural-v2",
+      "runtimeVersion": "tsdne-runtime-v1",
+      "selectorVersion": "tsdne-selector-v3",
+      "perceptionVersion": "tsdne-perception-v2",
+      "selectedRank": 1,
+      "selectedScore": {
+        "score": 0.5701988377135793,
+        "novelty": 0.35972170961123295,
+        "complexity": 0.4746819657719591,
+        "family": 1,
+        "mode": 1
+      },
+      "appVersion": "0.3.1-alpha.5",
+      "implementationCommit": "6088c9103348815f9c055ff0fa83695b8b20abd9",
+      "shownAt": "2026-08-25T21:26:06.242Z",
+      "file": "paper-figures/figure-2-outputs/04.webp"
+    },
+    {
+      "ordinal": 5,
+      "encounterNumber": 5,
+      "seed": [
+        1141969554,
+        3386477235,
+        748465128,
+        1521458089
+      ],
+      "family": "grid-horizon",
+      "category": "period",
+      "colorMode": "mono",
+      "finish": "bloom",
+      "variant": 0.05682317935861647,
+      "generatorVersion": "tsdne-procedural-v2",
+      "runtimeVersion": "tsdne-runtime-v1",
+      "selectorVersion": "tsdne-selector-v3",
+      "perceptionVersion": "tsdne-perception-v2",
+      "selectedRank": 1,
+      "selectedScore": {
+        "score": 0.596353752083504,
+        "novelty": 0.32433581270845324,
+        "complexity": 0.5568583103824364,
+        "family": 1,
+        "mode": 1
+      },
+      "appVersion": "0.3.1-alpha.5",
+      "implementationCommit": "6088c9103348815f9c055ff0fa83695b8b20abd9",
+      "shownAt": "2026-08-25T21:26:07.742Z",
+      "file": "paper-figures/figure-2-outputs/05.webp"
+    },
+    {
+      "ordinal": 6,
+      "encounterNumber": 6,
+      "seed": [
+        1051926782,
+        3503123404,
+        2053244871,
+        636208062
+      ],
+      "family": "crt-broadcast",
+      "category": "reprographic",
+      "colorMode": "duotone",
+      "finish": "grain",
+      "variant": 0.07238256675191224,
+      "generatorVersion": "tsdne-procedural-v2",
+      "runtimeVersion": "tsdne-runtime-v1",
+      "selectorVersion": "tsdne-selector-v3",
+      "perceptionVersion": "tsdne-perception-v2",
+      "selectedRank": 1,
+      "selectedScore": {
+        "score": 0.6201513606452846,
+        "novelty": 0.3846743443058333,
+        "complexity": 0.6287277047946583,
+        "family": 1,
+        "mode": 0.8
+      },
+      "appVersion": "0.3.1-alpha.5",
+      "implementationCommit": "6088c9103348815f9c055ff0fa83695b8b20abd9",
+      "shownAt": "2026-08-25T21:26:09.242Z",
+      "file": "paper-figures/figure-2-outputs/06.webp"
+    },
+    {
+      "ordinal": 7,
+      "encounterNumber": 7,
+      "seed": [
+        1993983528,
+        974610858,
+        3456815824,
+        1559943133
+      ],
+      "family": "folded-flow",
+      "category": "continuous",
+      "colorMode": "neon",
+      "finish": "posterize",
+      "variant": 0.7539149327203631,
+      "generatorVersion": "tsdne-procedural-v2",
+      "runtimeVersion": "tsdne-runtime-v1",
+      "selectorVersion": "tsdne-selector-v3",
+      "perceptionVersion": "tsdne-perception-v2",
+      "selectedRank": 1,
+      "selectedScore": {
+        "score": 0.6139853217392883,
+        "novelty": 0.3526559070468879,
+        "complexity": 0.5784030109944069,
+        "family": 1,
+        "mode": 1
+      },
+      "appVersion": "0.3.1-alpha.5",
+      "implementationCommit": "6088c9103348815f9c055ff0fa83695b8b20abd9",
+      "shownAt": "2026-08-25T21:26:10.742Z",
+      "file": "paper-figures/figure-2-outputs/07.webp"
+    },
+    {
+      "ordinal": 8,
+      "encounterNumber": 8,
+      "seed": [
+        3595026754,
+        4103627901,
+        3890522838,
+        3245349694
+      ],
+      "family": "mitosis-plate",
+      "category": "biological",
+      "colorMode": "ink",
+      "finish": "bloom",
+      "variant": 0.47861527279019356,
+      "generatorVersion": "tsdne-procedural-v2",
+      "runtimeVersion": "tsdne-runtime-v1",
+      "selectorVersion": "tsdne-selector-v3",
+      "perceptionVersion": "tsdne-perception-v2",
+      "selectedRank": 1,
+      "selectedScore": {
+        "score": 0.5791634234131272,
+        "novelty": 0.2970160892192093,
+        "complexity": 0.5948419101766224,
+        "family": 1,
+        "mode": 0.8571428571428572
+      },
+      "appVersion": "0.3.1-alpha.5",
+      "implementationCommit": "6088c9103348815f9c055ff0fa83695b8b20abd9",
+      "shownAt": "2026-08-25T21:26:12.242Z",
+      "file": "paper-figures/figure-2-outputs/08.webp"
+    },
+    {
+      "ordinal": 9,
+      "encounterNumber": 9,
+      "seed": [
+        2721562193,
+        2365343435,
+        1681062422,
+        2419735855
+      ],
+      "family": "dither-plate",
+      "category": "reprographic",
+      "colorMode": "mono",
+      "finish": "clean",
+      "variant": 0.11960301385261118,
+      "generatorVersion": "tsdne-procedural-v2",
+      "runtimeVersion": "tsdne-runtime-v1",
+      "selectorVersion": "tsdne-selector-v3",
+      "perceptionVersion": "tsdne-perception-v2",
+      "selectedRank": 1,
+      "selectedScore": {
+        "score": 0.6014482429443552,
+        "novelty": 0.3156187213964895,
+        "complexity": 0.646150023041249,
+        "family": 1,
+        "mode": 0.875
+      },
+      "appVersion": "0.3.1-alpha.5",
+      "implementationCommit": "6088c9103348815f9c055ff0fa83695b8b20abd9",
+      "shownAt": "2026-08-25T21:26:13.742Z",
+      "file": "paper-figures/figure-2-outputs/09.webp"
+    }
+  ]
+}
