@@ -1,0 +1,245 @@
+name: Capture paper figures v2
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/paper-figures-v2.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  capture:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    env:
+      TSDNE_PAPER_SNAPSHOT: 6088c9103348815f9c055ff0fa83695b8b20abd9
+      TSDNE_PAPER_VERSION: 0.3.1-alpha.5
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          ref: ${{ env.TSDNE_PAPER_SNAPSHOT }}
+
+      - name: Locate Chrome
+        id: chrome
+        shell: bash
+        run: |
+          set -euo pipefail
+          browser="$(command -v google-chrome || command -v google-chrome-stable || command -v chromium || true)"
+          test -n "$browser"
+          echo "browser=$browser" >> "$GITHUB_OUTPUT"
+          "$browser" --version
+
+      - name: Write capture harness outside the documented snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p prototype/diagnostics/paper-v2 paper-figures/figure-2-outputs
+          cat > prototype/diagnostics/paper-v2/index.html <<'HTML'
+          <!doctype html>
+          <html lang="en">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <title>TSDNE paper capture</title>
+            <style>
+              html,body{margin:0;background:#000;color:#fff;font-family:Arial,Helvetica,sans-serif}
+              body{width:1800px;min-height:1800px;overflow:hidden}
+              #hidden-runtime{position:fixed;left:-10000px;top:-10000px;width:768px;height:768px}
+              #hidden-runtime canvas{position:absolute;width:768px;height:768px}
+              #grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;padding:14px}
+              .card{aspect-ratio:1/1;background:#111;overflow:hidden}
+              .card img{display:block;width:100%;height:100%;object-fit:cover}
+              #paper-payload{display:none}
+              #status{position:fixed;right:20px;bottom:14px;padding:5px 8px;background:#000b;font-size:14px}
+            </style>
+          </head>
+          <body>
+            <div id="hidden-runtime">
+              <canvas id="stage-a" width="768" height="768"></canvas>
+              <canvas id="stage-b" width="768" height="768"></canvas>
+            </div>
+            <main id="grid" aria-label="Nine sequential TSDNE production encounters"></main>
+            <pre id="paper-payload" aria-hidden="true"></pre>
+            <div id="status">generating…</div>
+            <script type="module" src="./capture.js"></script>
+          </body>
+          </html>
+          HTML
+
+          cat > prototype/diagnostics/paper-v2/capture.js <<'JS'
+          import { createTSDNERuntime } from "../../src/runtime.js";
+          import { APP_VERSION } from "../../src/version.js";
+
+          const SNAPSHOT = "6088c9103348815f9c055ff0fa83695b8b20abd9";
+          const COUNT = 9;
+          const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
+          const canvases = [document.querySelector("#stage-a"), document.querySelector("#stage-b")];
+          const grid = document.querySelector("#grid");
+          const payloadNode = document.querySelector("#paper-payload");
+          const status = document.querySelector("#status");
+          const runtime = await createTSDNERuntime({
+            canvases,
+            settings: { paused: false, reducedMotion: false, reducedIntensity: false },
+          });
+
+          const records = [];
+          try {
+            for (let index = 0; index < COUNT; index += 1) {
+              status.textContent = `generating ${index + 1}/${COUNT}…`;
+              if (index === 0) await runtime.start();
+              else await runtime.another();
+              await sleep(index === 0 ? 1200 : 1500);
+              const encounter = runtime.currentEncounter();
+              const image = runtime.captureThumbnail(768);
+              if (!encounter || !image) throw new Error(`capture ${index + 1} failed`);
+              const c = encounter.candidate;
+              records.push({
+                ordinal: index + 1,
+                encounterNumber: encounter.encounterNumber,
+                seed: c.seed ?? null,
+                family: c.family ?? null,
+                category: c.category ?? null,
+                colorMode: c.colorMode ?? null,
+                finish: c.finish ?? null,
+                variant: c.variant ?? c.graph?.traits?.variant ?? null,
+                generatorVersion: encounter.audit?.generatorVersion ?? c.graph?.generator ?? null,
+                runtimeVersion: encounter.audit?.runtimeVersion ?? null,
+                selectorVersion: encounter.audit?.selectorVersion ?? null,
+                perceptionVersion: encounter.audit?.perceptionVersion ?? null,
+                selectedRank: encounter.audit?.selectedRank ?? null,
+                selectedScore: encounter.audit?.selectedScore ?? null,
+                appVersion: APP_VERSION,
+                implementationCommit: SNAPSHOT,
+                shownAt: encounter.shownAt,
+                imageDataURL: image,
+              });
+              const card = document.createElement("div");
+              card.className = "card";
+              const img = document.createElement("img");
+              img.src = image;
+              img.alt = `TSDNE generated output ${index + 1}`;
+              card.append(img);
+              grid.append(card);
+            }
+            payloadNode.textContent = JSON.stringify({
+              implementationCommit: SNAPSHOT,
+              appVersion: APP_VERSION,
+              generatedAt: new Date().toISOString(),
+              captures: records,
+            });
+            status.remove();
+            document.documentElement.dataset.tsdnePaperFigures = "pass";
+          } catch (error) {
+            status.textContent = `FAILED: ${error instanceof Error ? error.message : String(error)}`;
+            document.documentElement.dataset.tsdnePaperFigures = "fail";
+            console.error(error);
+          } finally {
+            runtime.stop();
+          }
+          JS
+
+      - name: Serve exact snapshot
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m http.server 4176 --directory prototype >/tmp/tsdne-paper-http.log 2>&1 &
+          echo $! > /tmp/tsdne-paper-server.pid
+          for _ in {1..40}; do
+            curl -fsS http://127.0.0.1:4176/ >/dev/null && exit 0
+            sleep .25
+          done
+          exit 1
+
+      - name: Capture Figure 1
+        shell: bash
+        env:
+          BROWSER: ${{ steps.chrome.outputs.browser }}
+        run: |
+          set -euo pipefail
+          "$BROWSER" --headless=new --no-sandbox --enable-webgl --ignore-gpu-blocklist \
+            --use-angle=swiftshader --enable-unsafe-swiftshader \
+            --run-all-compositor-stages-before-draw --hide-scrollbars \
+            --window-size=1600,1000 --virtual-time-budget=90000 \
+            --screenshot=paper-figures/figure-1-public-encounter.png \
+            http://127.0.0.1:4176/
+          test -s paper-figures/figure-1-public-encounter.png
+          cat > paper-figures/figure-1-metadata.json <<EOF
+          {
+            "implementationCommit": "$TSDNE_PAPER_SNAPSHOT",
+            "appVersion": "$TSDNE_PAPER_VERSION",
+            "captureKind": "actual public artwork runtime",
+            "browser": "$($BROWSER --version | sed 's/"/\\"/g')",
+            "runner": "GitHub Actions ubuntu-latest / SwiftShader"
+          }
+          EOF
+
+      - name: Capture Figure 2 and matching metadata in one browser run
+        shell: bash
+        env:
+          BROWSER: ${{ steps.chrome.outputs.browser }}
+        run: |
+          set -euo pipefail
+          "$BROWSER" --headless=new --no-sandbox --enable-webgl --ignore-gpu-blocklist \
+            --use-angle=swiftshader --enable-unsafe-swiftshader \
+            --run-all-compositor-stages-before-draw --hide-scrollbars \
+            --window-size=1800,1800 --virtual-time-budget=540000 \
+            --dump-dom --screenshot=paper-figures/figure-2-visual-range.png \
+            http://127.0.0.1:4176/diagnostics/paper-v2/ > /tmp/tsdne-paper-grid.html
+          test -s paper-figures/figure-2-visual-range.png
+          grep -q 'data-tsdne-paper-figures="pass"' /tmp/tsdne-paper-grid.html
+
+          python3 - <<'PY'
+          import base64, html, json, re
+          from pathlib import Path
+          dom = Path('/tmp/tsdne-paper-grid.html').read_text(encoding='utf-8')
+          m = re.search(r'<pre id="paper-payload"[^>]*>(.*?)</pre>', dom, re.S)
+          if not m:
+              raise SystemExit('paper payload not found')
+          payload = json.loads(html.unescape(m.group(1)))
+          if len(payload.get('captures', [])) != 9:
+              raise SystemExit(f"expected 9 captures, got {len(payload.get('captures', []))}")
+          out = Path('paper-figures/figure-2-outputs')
+          clean = {k: v for k, v in payload.items() if k != 'captures'}
+          clean['captures'] = []
+          for record in payload['captures']:
+              data = record.pop('imageDataURL')
+              header, encoded = data.split(',', 1)
+              ext = 'webp' if 'image/webp' in header else 'png'
+              p = out / f"{record['ordinal']:02d}.{ext}"
+              p.write_bytes(base64.b64decode(encoded))
+              record['file'] = str(p)
+              clean['captures'].append(record)
+          Path('paper-figures/figure-2-metadata.json').write_text(json.dumps(clean, indent=2) + '\n', encoding='utf-8')
+          PY
+          test "$(find paper-figures/figure-2-outputs -type f | wc -l)" -eq 9
+
+      - name: Record provenance
+        if: always()
+        shell: bash
+        env:
+          BROWSER: ${{ steps.chrome.outputs.browser }}
+        run: |
+          cat > paper-figures/README.txt <<EOF
+          TSDNE paper-figure evidence
+          Exact documented implementation: $TSDNE_PAPER_SNAPSHOT ($TSDNE_PAPER_VERSION)
+          Capture workflow code is external to that snapshot and only invokes its public/production runtime.
+          Browser: $($BROWSER --version)
+          Figure 2 is nine sequential production encounters, not statistical proof of global diversity.
+          EOF
+
+      - name: Stop server
+        if: always()
+        shell: bash
+        run: |
+          test -f /tmp/tsdne-paper-server.pid && kill "$(cat /tmp/tsdne-paper-server.pid)" 2>/dev/null || true
+
+      - name: Upload paper-figure evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: tsdne-paper-figures-alpha5-v2
+          path: paper-figures/
+          if-no-files-found: error
+          retention-days: 30
