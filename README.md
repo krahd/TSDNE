@@ -192,7 +192,7 @@ The first paper is practice-led and HCI-adjacent. Its central claim is not a new
 
 Paper manuscripts, paper-specific audits, source ledgers, venue strategy, and writing-register material are maintained canonically in:
 
-`krahd/academic-writing/my_papers_2026/2026 - This Shader Does Not Exist/`
+`krahd/research/academic-writing/my_papers_2026/2026 - This Shader Does Not Exist/`
 
 This repository retains only artwork implementation, project/research context, production audits, curation/reproducibility material, and technical documentation.
 
